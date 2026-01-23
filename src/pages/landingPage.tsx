@@ -15,7 +15,7 @@ function LandingPage() {
             <Impact></Impact>
             </div>
             <div>
-                <Info></Info>
+            <Info></Info>
             </div>
         </div>
      );
