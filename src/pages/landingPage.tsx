@@ -1,6 +1,8 @@
 import Navbar from "../components/navbar";
 import Hero from "../components/hero";
 import Impact from "../components/impact";
+import Info from "../components/info";
+
 
 function LandingPage() {
     return ( 
@@ -11,6 +13,9 @@ function LandingPage() {
             </div>
             <div className="mt-30">
             <Impact></Impact>
+            </div>
+            <div>
+                <Info></Info>
             </div>
         </div>
      );
