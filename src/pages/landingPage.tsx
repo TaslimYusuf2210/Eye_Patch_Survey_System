@@ -2,7 +2,8 @@ import Navbar from "../components/navbar";
 import Hero from "../components/hero";
 import Impact from "../components/impact";
 import Info from "../components/info";
-
+import Compatible from "../components/compatible";
+import NewsAndUpdate from "../components/new";
 
 function LandingPage() {
     return ( 
@@ -16,6 +17,12 @@ function LandingPage() {
             </div>
             <div>
             <Info></Info>
+            </div>
+            <div>
+            <Compatible></Compatible>
+            </div>
+            <div>
+                <NewsAndUpdate></NewsAndUpdate>
             </div>
         </div>
      );
