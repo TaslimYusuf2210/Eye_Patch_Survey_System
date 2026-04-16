@@ -1,13 +1,13 @@
 import { Routes, Route } from 'react-router-dom';
-import DashboardLayout from '../components/dashboard/DashboardLayout';
-import Analytic from './dashboard/Analytic';
-import SurveyList from './dashboard/SurveyList';
-import SurveyDetail from './dashboard/SurveyDetail';
-import GlobalResponses from './dashboard/GlobalResponses';
-import SurveyResponses from './dashboard/SurveyResponses';
-import ParticipantList from './dashboard/ParticipantList';
-import ParticipantDetail from './dashboard/ParticipantDetail';
-import SettingsView from './dashboard/SettingsView';
+import DashboardLayout from '../layout/DashboardLayout';
+import Analytic from './Analytic';
+import SurveyList from './SurveyList';
+import SurveyDetail from './SurveyDetail';
+import GlobalResponses from './GlobalResponses';
+import SurveyResponses from './SurveyResponses';
+import ParticipantList from './ParticipantList';
+import ParticipantDetail from './ParticipantDetail';
+import SettingsView from './SettingsView';
 
 const Dashboard = () => {
     return (

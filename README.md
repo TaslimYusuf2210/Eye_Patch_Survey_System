@@ -1,4 +1,28 @@
-# React + TypeScript + Vite
+# Survey System UI
+
+## Project Architecture & Structure
+
+This project uses a feature-based directory structure to keep related code grouped together. This improves scalability and maintainability over a standard component/page structure.
+
+```
+src/
+├── features/
+│   ├── auth/            # Authentication Feature (Login/Signup)
+│   ├── landingPage/     # Public Landing Page Feature
+│   └── dashboard/       # Application Dashboard Feature
+├── components/
+│   └── ui/              # Reusable Shared UI Components (e.g. Tables, Buttons)
+├── contexts/            # Global React Contexts
+├── lib/                 # Utility functions or API wrappers
+└── App.tsx              # Main application router and root
+```
+
+### Feature Anatomy
+
+Each feature in `src/features/` has its own encapsulated components, pages, and layouts where applicable:
+- `/pages/`: The top-level route views for this feature.
+- `/components/`: Reusable components that are strictly scoped to this feature.
+- `/layout/`: Shared layouts used by the feature's pages.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const signUpSchema = yup.object().shape({
+    username: yup.string().required('Username is required'),
     email: yup.string().email('Invalid email format').required('Email is required'),
     password: yup.string()
         .min(8, 'Password must be at least 8 characters')
@@ -20,6 +22,8 @@ const signUpSchema = yup.object().shape({
 
 type SignUpFormData = yup.InferType<typeof signUpSchema>;
 
+
+
 function SignUp() {
     const {
         register,
@@ -29,7 +33,9 @@ function SignUp() {
     } = useForm<SignUpFormData>({
         resolver: yupResolver(signUpSchema),
     });
+    const {signUp} = useAuth();
 
+    const [loading, setLoading] = useState(false)
     const [minimumCharacter, setMinimumCharacter] = useState(false);
     const [uppercase, setUpperCase] = useState(false);
     const [number, setNumber] = useState(false);
@@ -48,8 +54,18 @@ function SignUp() {
         passwordChecklist(passwordValue);
     }, [passwordValue]);
 
-    const onSubmit = (data: SignUpFormData) => {
+    const onSubmit = async (data: SignUpFormData) => {
         console.log('SignUp Form Data:', data);
+        setLoading(true)
+        try {
+            await signUp(data.username, data.email, data.password)
+            alert("Sign up successful")
+        } catch (error) {
+            alert(error)
+        } finally {
+            setLoading(false)
+        }
+
     };
 
     return (
@@ -58,6 +74,17 @@ function SignUp() {
                 <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Create an Account</h2>
 
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input
+                            type="text"
+                            {...register('username')}
+                            className={`w-full px-4 py-2 border ${errors.username ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all`}
+                            placeholder="your_username"
+                        />
+                        {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                         <input
@@ -133,10 +160,11 @@ function SignUp() {
                     </div>
 
                     <button
+                        disabled={loading}
                         type="submit"
                         className="w-full bg-black text-white px-4 py-2 rounded-full text-sm font-medium border border-gray-200 shadow-sm hover:bg-gray-950 transition-all duration-400 mt-2 cursor-pointer"
                     >
-                        Sign Up
+                        {loading ? "Signing up..." : "Sign up"}
                     </button>
                 </form>
 
@@ -169,6 +197,30 @@ function SignUp() {
                     </Link>
                 </div>
             </div>
+            {/* ==================== SUCCESS DIALOG ==================== */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="flex justify-center mb-4">
+              <CheckCircle className="h-16 w-16 text-green-600" />
+            </div>
+            <DialogTitle className="text-2xl text-center">Account Created!</DialogTitle>
+            <DialogDescription className="text-center">
+              We've sent a confirmation link to <strong>{email}</strong>.<br />
+              Please check your email and click the link to activate your account.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex justify-center mt-6">
+            <Button 
+              onClick={() => setShowSuccessDialog(false)}
+              className="w-full"
+            >
+              Got it, I'll check my email
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
         </div>
     );
 }

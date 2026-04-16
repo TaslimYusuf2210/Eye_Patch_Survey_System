@@ -1,5 +1,5 @@
-import StatsCard from '../../components/dashboard/StatsCard';
-import RecentSurveyList from '../../components/dashboard/RecentSurveyList';
+import StatsCard from '../components/StatsCard';
+import RecentSurveyList from '../components/RecentSurveyList';
 import { Search, Bell, ChevronRight } from 'lucide-react';
 
 const Analytic = () => {

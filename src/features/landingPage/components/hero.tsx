@@ -1,4 +1,4 @@
-import survey from "../assets/survey.svg"
+import survey from "../../../assets/survey.svg"
 
 function Hero() {
     return (

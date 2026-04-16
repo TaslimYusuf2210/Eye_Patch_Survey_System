@@ -1,5 +1,4 @@
-import ResponseTable from '../../components/dashboard/ResponseTable';
-import Table from '../../components/utils/table';
+import Table from '../../../components/ui/table';
 
 const GlobalResponses = () => {
     return (

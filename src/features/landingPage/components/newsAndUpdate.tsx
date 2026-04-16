@@ -1,6 +1,6 @@
-import analytics from "../assets/analytics.jpg"
-import dataDriven from "../assets/dataDriven.jpg"
-import robotHand from "../assets/robothands.jpg"
+import analytics from "../../../assets/analytics.jpg"
+import dataDriven from "../../../assets/dataDriven.jpg"
+import robotHand from "../../../assets/robothands.jpg"
 
 const data = [
     {

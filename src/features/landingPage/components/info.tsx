@@ -1,7 +1,7 @@
 import InfoCard from "./infocard";
-import realTime from "../assets/realTimeDataCollection.svg"
-import responseTracking from "../assets/responseTracking.svg"
-import dataAccuracy from "../assets/dataAccuracy.svg"
+import realTime from "../../../assets/realTimeDataCollection.svg"
+import responseTracking from "../../../assets/responseTracking.svg"
+import dataAccuracy from "../../../assets/dataAccuracy.svg"
 
 const info1 =
 {

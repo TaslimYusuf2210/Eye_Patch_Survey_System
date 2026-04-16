@@ -1,9 +1,10 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from './pages/landingPage'
-import Login from './pages/login';
-import SignUp from './pages/signup';
-import Dashboard from './pages/dashboard';
+import LandingPageLayout from './features/landingPage/layout/LandingPageLayout';
+import LandingPage from './features/landingPage/pages/landingPage'
+import Login from './features/auth/pages/login';
+import SignUp from './features/auth/pages/signup';
+import Dashboard from './features/dashboard/pages/dashboard';
 
 function App() {
 
@@ -11,9 +12,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={
-          <div className='px-4 md:px-8 lg:px-12'>
+          <LandingPageLayout>
             <LandingPage></LandingPage>
-          </div>
+          </LandingPageLayout>
         } />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
