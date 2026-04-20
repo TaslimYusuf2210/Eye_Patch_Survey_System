@@ -1,17 +1,45 @@
 import StatsCard from '../components/StatsCard';
 import RecentSurveyList from '../components/RecentSurveyList';
 import { Search, Bell, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 const Analytic = () => {
+    const [userName, setUserName] = useState()
+
+    async function getUserData() {
+        // Get current user
+        const { data, error } = await supabase.auth.getUser();
+         if (error) throw error;
+        const user = data.user;
+        if (!user) throw new Error("User not logged in");
+        // Fetch Profile
+        const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+        if (profileError) throw profileError;
+        return profile;
+    }
+    useEffect(() => {
+        getUserData().then(profile => {
+            console.log(profile)
+            setUserName(profile.user_name)
+            console.log(userName)
+        })
+        // const userData = getUserData()
+        // console.log(userData)
+    }, [])
     return (
         <>
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
+                {/* <div className="flex items-center gap-2 text-sm text-gray-500">
                     <span>Dashboard</span>
                     <ChevronRight size={16} />
                     <span className="font-medium text-black">Analytic</span>
-                </div>
+                </div> */}
 
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     <div className="relative flex-1 md:w-96">
@@ -35,7 +63,7 @@ const Analytic = () => {
 
             {/* Stats Grid */}
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900 mb-6">Analytic</h1>
+                <h1 className="text-2xl font-bold text-gray-900 mb-6">Welcome {userName || "Guest"}</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatsCard
                         title="Survey Quantity"

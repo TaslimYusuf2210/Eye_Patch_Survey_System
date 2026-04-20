@@ -1,7 +1,9 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { supabase } from '@/lib/supabase';
 
 const loginSchema = yup.object().shape({
     email: yup.string().email('Invalid email format').required('Email is required'),
@@ -11,6 +13,8 @@ const loginSchema = yup.object().shape({
 type LoginFormData = yup.InferType<typeof loginSchema>;
 
 function Login() {
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
     const {
         register,
         handleSubmit,
@@ -19,8 +23,17 @@ function Login() {
         resolver: yupResolver(loginSchema),
     });
 
-    const onSubmit = (data: LoginFormData) => {
+    const navigate = useNavigate()
+
+    const onSubmit = async (data: LoginFormData) => {
         console.log('Login Form Data:', data);
+        const {error} = await supabase.auth.signInWithPassword(data)
+        if (error) {
+            console.error("Sign In error:", error)
+            setError(error.message)
+            return
+        }
+        navigate("/dashboard/*")
     };
 
     return (
@@ -52,11 +65,17 @@ function Login() {
                     </div>
 
                     <button
+                        disabled={loading}
                         type="submit"
-                        className="w-full bg-black text-white px-4 py-2 rounded-full text-sm font-medium border border-gray-200 shadow-sm hover:bg-gray-950 transition-all duration-400 mt-2 cursor-pointer"
+                        className={`w-full bg-black text-white px-4 py-2 rounded-full text-sm font-medium border border-gray-200 shadow-sm hover:bg-gray-950 transition-all duration-400 mt-2 cursor-pointer ${loading ? "cursor-not-allowed opacity-40" : ""}`}
                     >
-                        Sign In
+                        {loading ? "Loading..." : "Login"}
                     </button>
+                    {error && (
+                        <p className="text-red-500 text-xs mt-1">
+                            {error}
+                        </p>
+                    )}
                 </form>
 
                 <div className="relative my-6">
