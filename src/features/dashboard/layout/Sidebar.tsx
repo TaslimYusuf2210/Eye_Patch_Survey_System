@@ -1,8 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, MessageSquare, Users, Settings } from 'lucide-react';
+import { LayoutDashboard, FileText, MessageSquare, Users, Settings, PencilRuler } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Sidebar = () => {
     const location = useLocation();
+    const {user} = useAuth()
 
     const isActive = (path: string) => {
         return location.pathname === path ? 'bg-black text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-black';
@@ -10,7 +12,8 @@ const Sidebar = () => {
 
     const navItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-        { icon: FileText, label: 'Survey', path: '/dashboard/survey' },
+        { icon: FileText, label: 'Surveys', path: '/dashboard/surveys' },
+        { icon: PencilRuler, label: 'Create Survey', path: '/dashboard/create-survey' },
         { icon: MessageSquare, label: 'Responses', path: '/dashboard/responses' },
         { icon: Users, label: 'Participant', path: '/dashboard/participant' },
         { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
@@ -47,7 +50,7 @@ const Sidebar = () => {
                         />
                     </div>
                     <div className="flex-1 overflow-hidden">
-                        <p className="text-sm font-medium text-gray-900 truncate">Indra Lesmana</p>
+                        <p className="text-sm font-medium text-gray-900 truncate">{user?.user_name || "Loading..."}</p>
                         <p className="text-xs text-gray-500 truncate">View Profile</p>
                     </div>
                 </div>

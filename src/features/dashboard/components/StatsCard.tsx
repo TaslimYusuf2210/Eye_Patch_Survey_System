@@ -9,7 +9,7 @@ interface StatsCardProps {
 
 const StatsCard = ({ title, value, change, chartColor = 'bg-blue-500' }: StatsCardProps) => {
     return (
-        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-48">
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-auto">
             <div>
                 <h3 className="text-gray-500 text-sm font-medium mb-1">{title}</h3>
                 <div className="text-3xl font-bold text-gray-900">{value}</div>

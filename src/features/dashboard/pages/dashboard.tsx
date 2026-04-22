@@ -8,13 +8,15 @@ import SurveyResponses from './SurveyResponses';
 import ParticipantList from './ParticipantList';
 import ParticipantDetail from './ParticipantDetail';
 import SettingsView from './SettingsView';
+import CreateSurvey from './CreateSurvey';
 
 const Dashboard = () => {
     return (
         <DashboardLayout>
             <Routes>
                 <Route path="/" element={<Analytic />} />
-                <Route path="survey" element={<SurveyList />} />
+                <Route path="surveys" element={<SurveyList />} />
+                <Route path="create-survey" element={<CreateSurvey />} />
                 <Route path="survey/:id" element={<SurveyDetail />} />
                 <Route path="survey/:id/responses" element={<SurveyResponses />} />
                 <Route path="responses" element={<GlobalResponses />} />

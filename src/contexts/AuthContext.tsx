@@ -1,12 +1,18 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import type { ReactNode } from "react";
-import type { User, Session } from "@supabase/supabase-js";
+import type { Session } from "@supabase/supabase-js";
+
+interface Profile {
+  id: string;
+  created_at: string; // ISO timestamp
+  user_name: string;
+  email: string;
+}
 
 type AuthContextType = {
-  user: User | null;
+  user: Profile | null;
   session: Session | null;
-  loading: boolean;
   signUp: (email: string, password: string, userName: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -15,16 +21,30 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Profile | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  async function getUserData() {
+        // Get current user
+        const { data, error } = await supabase.auth.getUser();
+         if (error) throw error;
+        const user = data.user;
+        if (!user) throw new Error("User not logged in");
+        // Fetch Profile
+        const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+        if (profileError) throw profileError;
+        setUser(profile)
+    }
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      // setUser(session?.user ?? null);
     });
 
     // Listen for auth changes (login, logout, sign up, etc.)
@@ -32,9 +52,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
+      // setUser(session?.user ?? null);
     });
+
+    // Get current user data
+    getUserData()
 
     return () => subscription.unsubscribe();
   }, []);
@@ -98,7 +120,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         session,
-        loading,
         signUp,
         signIn,
         signOut,

@@ -1,5 +1,15 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Bell, ChevronRight, Plus } from 'lucide-react';
+import { Search, Bell, Plus } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const surveys = [
     {
@@ -49,16 +59,14 @@ const surveys = [
 ];
 
 const SurveyList = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     return (
         <>
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <span>Dashboard</span>
-                    <ChevronRight size={16} />
-                    <span className="font-medium text-black">Survey</span>
+                <div>
                 </div>
-
                 <div className="flex items-center gap-4 w-full md:w-auto">
                     <div className="relative flex-1 md:w-96">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -73,7 +81,9 @@ const SurveyList = () => {
                         <Bell size={20} />
                     </button>
 
-                    <button className="bg-black cursor-pointer text-white px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 shadow-sm hover:bg-gray-950 transition-all whitespace-nowrap flex items-center gap-2">
+                    <button 
+                        onClick={() => setIsDialogOpen(true)}
+                        className="bg-black cursor-pointer text-white px-4 py-2 rounded-lg text-sm font-medium  hover:bg-gray-700 transition-all duration-300 whitespace-nowrap flex items-center gap-2">
                         <Plus size={16} />
                         Create Survey
                     </button>
@@ -122,8 +132,48 @@ const SurveyList = () => {
                     </Link>
                 ))}
             </div>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Create New Survey</DialogTitle>
+                        <DialogDescription>
+                            Create a new survey to gather feedback from your participants.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-sm font-medium text-gray-900">Survey Title</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter survey title"
+                                    className="w-full mt-2 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/10"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium text-gray-900">Description</label>
+                                <textarea
+                                    placeholder="Enter survey description"
+                                    className="w-full mt-2 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black/10 resize-none"
+                                    rows={3}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button>
+                            Create Survey
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     );
 };
 
 export default SurveyList;
+
