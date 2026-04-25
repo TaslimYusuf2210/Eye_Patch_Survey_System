@@ -9,7 +9,7 @@ interface OptionsEditorProps {
   questionType: string;
 }
 
-export const OptionsEditor = ({ sectionIndex, questionIndex, questionType }: OptionsEditorProps) => {
+export function OptionsEditor({ sectionIndex, questionIndex, questionType }: OptionsEditorProps) {
   const inputType = questionType === 'single_choice' ? 'radio' : 'checkbox';
 
   return (

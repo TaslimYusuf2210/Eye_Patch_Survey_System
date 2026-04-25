@@ -1,5 +1,6 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { Question } from './Question';
+import { useFormContext } from 'react-hook-form';
 
 /**
  * Survey Section Component
@@ -9,7 +10,9 @@ interface SurveySectionProps {
   sectionIndex: number;
 }
 
-export const SurveySection = ({ sectionIndex }: SurveySectionProps) => {
+export function SurveySection({ sectionIndex }: SurveySectionProps) {
+  const { register } = useFormContext();
+
   return (
     <div className="border border-gray-200 rounded-lg p-5 bg-gray-50">
       {/* Section Header */}
@@ -20,7 +23,7 @@ export const SurveySection = ({ sectionIndex }: SurveySectionProps) => {
           </label>
           <input
             type="text"
-            name={`sections[${sectionIndex}].title`}
+            {...register(`sections[${sectionIndex}].title`)}
             placeholder="e.g., Personal Information"
             className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />

@@ -6,6 +6,7 @@ import {
   YesNoPreview,
 } from './QuestionPreviews';
 import { OptionsEditor } from './OptionsEditor';
+import { useFormContext } from 'react-hook-form';
 
 /**
  * Question Component
@@ -17,7 +18,9 @@ interface QuestionProps {
   questionType?: 'multiple_choice' | 'single_choice' | 'text' | 'likert_scale' | 'yes_no';
 }
 
-export const Question = ({ sectionIndex, questionIndex, questionType = 'multiple_choice' }: QuestionProps) => {
+export function Question({ sectionIndex, questionIndex, questionType = 'multiple_choice' }: QuestionProps) {
+  const { register } = useFormContext();
+
   return (
     <div className="bg-white rounded-lg p-4 border border-gray-200">
       {/* Question Header */}
@@ -29,7 +32,7 @@ export const Question = ({ sectionIndex, questionIndex, questionType = 'multiple
           </label>
           <input
             type="text"
-            name={`sections[${sectionIndex}].questions[${questionIndex}].text`}
+            {...register(`sections[${sectionIndex}].questions[${questionIndex}].text`)}
             placeholder="Enter your question..."
             className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
@@ -41,7 +44,7 @@ export const Question = ({ sectionIndex, questionIndex, questionType = 'multiple
             Type
           </label>
           <select
-            name={`sections[${sectionIndex}].questions[${questionIndex}].type`}
+            {...register(`sections[${sectionIndex}].questions[${questionIndex}].type`)}
             className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
           >
             <option value="multiple_choice">Multiple Choice</option>
@@ -57,7 +60,7 @@ export const Question = ({ sectionIndex, questionIndex, questionType = 'multiple
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
-              name={`sections[${sectionIndex}].questions[${questionIndex}].required`}
+              {...register(`sections[${sectionIndex}].questions[${questionIndex}].required`)}
               className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
             />
             <span className="text-xs font-medium text-gray-700">Required</span>

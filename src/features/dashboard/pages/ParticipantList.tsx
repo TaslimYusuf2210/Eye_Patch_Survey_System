@@ -1,4 +1,4 @@
-import ParticipantTable from '../components/ParticipantTable';
+import ParticipantTable from '../components/ParticipantList/ParticipantTable';
 
 const ParticipantList = () => {
     return (

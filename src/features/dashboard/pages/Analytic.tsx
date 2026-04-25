@@ -1,5 +1,5 @@
-import StatsCard from '../components/StatsCard';
-import RecentSurveyList from '../components/RecentSurveyList';
+import StatsCard from '../components/Analytic/StatsCard';
+import RecentSurveyList from '../components/Analytic/RecentSurveyList';
 import { Search, Bell } from 'lucide-react';
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';

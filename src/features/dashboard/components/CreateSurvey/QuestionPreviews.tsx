@@ -6,7 +6,7 @@
 /**
  * Multiple Choice Preview - Shows checkboxes
  */
-export const MultipleChoicePreview = () => {
+export function MultipleChoicePreview() {
   return (
     <div className="space-y-2">
       {['Option 1', 'Option 2', 'Option 3'].map((option, idx) => (
@@ -26,7 +26,7 @@ export const MultipleChoicePreview = () => {
 /**
  * Single Choice Preview - Shows radio buttons
  */
-export const SingleChoicePreview = () => {
+export function SingleChoicePreview() {
   return (
     <div className="space-y-2">
       {['Option 1', 'Option 2', 'Option 3'].map((option, idx) => (
@@ -46,7 +46,7 @@ export const SingleChoicePreview = () => {
 /**
  * Text Preview - Shows a text input field
  */
-export const TextPreview = () => {
+export function TextPreview() {
   return (
     <div>
       <input
@@ -62,7 +62,7 @@ export const TextPreview = () => {
 /**
  * Likert Scale Preview - Shows 5 radio buttons for single selection
  */
-export const LikertScalePreview = () => {
+export function LikertScalePreview() {
   const options = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
   return (
     <div className="space-y-2">
@@ -84,7 +84,7 @@ export const LikertScalePreview = () => {
 /**
  * Yes/No Preview - Shows Yes and No radio buttons for single selection
  */
-export const YesNoPreview = () => {
+export function YesNoPreview() {
   return (
     <div className="space-y-2">
       {['Yes', 'No'].map((option, idx) => (
