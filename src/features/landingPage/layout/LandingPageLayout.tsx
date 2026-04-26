@@ -1,10 +1,7 @@
 import React from "react";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
-
-interface LandingPageLayoutProps {
-  children: React.ReactNode;
-}
+import type { LandingPageLayoutProps } from "@/types/landingPage";
 
 const LandingPageLayout: React.FC<LandingPageLayoutProps> = ({ children }) => {
   return (

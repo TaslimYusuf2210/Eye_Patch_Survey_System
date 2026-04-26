@@ -1,14 +1,7 @@
 import { Plus, Trash2 } from 'lucide-react';
 import { Question } from './Question';
 import { useFormContext } from 'react-hook-form';
-
-/**
- * Survey Section Component
- * Displays a section with questions and controls
- */
-interface SurveySectionProps {
-  sectionIndex: number;
-}
+import type { SurveySectionProps } from '@/types/dashboard/createSurvey';
 
 export function SurveySection({ sectionIndex }: SurveySectionProps) {
   const { register } = useFormContext();

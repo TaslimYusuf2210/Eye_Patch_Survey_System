@@ -1,13 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react';
-
-/**
- * Options Editor - Allows adding/removing options for single/multiple choice
- */
-interface OptionsEditorProps {
-  sectionIndex: number;
-  questionIndex: number;
-  questionType: string;
-}
+import type { OptionsEditorProps } from '@/types/dashboard/createSurvey';
 
 export function OptionsEditor({ sectionIndex, questionIndex, questionType }: OptionsEditorProps) {
   const inputType = questionType === 'single_choice' ? 'radio' : 'checkbox';

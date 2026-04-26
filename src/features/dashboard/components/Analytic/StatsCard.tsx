@@ -1,11 +1,5 @@
 // import { LucideIcon } from 'lucide-react';
-
-interface StatsCardProps {
-    title: string;
-    value: string | number;
-    change: number;
-    chartColor?: string;
-}
+import type { StatsCardProps } from '@/types/dashboard/analytic';
 
 const StatsCard = ({ title, value, change, chartColor = 'bg-blue-500' }: StatsCardProps) => {
     return (

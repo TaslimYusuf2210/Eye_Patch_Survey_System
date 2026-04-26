@@ -1,8 +1,5 @@
 import Sidebar from './Sidebar';
-
-interface DashboardLayoutProps {
-    children: React.ReactNode;
-}
+import type { DashboardLayoutProps } from '@/types/dashboard/common';
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     return (

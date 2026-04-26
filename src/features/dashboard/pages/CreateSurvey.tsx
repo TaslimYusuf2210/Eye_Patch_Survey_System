@@ -1,12 +1,13 @@
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-
+import { useReducer } from 'react';
 import { SurveyInformationStep } from '../components/CreateSurvey/SurveyInformationStep';
 import { SurveyGoalStep } from '../components/CreateSurvey/SurveyGoalStep';
 import { SectionsAndQuestionsStep } from '../components/CreateSurvey/SectionsAndQuestionsStep';
 import { SettingsStep } from '../components/CreateSurvey/SettingsStep';
 import { ReviewSummaryStep } from '../components/CreateSurvey/ReviewSummaryStep';
+import type { StateController, Action, CreateSurveyFormData } from '@/types/dashboard/common';
 
 const surveySchema = yup.object().shape({
   title: yup
@@ -33,19 +34,24 @@ const surveySchema = yup.object().shape({
   responseLimit: yup.number().positive('Response limit must be positive').optional(),
 });
 
-interface CreateSurveyFormData {
-  title: string;
-  description: string;
-  category: string;
-  audience: string;
-  goal: string;
-  usage: string;
-  startDate?: string | undefined;
-  endDate?: string | undefined;
-  responseLimit?: number | undefined;
+const initialState: StateController = { step: 0 };
+
+function reducer(state: StateController, action: Action) {
+  switch (action.type) {
+    case "NEXT":
+      return { step: state.step + 1 };
+    case "PREV":
+      return { step: state.step - 1 };
+    case "GOTO":
+      return { step: action.payload };
+    default:
+      return state;
+  }
 }
 
 export default function CreateSurvey() {
+      const [state, dispatch] = useReducer(reducer, initialState);
+
   const methods = useForm<CreateSurveyFormData>({
     defaultValues: {
       title: '',
@@ -62,51 +68,30 @@ export default function CreateSurvey() {
     shouldUnregister: false,
   });
 
-  const { watch, handleSubmit } = methods;
-  const formData = watch();
-
-  const onSubmit = (data: CreateSurveyFormData) => {
-    console.log('Form Data:', data);
-    // Handle form submission here
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 py-8 ">
       <div className="mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Create Survey</h1>
-          <p className="text-gray-600 mt-2">Build a comprehensive survey to gather feedback and insights</p>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Create Survey</h1>
+            <p className="text-gray-600 mt-2">Build a comprehensive survey to gather feedback and insights</p>  
+          </div>
+          <div>
+            <p>Position for interactive stepper</p>
+          </div>
         </div>
 
         <FormProvider {...methods}>
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            <SurveyInformationStep />
+          {state.step === 0 && <SurveyInformationStep dispatch={dispatch} />}
+          {state.step === 1 && <SurveyGoalStep dispatch={dispatch} />}
+          {state.step === 2 && <SectionsAndQuestionsStep dispatch={dispatch}/>}
+          {state.step === 3 && <SettingsStep dispatch={dispatch}/>}
+          {state.step === 4 && <ReviewSummaryStep dispatch={dispatch}/>}
 
-            <SurveyGoalStep />
-
-            <SectionsAndQuestionsStep />
-
-            <SettingsStep />
-
-            <ReviewSummaryStep formData={formData} />
-
-            {/* Form Actions */}
-            <div className="flex justify-between gap-4 pt-6">
-              <button
-                type="button"
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-              >
-                Save as Draft
-              </button>
-              <button
-                type="submit"
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-              >
-                Create Survey
-              </button>
-            </div>
-          </form>
+          <div>
+            <button></button>
+          </div>
         </FormProvider>
       </div>
     </div>

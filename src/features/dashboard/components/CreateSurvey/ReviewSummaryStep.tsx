@@ -1,10 +1,16 @@
-import { FieldValues } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
+import type { Action } from '@/types';
+import type { Dispatch } from 'react';
 
-interface ReviewSummaryStepProps {
-  formData: FieldValues;
-}
+export function ReviewSummaryStep({ dispatch }: { dispatch: Dispatch<Action> }) {
+  const { getValues, handleSubmit } = useFormContext();
 
-export function ReviewSummaryStep({ formData }: ReviewSummaryStepProps) {
+  const formData = getValues()
+
+  function onSubmit() {
+    dispatch({ type: 'NEXT' });
+  }
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -12,7 +18,7 @@ export function ReviewSummaryStep({ formData }: ReviewSummaryStepProps) {
         Review & Publish
       </h2>
 
-      <div className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Survey Overview */}
         <div className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-lg">
           <h3 className="font-semibold text-gray-900 mb-3">Survey Overview</h3>
@@ -83,7 +89,16 @@ export function ReviewSummaryStep({ formData }: ReviewSummaryStepProps) {
             </div>
           </div>
         )}
-      </div>
+
+        <div className="flex justify-end pt-4">
+          <button
+            type="submit"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            Create Survey
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

@@ -4,13 +4,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { supabase } from '@/lib/supabase';
+import type { LoginFormData } from '@/types/auth';
 
 const loginSchema = yup.object().shape({
     email: yup.string().email('Invalid email format').required('Email is required'),
     password: yup.string().required('Password is required'),
 });
-
-type LoginFormData = yup.InferType<typeof loginSchema>;
 
 function Login() {
     const [loading, setLoading] = useState(false)
@@ -26,13 +25,16 @@ function Login() {
     const navigate = useNavigate()
 
     const onSubmit = async (data: LoginFormData) => {
+        setLoading(true);
         console.log('Login Form Data:', data);
         const {error} = await supabase.auth.signInWithPassword(data)
         if (error) {
             console.error("Sign In error:", error)
             setError(error.message)
+            setLoading(false);
             return
         }
+        setLoading(false);
         navigate("/dashboard/*")
     };
 

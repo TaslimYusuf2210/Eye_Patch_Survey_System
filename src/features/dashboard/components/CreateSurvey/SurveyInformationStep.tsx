@@ -1,10 +1,17 @@
 import { useFormContext } from 'react-hook-form';
+import type { Action } from '@/types';
+import type { Dispatch } from 'react';
 
-export function SurveyInformationStep() {
+export function SurveyInformationStep({ dispatch}: { dispatch: Dispatch<Action> }) {
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useFormContext();
+
+  function onSubmit() {
+    dispatch({ type: 'NEXT' });
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
@@ -13,7 +20,7 @@ export function SurveyInformationStep() {
         Survey Information
       </h2>
 
-      <div className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Survey Title */}
         <div>
           <label className="block text-sm font-medium text-gray-900 mb-2">
@@ -103,7 +110,16 @@ export function SurveyInformationStep() {
             )}
           </div>
         </div>
-      </div>
+
+        <div className="flex justify-end pt-4">
+          <button
+            type="submit"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            Next
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

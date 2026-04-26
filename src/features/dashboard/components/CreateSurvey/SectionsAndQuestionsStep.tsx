@@ -1,13 +1,19 @@
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Plus } from 'lucide-react';
 import { SurveySection } from './SurveySection';
+import type { Action } from '@/types';
+import type { Dispatch } from 'react';
 
-export function SectionsAndQuestionsStep() {
-  const { control } = useFormContext();
+export function SectionsAndQuestionsStep({ dispatch }: { dispatch: Dispatch<Action> }) {
+  const { control, handleSubmit } = useFormContext();
   const { fields: sections, append: addSection } = useFieldArray({
     control,
     name: 'sections',
   });
+
+  function onSubmit() {
+    dispatch({ type: 'NEXT' });
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
@@ -16,7 +22,7 @@ export function SectionsAndQuestionsStep() {
         Sections & Questions
       </h2>
 
-      <div className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {sections.map((section, sectionIndex) => (
           <SurveySection key={section.id} sectionIndex={sectionIndex} />
         ))}
@@ -40,7 +46,16 @@ export function SectionsAndQuestionsStep() {
           <Plus size={20} />
           Add Section
         </button>
-      </div>
+
+        <div className="flex justify-end pt-4">
+          <button
+            type="submit"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            Next
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

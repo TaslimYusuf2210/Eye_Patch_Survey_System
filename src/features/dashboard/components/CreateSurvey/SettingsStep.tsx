@@ -1,10 +1,17 @@
 import { useFormContext } from 'react-hook-form';
+import type { Action } from '@/types';
+import type { Dispatch } from 'react';
 
-export function SettingsStep() {
+export function SettingsStep({ dispatch }: { dispatch: Dispatch<Action> }) {
   const {
     register,
+    handleSubmit,
     formState: { errors },
   } = useFormContext();
+
+  function onSubmit() {
+    dispatch({ type: 'NEXT' });
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
@@ -13,7 +20,7 @@ export function SettingsStep() {
         Settings
       </h2>
 
-      <div className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Response Limit */}
         <div>
           <label className="block text-sm font-medium text-gray-900 mb-2">
@@ -33,7 +40,7 @@ export function SettingsStep() {
             />
           </div>
           {errors.responseLimit && (
-            <p className="text-sm text-red-600 mt-1">{errors.responseLimit.message}</p>
+            <p className="text-sm text-red-600 mt-1">{String(errors.responseLimit.message)}</p>
           )}
         </div>
 
@@ -54,7 +61,7 @@ export function SettingsStep() {
               }`}
             />
             {errors.startDate && (
-              <p className="text-sm text-red-600 mt-1">{errors.startDate.message}</p>
+              <p className="text-sm text-red-600 mt-1">{String(errors.startDate.message)}</p>
             )}
           </div>
 
@@ -73,7 +80,7 @@ export function SettingsStep() {
               }`}
             />
             {errors.endDate && (
-              <p className="text-sm text-red-600 mt-1">{errors.endDate.message}</p>
+              <p className="text-sm text-red-600 mt-1">{String(errors.endDate.message)}</p>
             )}
           </div>
         </div>
@@ -106,7 +113,16 @@ export function SettingsStep() {
             </select>
           </div>
         </div>
-      </div>
+
+        <div className="flex justify-end pt-4">
+          <button
+            type="submit"
+            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            Next
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

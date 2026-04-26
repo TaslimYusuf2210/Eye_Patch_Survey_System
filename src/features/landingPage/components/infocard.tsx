@@ -1,10 +1,5 @@
 import { useState } from "react";
-
-interface InfoCardProps {
-    mainText: string;
-    image: string;
-    note: string;
-}
+import type { InfoCardProps } from "@/types/landingPage";
 
 function InfoCard({ mainText, image, note }: InfoCardProps) {
     const [hover, setHover] = useState(false)

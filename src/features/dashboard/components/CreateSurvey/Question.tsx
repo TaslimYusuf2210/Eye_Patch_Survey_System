@@ -7,16 +7,7 @@ import {
 } from './QuestionPreviews';
 import { OptionsEditor } from './OptionsEditor';
 import { useFormContext } from 'react-hook-form';
-
-/**
- * Question Component
- * Displays a question with type-specific fields
- */
-interface QuestionProps {
-  sectionIndex: number;
-  questionIndex: number;
-  questionType?: 'multiple_choice' | 'single_choice' | 'text' | 'likert_scale' | 'yes_no';
-}
+import type { QuestionProps } from '@/types/dashboard/createSurvey';
 
 export function Question({ sectionIndex, questionIndex, questionType = 'multiple_choice' }: QuestionProps) {
   const { register } = useFormContext();

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import type { SignUpFormData } from "@/types/auth";
 
 const signUpSchema = yup.object().shape({
   username: yup.string().required("Username is required"),
@@ -36,8 +37,6 @@ const signUpSchema = yup.object().shape({
     .required("Confirm Password is required"),
 });
 
-type SignUpFormData = yup.InferType<typeof signUpSchema>;
-
 function SignUp() {
   const {
     register,
@@ -48,8 +47,6 @@ function SignUp() {
   } = useForm<SignUpFormData>({
     resolver: yupResolver(signUpSchema),
   });
-
-  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

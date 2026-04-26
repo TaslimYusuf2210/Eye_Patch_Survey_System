@@ -1,0 +1,1 @@
+// Types for global responses page
