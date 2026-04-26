@@ -10,7 +10,12 @@ export function SurveyInformationStep({ dispatch}: { dispatch: Dispatch<Action> 
   } = useFormContext();
 
   function onSubmit() {
+    console.log("Next is working")
     dispatch({ type: 'NEXT' });
+  }
+
+  function onError(errors: any) {
+    console.log("Errors:", errors);
   }
 
   return (
@@ -20,7 +25,7 @@ export function SurveyInformationStep({ dispatch}: { dispatch: Dispatch<Action> 
         Survey Information
       </h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-5">
         {/* Survey Title */}
         <div>
           <label className="block text-sm font-medium text-gray-900 mb-2">
