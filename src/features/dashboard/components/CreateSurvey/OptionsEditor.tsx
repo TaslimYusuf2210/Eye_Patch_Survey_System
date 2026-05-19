@@ -5,7 +5,7 @@ import type { CreateSurveyFormData } from '@/types/dashboard/common';
 
 export function OptionsEditor({ sectionIndex, questionIndex, questionType }: OptionsEditorProps) {
   const inputType = questionType === 'single_choice' ? 'radio' : 'checkbox';
-  const { control, register } = useFormContext<CreateSurveyFormData>();
+  const { control, register, formState: { errors } } = useFormContext<CreateSurveyFormData>();
   const { fields: options, append: addOption, remove: removeOption } = useFieldArray({
     control,
     name: `sections.${sectionIndex}.questions.${questionIndex}.options` as const
@@ -18,7 +18,8 @@ export function OptionsEditor({ sectionIndex, questionIndex, questionType }: Opt
       </label>
       <div className="space-y-2">
         {options.map((option, oIndex) => (
-          <div key={oIndex} className="flex items-center gap-2">
+          <div key={oIndex}>
+            <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 flex-1 px-3 py-1.5 border border-gray-200 rounded-lg bg-gray-50">
               <input
                 type={inputType}
@@ -39,9 +40,14 @@ export function OptionsEditor({ sectionIndex, questionIndex, questionType }: Opt
               title="Remove option"
               onClick={() => removeOption(oIndex)}
             >
-
               <Trash2 size={16} />
             </button>
+            </div>
+            {errors?.sections?.[sectionIndex]?.questions?.[questionIndex]?.options?.[oIndex]?.value && (
+              <p className="text-sm text-red-600 mt-1 pl-8">
+                {errors.sections[sectionIndex]!.questions[questionIndex]!.options![oIndex]!.value!.message as string}
+              </p>
+            )}
           </div>
         ))}
       </div>
@@ -53,6 +59,13 @@ export function OptionsEditor({ sectionIndex, questionIndex, questionType }: Opt
         <Plus size={14} />
         Add Option
       </button>
+      
+      {/* Options Array Error (e.g. "At least 2 options are required") */}
+      {(errors?.sections?.[sectionIndex]?.questions?.[questionIndex]?.options as any)?.message && (
+        <p className="text-sm text-red-600 mt-2">
+          {(errors?.sections?.[sectionIndex]?.questions?.[questionIndex]?.options as any)?.message as string}
+        </p>
+      )}
     </div>
   );
 };

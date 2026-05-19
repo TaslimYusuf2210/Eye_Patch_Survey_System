@@ -6,7 +6,7 @@ import { useState } from 'react';
 import type { CreateSurveyFormData } from '@/types/dashboard/common';
 
 export function SurveySection({ sectionIndex, removeSection }: SurveySectionProps) {
-  const { register, control, watch } = useFormContext<CreateSurveyFormData>();
+  const { register, control, watch, formState: { errors } } = useFormContext<CreateSurveyFormData>();
   const { fields: questions, append: addQuestion, remove: removeQuestion } = useFieldArray({
     control,
     name: `sections.${sectionIndex}.questions` as const
@@ -33,12 +33,19 @@ export function SurveySection({ sectionIndex, removeSection }: SurveySectionProp
               Section {sectionIndex + 1}: {isCollapsed && sectionTitle ? sectionTitle : 'Title'}
             </label>
             {!isCollapsed && (
-              <input
-                type="text"
-                {...register(`sections.${sectionIndex}.title` as const)}
-                placeholder="e.g. Personal Information"
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <>
+                <input
+                  type="text"
+                  {...register(`sections.${sectionIndex}.title` as const)}
+                  placeholder="e.g. Personal Information"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                {errors?.sections?.[sectionIndex]?.title && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {errors.sections[sectionIndex]!.title!.message as string}
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>
