@@ -10,10 +10,12 @@ export interface OptionsEditorProps {
 
 export interface SurveySectionProps {
   sectionIndex: number;
+  removeSection: (index: number) => void;
 }
 
 export interface QuestionProps {
   sectionIndex: number;
   questionIndex: number;
   questionType?: 'multiple_choice' | 'single_choice' | 'text' | 'likert_scale' | 'yes_no';
+  removeQuestion: (index: number) => void;
 }

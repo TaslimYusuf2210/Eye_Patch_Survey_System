@@ -1,17 +1,22 @@
 import { useFormContext } from 'react-hook-form';
-import type { Action } from '@/types';
-import type { Dispatch } from 'react';
+import { useCreateSurveyContext } from '@/contexts/CreateSurveyContext';
+import { useNavigate } from 'react-router-dom';
 
-export function SurveyInformationStep({ dispatch}: { dispatch: Dispatch<Action> }) {
+export function SurveyInformationStep() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useFormContext();
 
-  function onSubmit() {
-    console.log("Next is working")
-    dispatch({ type: 'NEXT' });
+  const {setCurrentRoute} = useCreateSurveyContext();
+  const navigate = useNavigate();
+
+  function onNext(data: any) {
+    console.log("Survey Information Data:", data);
+    console.log("Shit is working")
+    setCurrentRoute("surveygoal");
+    navigate('/dashboard/create-survey/survey-goal');
   }
 
   function onError(errors: any) {
@@ -25,7 +30,7 @@ export function SurveyInformationStep({ dispatch}: { dispatch: Dispatch<Action> 
         Survey Information
       </h2>
 
-      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-5">
+      <form onSubmit={handleSubmit(onNext, onError)} className="space-y-5">
         {/* Survey Title */}
         <div>
           <label className="block text-sm font-medium text-gray-900 mb-2">
@@ -120,6 +125,7 @@ export function SurveyInformationStep({ dispatch}: { dispatch: Dispatch<Action> 
           <button
             type="submit"
             className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            
           >
             Next
           </button>

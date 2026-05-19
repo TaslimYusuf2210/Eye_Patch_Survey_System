@@ -1,16 +1,17 @@
 import { useFormContext } from 'react-hook-form';
-import type { Action } from '@/types';
-import type { Dispatch } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export function SettingsStep({ dispatch }: { dispatch: Dispatch<Action> }) {
+export function SettingsStep() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useFormContext();
 
+  const navigate = useNavigate();
+
   function onSubmit() {
-    dispatch({ type: 'NEXT' });
+    navigate('/dashboard/create-survey/survey-review');
   }
 
   return (
@@ -52,7 +53,7 @@ export function SettingsStep({ dispatch }: { dispatch: Dispatch<Action> }) {
               Start Date
             </label>
             <input
-              type="datetime-local"
+              type="date"
               {...register('startDate')}
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
                 errors.startDate
@@ -71,7 +72,7 @@ export function SettingsStep({ dispatch }: { dispatch: Dispatch<Action> }) {
               End Date
             </label>
             <input
-              type="datetime-local"
+              type="date"
               {...register('endDate')}
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
                 errors.endDate

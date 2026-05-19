@@ -23,4 +23,12 @@ export interface CreateSurveyFormData {
   startDate?: string | undefined;
   endDate?: string | undefined;
   responseLimit?: number | undefined;
+   sections: {
+    title: string;
+    questions: {
+      text: string;
+      type: string;
+      options?: { value: string }[];
+    }[];
+  }[];
 }

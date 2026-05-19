@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
-import Table from '../../../components/ui/table';
+import Table from '../../../components/table';
 
 const SurveyResponses = () => {
     const { id } = useParams();

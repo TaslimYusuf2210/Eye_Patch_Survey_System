@@ -1,14 +1,12 @@
 import { useFormContext } from 'react-hook-form';
-import type { Action } from '@/types';
-import type { Dispatch } from 'react';
 
-export function ReviewSummaryStep({ dispatch }: { dispatch: Dispatch<Action> }) {
+export function ReviewSummaryStep() {
   const { getValues, handleSubmit } = useFormContext();
 
   const formData = getValues()
 
   function onSubmit() {
-    dispatch({ type: 'NEXT' });
+    console.log('Final Survey Data:', formData);
   }
 
   return (

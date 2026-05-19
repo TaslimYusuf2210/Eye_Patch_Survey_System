@@ -1,4 +1,4 @@
-import Table from '../../../components/ui/table';
+import Table from '../../../components/table';
 
 const GlobalResponses = () => {
     return (

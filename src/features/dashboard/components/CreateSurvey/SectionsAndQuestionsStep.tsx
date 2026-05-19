@@ -1,19 +1,31 @@
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Plus } from 'lucide-react';
 import { SurveySection } from './SurveySection';
-import type { Action } from '@/types';
-import type { Dispatch } from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export function SectionsAndQuestionsStep({ dispatch }: { dispatch: Dispatch<Action> }) {
-  const { control, handleSubmit } = useFormContext();
-  const { fields: sections, append: addSection } = useFieldArray({
+export function SectionsAndQuestionsStep() {
+  const { control, handleSubmit, watch } = useFormContext();
+  const { fields: sections, append: addSection, remove: removeSection } = useFieldArray({
     control,
     name: 'sections',
   });
+    const navigate = useNavigate()
 
-  function onSubmit() {
-    dispatch({ type: 'NEXT' });
+  const watchSections = watch('sections');
+
+  function onSubmit(data: any) {
+    console.log('Form Data at Sections & Questions Step:', data);
+    navigate('/dashboard/create-survey/survey-settings');
   }
+
+  function onError(errors: any) {
+    console.log('Validation Errors:', errors);
+  }
+
+  useEffect(() => {
+    console.log('Current sections and questions:', watchSections);
+  }, [watchSections]);
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
@@ -22,9 +34,9 @@ export function SectionsAndQuestionsStep({ dispatch }: { dispatch: Dispatch<Acti
         Sections & Questions
       </h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-5">
         {sections.map((section, sectionIndex) => (
-          <SurveySection key={section.id} sectionIndex={sectionIndex} />
+          <SurveySection key={section.id} sectionIndex={sectionIndex} removeSection={removeSection} />
         ))}
 
         <button
@@ -36,7 +48,8 @@ export function SectionsAndQuestionsStep({ dispatch }: { dispatch: Dispatch<Acti
                 {
                   text: '',
                   type: 'multiple_choice',
-                  options: ['Option 1', 'Option 2'],
+                  required: true,
+                  options: [],
                 },
               ],
             })

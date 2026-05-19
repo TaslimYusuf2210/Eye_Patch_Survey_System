@@ -1,16 +1,20 @@
 import { useFormContext } from 'react-hook-form';
-import type { Action } from '@/types';
-import type { Dispatch } from 'react';
+import { useCreateSurveyContext } from '@/contexts/CreateSurveyContext';
+import { useNavigate } from 'react-router-dom';
 
-export function SurveyGoalStep({ dispatch }: { dispatch: Dispatch<Action> }) {
+export function SurveyGoalStep() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useFormContext();
 
+  const {setCurrentRoute} = useCreateSurveyContext()
+  const navigate = useNavigate()
+
   function onSubmit() {
-    dispatch({ type: 'NEXT' });
+    setCurrentRoute("sectionsandquestions")
+    navigate('/dashboard/create-survey/sections-and-questions');
   }
 
   return (

@@ -1,13 +1,10 @@
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useReducer } from 'react';
-import { SurveyInformationStep } from '../components/CreateSurvey/SurveyInformationStep';
-import { SurveyGoalStep } from '../components/CreateSurvey/SurveyGoalStep';
-import { SectionsAndQuestionsStep } from '../components/CreateSurvey/SectionsAndQuestionsStep';
-import { SettingsStep } from '../components/CreateSurvey/SettingsStep';
-import { ReviewSummaryStep } from '../components/CreateSurvey/ReviewSummaryStep';
-import type { StateController, Action, CreateSurveyFormData } from '@/types/dashboard/common';
+import { useLocation, Outlet } from 'react-router-dom';
+import type { CreateSurveyFormData } from '@/types/dashboard/common';
+import { CreateSurveyProvider } from '@/contexts/CreateSurveyContext';
+import { useEffect } from 'react';
 
 const surveyInformationSchema = yup.object().shape({
   title: yup
@@ -40,102 +37,142 @@ const surveySettingsSchema = yup.object().shape({
   responseLimit: yup.number().positive('Response limit must be positive').optional(),
 });
 
-// const sectionsAndQuestionsSchema = yup.object().shape({
-//   sections: yup.array().of(
-//     yup.object().shape({
-//       title: yup.string().required('Section title is required'),
-//       questions: yup.array().of(
-//         // yup.object().shape({
-//         //   text: yup.string().required('Question text is required'),
-//         //   type: yup.string().oneOf(['text', 'multiple-choice', 'rating']).required('Question type is required'),
-//         //   options: yup.array().when('type', {
-//         //     // is: 'multiple-choice',
-//         //     then: yup.array().of(yup.string().required('Option text is required')).min(2, 'At least 2 options are required'),
-//         //     otherwise: yup.array().notRequired(),
-//         //   }),
-//         // })
-//       ).min(1, 'At least one question is required'),
-//     })
-//   ).min(1, 'At least one section is required'),
-// });
+const sectionsAndQuestionsSchema = yup.object<Pick<CreateSurveyFormData, "sections">>().shape({
+  sections: yup
+    .array()
+    .of(
+      yup.object().shape({
+        title: yup
+          .string()
+          .required("Section title is required"),
+
+        questions: yup
+          .array()
+          .of(
+            yup.object().shape({
+              text: yup
+                .string()
+                .required("Question text is required"),
+
+              type: yup
+                .string()
+                .oneOf([
+                  "text",
+                  "multiple_choice",
+                  "single_choice",
+                  "likert_scale",
+                  "yes_no",
+                ])
+                .required("Question type is required"),
+
+              options: yup.array().when("type", {
+                is: (type: string) =>
+                  type === "multiple_choice" ||
+                  type === "single_choice",
+
+                then: (schema) =>
+                  schema
+                    .of(
+                      yup.object().shape({
+                        value: yup
+                          .string()
+                          .required("Option text is required"),
+                      })
+                    )
+                    .min(
+                      2,
+                      "At least 2 options are required"
+                    ),
+
+                otherwise: (schema) =>
+                  schema.default([]),
+              }),
+            })
+          )
+          .min(
+            1,
+            "At least one question is required"
+          ),
+      })
+    )
+    .min(1, "At least one section is required"),
+});
+
+
 
 const noSchema = yup.object().shape({});
 
-function getSchemaForStep(step: number) {
-  switch (step) {
-    case 0:
-      return surveyInformationSchema;
-    case 1:
-      return surveyGoalSchema;
-    case 2:
-      return surveySettingsSchema;
-    // case 3:
-    //   return sectionsAndQuestionsSchema;
-    default:
-      return noSchema;
-  }
-}
-
-const initialState: StateController = { step: 0 };
-
-function reducer(state: StateController, action: Action) {
-  switch (action.type) {
-    case "NEXT":
-      return { step: state.step + 1 };
-    case "PREV":
-      return { step: state.step - 1 };
-    case "GOTO":
-      return { step: action.payload };
-    default:
-      return state;
-  }
-}
 
 export default function CreateSurvey() {
-      const [state, dispatch] = useReducer(reducer, initialState);
+  const location = useLocation();
+  // const { currentRoute } = useCreateSurveyContext();
+  // // console.log('Current Route in CreateSurvey:', currentRoute);
+  // // console.log('Location Pathname in CreateSurvey:', location.pathname);
+  
+  function getSchemaForRoute(pathname: string) {
+    if (pathname.includes('/goal')) return surveyGoalSchema;
+    if (pathname.includes('/settings')) return surveySettingsSchema;
+    if (pathname.includes('/sections')) return sectionsAndQuestionsSchema;
+    if (pathname.includes('/review')) return noSchema;
+    return surveyInformationSchema; // Default to information step
+  }
+
+  const savedFormData = sessionStorage.getItem("createSurveyForm");
 
   const methods = useForm<CreateSurveyFormData>({
-    defaultValues: {
+    defaultValues: savedFormData
+      ? JSON.parse(savedFormData)
+      : {
       title: '',
       description: '',
       category: '',
       audience: '',
       goal: '',
       usage: '',
-      startDate: undefined,
-      endDate: undefined,
+      startDate: '',
+      endDate: '',
       responseLimit: undefined,
     },
-    resolver: yupResolver<CreateSurveyFormData, any, any>(getSchemaForStep(state.step) as any),
+    resolver: yupResolver<CreateSurveyFormData, any, any>(getSchemaForRoute(location.pathname) as any),
     shouldUnregister: false,
   });
 
+  useEffect(() => {
+  const subscription = methods.watch((value) => {
+    sessionStorage.setItem(
+      "createSurveyForm",
+      JSON.stringify(value)
+    );
+  });
+
+  return () => subscription.unsubscribe();
+}, [methods]);
+
+  useEffect(() => {
+    const schema = getSchemaForRoute(location.pathname);
+    console.log('schema name', schema === sectionsAndQuestionsSchema)
+    console.log('Current schema', schema.describe())
+  }, [location.pathname]);
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 ">
-      <div className="mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Create Survey</h1>
-            <p className="text-gray-600 mt-2">Build a comprehensive survey to gather feedback and insights</p>  
+    <CreateSurveyProvider>
+      <div className="min-h-screen bg-gray-50 py-8 ">
+        <div className="mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Create Survey</h1>
+              <p className="text-gray-600 mt-2">Build a comprehensive survey to gather feedback and insights</p>  
+            </div>
+            <div>
+              <p>Position for interactive stepper</p>
+            </div>
           </div>
-          <div>
-            <p>Position for interactive stepper</p>
-          </div>
+          <FormProvider {...methods}>  
+            <Outlet/>
+          </FormProvider>
         </div>
-
-        <FormProvider {...methods}>
-          {state.step === 0 && <SurveyInformationStep dispatch={dispatch} />}
-          {state.step === 1 && <SurveyGoalStep dispatch={dispatch} />}
-          {state.step === 2 && <SectionsAndQuestionsStep dispatch={dispatch}/>}
-          {state.step === 3 && <SettingsStep dispatch={dispatch}/>}
-          {state.step === 4 && <ReviewSummaryStep dispatch={dispatch}/>}
-
-          <div>
-            <button></button>
-          </div>
-        </FormProvider>
       </div>
-    </div>
+    </CreateSurveyProvider>
   );
 };
