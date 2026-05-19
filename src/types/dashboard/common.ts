@@ -28,6 +28,7 @@ export interface CreateSurveyFormData {
     questions: {
       text: string;
       type: string;
+      required: boolean;
       options?: { value: string }[];
     }[];
   }[];

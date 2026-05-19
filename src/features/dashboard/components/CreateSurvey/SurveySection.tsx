@@ -3,16 +3,17 @@ import { Question } from './Question';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import type { SurveySectionProps } from '@/types/dashboard/createSurvey';
 import { useState } from 'react';
+import type { CreateSurveyFormData } from '@/types/dashboard/common';
 
 export function SurveySection({ sectionIndex, removeSection }: SurveySectionProps) {
-  const { register, control, watch } = useFormContext();
+  const { register, control, watch } = useFormContext<CreateSurveyFormData>();
   const { fields: questions, append: addQuestion, remove: removeQuestion } = useFieldArray({
     control,
-    name: `sections[${sectionIndex}].questions`
+    name: `sections.${sectionIndex}.questions` as const
   });
 
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const sectionTitle = watch(`sections[${sectionIndex}].title`);
+  const sectionTitle = watch(`sections.${sectionIndex}.title` as const);
 
   return (
     <div className="border border-gray-200 rounded-lg p-5 bg-gray-50">
@@ -34,7 +35,7 @@ export function SurveySection({ sectionIndex, removeSection }: SurveySectionProp
             {!isCollapsed && (
               <input
                 type="text"
-                {...register(`sections[${sectionIndex}].title`)}
+                {...register(`sections.${sectionIndex}.title` as const)}
                 placeholder="e.g. Personal Information"
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />

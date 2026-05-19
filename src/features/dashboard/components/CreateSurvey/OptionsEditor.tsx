@@ -1,13 +1,14 @@
 import { Plus, Trash2 } from 'lucide-react';
 import type { OptionsEditorProps } from '@/types/dashboard/createSurvey';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import type { CreateSurveyFormData } from '@/types/dashboard/common';
 
 export function OptionsEditor({ sectionIndex, questionIndex, questionType }: OptionsEditorProps) {
   const inputType = questionType === 'single_choice' ? 'radio' : 'checkbox';
-  const { control, register } = useFormContext();
+  const { control, register } = useFormContext<CreateSurveyFormData>();
   const { fields: options, append: addOption, remove: removeOption } = useFieldArray({
     control,
-    name: `sections[${sectionIndex}].questions[${questionIndex}].options`
+    name: `sections.${sectionIndex}.questions.${questionIndex}.options` as const
   });
 
   return (
@@ -26,7 +27,7 @@ export function OptionsEditor({ sectionIndex, questionIndex, questionType }: Opt
               />
               <input
                 type="text"
-                {...register(`sections[${sectionIndex}].questions[${questionIndex}].options[${oIndex}].value`)}
+                {...register(`sections.${sectionIndex}.questions.${questionIndex}.options.${oIndex}.value` as const)}
                 placeholder={`Option ${oIndex + 1}`}
                 className="flex-1 bg-transparent text-sm focus:outline-none placeholder-gray-400"
                 
