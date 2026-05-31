@@ -17,6 +17,7 @@ import { SurveyGoalStep } from './features/dashboard/components/CreateSurvey/Sur
 import { SettingsStep } from './features/dashboard/components/CreateSurvey/SettingsStep';
 import { ReviewSummaryStep } from './features/dashboard/components/CreateSurvey/ReviewSummaryStep';
 import { CreateSurveyProvider } from './contexts/CreateSurveyContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
 
@@ -30,7 +31,11 @@ function App() {
         } />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/dashboard/" element={<DashboardLayout />} >
+        <Route path="/dashboard/" element={
+          <ThemeProvider>
+            <DashboardLayout />
+          </ThemeProvider>
+        } >
           <Route index element={<Dashboard />} />
           <Route path="/dashboard/create-survey" element={
           <CreateSurveyProvider>

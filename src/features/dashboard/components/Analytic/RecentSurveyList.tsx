@@ -26,31 +26,31 @@ const surveys = [
 const RecentSurveyList = () => {
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Recent Survey</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100 mb-4">Recent Survey</h2>
 
             {surveys.map((survey) => (
-                <div key={survey.id} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                <div key={survey.id} className="bg-white dark:bg-slate-950 p-6 rounded-xl border border-gray-100 dark:border-slate-900 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-3">
-                            <h3 className="font-bold text-gray-900 text-lg">{survey.title}</h3>
+                            <h3 className="font-bold text-gray-900 dark:text-slate-100 text-lg">{survey.title}</h3>
                             <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${survey.status === 'Active'
-                                    ? 'bg-green-100 text-green-600'
-                                    : 'bg-gray-100 text-gray-500'
+                                    ? 'bg-green-50 dark:bg-emerald-950/30 text-green-600 dark:text-emerald-400 border border-green-100 dark:border-emerald-900/30'
+                                    : 'bg-gray-100 dark:bg-slate-900 text-gray-500 dark:text-slate-400'
                                 }`}>
                                 ● {survey.status}
                             </span>
                         </div>
-                        <button className="text-gray-400 hover:text-gray-600">
+                        <button className="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300">
                             <MoreHorizontal size={20} />
                         </button>
                     </div>
 
-                    <p className="text-gray-500 text-sm mb-6 leading-relaxed line-clamp-2">
+                    <p className="text-gray-500 dark:text-slate-400 text-sm mb-6 leading-relaxed line-clamp-2">
                         {survey.description}
                     </p>
 
                     <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div className="flex items-center gap-4 text-xs text-gray-500 font-medium">
+                        <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-slate-400 font-medium">
                             <div className="flex items-center gap-2">
                                 <img src={survey.userImage} alt={survey.author} className="w-5 h-5 rounded-full" />
                                 <span>{survey.author}</span>
@@ -70,10 +70,12 @@ const RecentSurveyList = () => {
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <button className="px-4 py-1.5 cursor-pointer rounded-full border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                            {/* Secondary Button */}
+                            <button className="px-4 py-1.5 cursor-pointer rounded-full border border-accent-300 dark:border-accent-800/60 text-sm font-semibold text-accent-600 dark:text-accent-400 hover:bg-accent-50 dark:hover:bg-accent-950/20 active:bg-accent-100 dark:active:bg-accent-900/30 transition-all duration-200">
                                 Manage
                             </button>
-                            <button className="px-4 py-1.5 cursor-pointer rounded-full bg-black text-white text-sm font-medium hover:bg-gray-950 transition-colors border border-transparent shadow-sm">
+                            {/* Primary Button */}
+                            <button className="px-4 py-1.5 cursor-pointer rounded-full bg-accent-600 hover:bg-accent-700 active:bg-accent-800 text-white text-sm font-semibold transition-all duration-200 border border-transparent shadow-sm shadow-accent-600/10">
                                 Result
                             </button>
                         </div>

@@ -1,6 +1,7 @@
 export * from './common';
 export * from './auth';
 export * from './landingPage';
+export * from './theme';
 export * from './dashboard/common';
 export * from './dashboard/createSurvey';
 export * from './dashboard/analytic';

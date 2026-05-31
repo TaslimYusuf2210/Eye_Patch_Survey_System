@@ -1,6 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import { useCreateSurveyContext } from '@/contexts/CreateSurveyContext';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export function SurveyGoalStep() {
   const {
@@ -9,8 +10,9 @@ export function SurveyGoalStep() {
     formState: { errors },
   } = useFormContext();
 
-  const {setCurrentRoute} = useCreateSurveyContext()
-  const navigate = useNavigate()
+  const { colors } = useTheme();
+  const { setCurrentRoute } = useCreateSurveyContext();
+  const navigate = useNavigate();
 
   function onSubmit() {
     setCurrentRoute("sectionsandquestions")
@@ -20,7 +22,7 @@ export function SurveyGoalStep() {
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-        <span className="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold">2</span>
+        <span className="bg-accent-100 text-accent-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold">2</span>
         Survey Goal
       </h2>
 
@@ -57,7 +59,8 @@ export function SurveyGoalStep() {
                 id="improve-service"
                 value="improve-service"
                 {...register('usage')}
-                className="w-4 h-4 cursor-pointer accent-blue-600"
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
               />
               <label htmlFor="improve-service" className="text-sm text-gray-700 cursor-pointer">
                 Improve service/product
@@ -70,7 +73,8 @@ export function SurveyGoalStep() {
                 id="research"
                 value="research"
                 {...register('usage')}
-                className="w-4 h-4 cursor-pointer accent-blue-600"
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
               />
               <label htmlFor="research" className="text-sm text-gray-700 cursor-pointer">
                 Research purposes
@@ -83,7 +87,8 @@ export function SurveyGoalStep() {
                 id="decision-making"
                 value="decision-making"
                 {...register('usage')}
-                className="w-4 h-4 cursor-pointer accent-blue-600"
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
               />
               <label htmlFor="decision-making" className="text-sm text-gray-700 cursor-pointer">
                 Business decision making
@@ -96,7 +101,8 @@ export function SurveyGoalStep() {
                 id="general-feedback"
                 value="general-feedback"
                 {...register('usage')}
-                className="w-4 h-4 cursor-pointer accent-blue-600"
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
               />
               <label htmlFor="general-feedback" className="text-sm text-gray-700 cursor-pointer">
                 General feedback
@@ -111,7 +117,7 @@ export function SurveyGoalStep() {
         <div className="flex justify-end pt-4">
           <button
             type="submit"
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="px-6 py-2.5 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium"
           >
             Next
           </button>

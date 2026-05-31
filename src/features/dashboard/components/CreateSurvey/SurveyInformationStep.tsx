@@ -26,7 +26,7 @@ export function SurveyInformationStep() {
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-        <span className="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold">1</span>
+        <span className="bg-accent-100 text-accent-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold">1</span>
         Survey Information
       </h2>
 
@@ -43,7 +43,7 @@ export function SurveyInformationStep() {
             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
               errors.title
                 ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-200 focus:ring-blue-500'
+                : 'border-gray-200 focus:ring-accent-500'
             }`}
           />
           {errors.title && (
@@ -63,7 +63,7 @@ export function SurveyInformationStep() {
             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-all resize-none ${
               errors.description
                 ? 'border-red-500 focus:ring-red-500'
-                : 'border-gray-200 focus:ring-blue-500'
+                : 'border-gray-200 focus:ring-accent-500'
             }`}
           />
           {errors.description && (
@@ -83,7 +83,7 @@ export function SurveyInformationStep() {
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white cursor-pointer ${
                 errors.category
                   ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-200 focus:ring-blue-500'
+                  : 'border-gray-200 focus:ring-accent-500'
               }`}
             >
               <option value="">Select a category</option>
@@ -106,7 +106,7 @@ export function SurveyInformationStep() {
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent bg-white cursor-pointer ${
                 errors.audience
                   ? 'border-red-500 focus:ring-red-500'
-                  : 'border-gray-200 focus:ring-blue-500'
+                  : 'border-gray-200 focus:ring-accent-500'
               }`}
             >
               <option value="">Select an audience</option>
@@ -124,7 +124,7 @@ export function SurveyInformationStep() {
         <div className="flex justify-end pt-4">
           <button
             type="submit"
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="px-6 py-2.5 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium"
             
           >
             Next

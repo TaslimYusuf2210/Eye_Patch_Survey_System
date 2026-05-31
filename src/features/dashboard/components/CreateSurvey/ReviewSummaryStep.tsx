@@ -12,7 +12,7 @@ export function ReviewSummaryStep() {
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-        <span className="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold">5</span>
+        <span className="bg-accent-100 text-accent-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold">5</span>
         Review & Publish
       </h2>
 
@@ -91,7 +91,7 @@ export function ReviewSummaryStep() {
         <div className="flex justify-end pt-4">
           <button
             type="submit"
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="px-6 py-2.5 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium"
           >
             Create Survey
           </button>

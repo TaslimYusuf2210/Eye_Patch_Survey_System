@@ -17,7 +17,7 @@ export function OptionsEditor({ sectionIndex, questionIndex, questionType }: Opt
         {questionType === 'single_choice' ? 'Response Options' : 'Options'}
       </label>
       <div className="space-y-2">
-        {options.map((option, oIndex) => (
+        {options.map((_, oIndex) => (
           <div key={oIndex}>
             <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 flex-1 px-3 py-1.5 border border-gray-200 rounded-lg bg-gray-50">
