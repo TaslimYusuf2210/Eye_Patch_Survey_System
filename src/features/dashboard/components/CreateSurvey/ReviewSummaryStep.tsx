@@ -10,17 +10,17 @@ export function ReviewSummaryStep() {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+    <div className="bg-white dark:bg-slate-950 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm p-6">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-6 flex items-center gap-2">
         <span className="bg-accent-100 text-accent-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold">5</span>
         Review & Publish
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Survey Overview */}
-        <div className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-gray-900 mb-3">Survey Overview</h3>
-          <div className="space-y-2 text-sm text-gray-700">
+        <div className="border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
+          <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-3">Survey Overview</h3>
+          <div className="space-y-2 text-sm text-gray-700 dark:text-slate-300">
             <p>
               <span className="font-medium">Title:</span> {formData.title || 'Not provided'}
             </p>
@@ -34,9 +34,9 @@ export function ReviewSummaryStep() {
         </div>
 
         {/* Goals & Usage */}
-        <div className="border-l-4 border-green-500 bg-green-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-gray-900 mb-3">Goals & Usage</h3>
-          <div className="space-y-2 text-sm text-gray-700">
+        <div className="border-l-4 border-green-500 bg-green-50 dark:bg-emerald-950/20 p-4 rounded-lg">
+          <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-3">Goals & Usage</h3>
+          <div className="space-y-2 text-sm text-gray-700 dark:text-slate-300">
             <p>
               <span className="font-medium">Goal:</span> {formData.goal || 'Not provided'}
             </p>
@@ -47,9 +47,9 @@ export function ReviewSummaryStep() {
         </div>
 
         {/* Configuration */}
-        <div className="border-l-4 border-purple-500 bg-purple-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-gray-900 mb-3">Configuration</h3>
-          <div className="space-y-2 text-sm text-gray-700">
+        <div className="border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg">
+          <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-3">Configuration</h3>
+          <div className="space-y-2 text-sm text-gray-700 dark:text-slate-300">
             <p>
               <span className="font-medium">Number of Sections:</span>{' '}
               {formData.sections?.length || 0}
@@ -69,9 +69,9 @@ export function ReviewSummaryStep() {
 
         {/* Dates */}
         {(formData.startDate || formData.endDate) && (
-          <div className="border-l-4 border-orange-500 bg-orange-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">Timing</h3>
-            <div className="space-y-2 text-sm text-gray-700">
+          <div className="border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-950/20 p-4 rounded-lg">
+            <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-3">Timing</h3>
+            <div className="space-y-2 text-sm text-gray-700 dark:text-slate-300">
               {formData.startDate && (
                 <p>
                   <span className="font-medium">Start Date:</span>{' '}

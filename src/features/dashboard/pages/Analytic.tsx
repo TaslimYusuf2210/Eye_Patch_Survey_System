@@ -40,7 +40,7 @@ const Analytic = () => {
 
             {/* Stats Grid */}
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Welcome {user?.user_name || "Loading..."}</h1>
+                <h1 className="text-2xl font-bold text-white mb-6">Welcome {user?.user_name || "Loading..."}</h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <StatsCard
                         title="Survey Quantity"

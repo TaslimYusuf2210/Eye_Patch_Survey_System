@@ -156,16 +156,16 @@ export default function CreateSurvey() {
 
   return (
     <CreateSurveyProvider>
-      <div className="min-h-screen bg-gray-50 py-8 ">
-        <div className="mx-auto">
+      <div className="min-h-screen dark:bg-slate-950 py-8 ">
+        <div className="mx-auto px-6">
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-8 bg-transparent">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Create Survey</h1>
-              <p className="text-gray-600 mt-2">Build a comprehensive survey to gather feedback and insights</p>  
+              <h1 className="text-3xl font-bold text-white">Create Survey</h1>
+              <p className="text-gray-200 mt-2">Build a comprehensive survey to gather feedback and insights</p>
             </div>
             <div>
-              <p>Position for interactive stepper</p>
+              <p className="text-gray-500 dark:text-slate-400">Position for interactive stepper</p>
             </div>
           </div>
           <FormProvider {...methods}>  

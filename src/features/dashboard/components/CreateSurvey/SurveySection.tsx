@@ -16,20 +16,20 @@ export function SurveySection({ sectionIndex, removeSection }: SurveySectionProp
   const sectionTitle = watch(`sections.${sectionIndex}.title` as const);
 
   return (
-    <div className="border border-gray-200 rounded-lg p-5 bg-gray-50">
+    <div className="border border-gray-200 dark:border-slate-800 rounded-lg p-5 bg-gray-50 dark:bg-slate-900">
       {/* Section Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex-1 flex items-center gap-3">
           <button
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 hover:bg-gray-200 rounded transition-colors text-gray-500"
+            className="p-1 hover:bg-gray-200 dark:hover:bg-slate-800 rounded transition-colors text-gray-500 dark:text-slate-400"
             title={isCollapsed ? "Expand section" : "Collapse section"}
           >
             {isCollapsed ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
           </button>
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-900 mb-2">
+            <label className="block text-sm font-medium text-gray-900 dark:text-slate-200 mb-2">
               Section {sectionIndex + 1}: {isCollapsed && sectionTitle ? sectionTitle : 'Title'}
             </label>
             {!isCollapsed && (
@@ -38,7 +38,7 @@ export function SurveySection({ sectionIndex, removeSection }: SurveySectionProp
                   type="text"
                   {...register(`sections.${sectionIndex}.title` as const)}
                   placeholder="e.g. Personal Information"
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 {errors?.sections?.[sectionIndex]?.title && (
                   <p className="text-sm text-red-600 mt-1">
@@ -51,7 +51,7 @@ export function SurveySection({ sectionIndex, removeSection }: SurveySectionProp
         </div>
         <button
           type="button"
-          className="ml-3 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          className="ml-3 p-2 text-red-600 hover:bg-red-50 dark:hover:bg-rose-950 rounded-lg transition-colors"
           title="Remove section"
           onClick={() => removeSection(sectionIndex)}
         >
@@ -71,7 +71,7 @@ export function SurveySection({ sectionIndex, removeSection }: SurveySectionProp
           {/* Add Question Button */}
           <button
             type="button"
-            className="w-full mt-4 py-2 border-2 border-dashed border-gray-300 text-gray-600 rounded-lg hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center gap-2 font-medium text-sm"
+            className="w-full mt-4 py-2 border-2 border-dashed border-gray-300 dark:border-slate-700 text-gray-600 dark:text-slate-300 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center justify-center gap-2 font-medium text-sm"
             onClick={() =>
               addQuestion({
                 text: '',

@@ -77,7 +77,7 @@ const SurveyList = () => {
                         />
                     </div>
 
-                    <button className="bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-900 p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-black hover:bg-gray-50 transition-colors">
+                    <button className="bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-900 p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-slate-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors">
                         <Bell size={20} />
                     </button>
 
@@ -90,7 +90,7 @@ const SurveyList = () => {
                 </div>
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">All Surveys</h1>
+            <h1 className="text-2xl font-bold text-white mb-6">All Surveys</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {surveys.map((survey) => (
@@ -125,7 +125,7 @@ const SurveyList = () => {
                                     <span className="text-xs font-medium text-gray-600 dark:text-slate-400">{survey.author}</span>
                                 </div>
                                 <div className="text-xs font-medium text-gray-500 dark:text-slate-400">
-                                    <span className="text-black dark:text-slate-200 font-semibold">{survey.responses}</span>
+                                    <span className="text-gray-900 dark:text-slate-200 font-semibold">{survey.responses}</span>
                                     {survey.total > 0 && <span className="text-gray-400 dark:text-slate-600">/{survey.total}</span>} Responses
                                 </div>
                             </div>

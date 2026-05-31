@@ -26,7 +26,7 @@ const surveys = [
 const RecentSurveyList = () => {
     return (
         <div className="space-y-4">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100 mb-4">Recent Survey</h2>
+            <h2 className="text-xl font-bold text-slate-100 mb-4">Recent Survey</h2>
 
             {surveys.map((survey) => (
                 <div key={survey.id} className="bg-white dark:bg-slate-950 p-6 rounded-xl border border-gray-100 dark:border-slate-900 shadow-sm hover:shadow-md transition-shadow">

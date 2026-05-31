@@ -28,8 +28,8 @@ export function SectionsAndQuestionsStep() {
   }, [watchSections]);
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+    <div className="bg-white dark:bg-slate-950 rounded-xl border border-gray-200 dark:border-slate-800 shadow-sm p-6">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-6 flex items-center gap-2">
         <span className="bg-accent-100 text-accent-600 rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold">3</span>
         Sections & Questions
       </h2>
@@ -54,7 +54,7 @@ export function SectionsAndQuestionsStep() {
               ],
             })
           }
-          className="w-full py-3 px-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-accent-500 hover:bg-accent-100 transition-all flex items-center justify-center gap-2 text-accent-600 font-medium"
+          className="w-full py-3 px-4 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-lg hover:border-accent-500 hover:bg-accent-100 dark:hover:bg-accent-950 transition-all flex items-center justify-center gap-2 text-accent-600 dark:text-accent-300 font-medium"
         >
           <Plus size={20} />
           Add Section

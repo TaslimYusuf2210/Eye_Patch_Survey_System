@@ -28,19 +28,19 @@ export function Question({ sectionIndex, questionIndex, removeQuestion }: Questi
   }, [currentQuestionType]);
 
   return (
-    <div className="bg-white rounded-lg p-4 border border-gray-200">
+    <div className="bg-white dark:bg-slate-950 rounded-lg p-4 border border-gray-200 dark:border-slate-800">
       {/* Question Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3 flex-1">
           <button
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 hover:bg-gray-100 rounded transition-colors text-gray-500"
+            className="p-1 hover:bg-gray-100 dark:hover:bg-slate-800 rounded transition-colors text-gray-500 dark:text-slate-400"
             title={isCollapsed ? "Expand question" : "Collapse question"}
           >
             {isCollapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
           </button>
-          <span className="text-sm font-semibold text-gray-700">
+          <span className="text-sm font-semibold text-gray-700 dark:text-slate-200">
             Question {questionIndex + 1}: {isCollapsed && questionText ? questionText : ''}
           </span>
         </div>
@@ -59,25 +59,25 @@ export function Question({ sectionIndex, questionIndex, removeQuestion }: Questi
           <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-4">
             {/* Question Text */}
             <div className="md:col-span-7">
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 dark:text-slate-200 mb-1">
                 Question Text
               </label>
               <input
                 type="text"
                 {...register(`sections.${sectionIndex}.questions.${questionIndex}.text` as const)}
                 placeholder="Enter your question..."
-                className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-1.5 border border-gray-200 dark:border-slate-800 rounded text-sm bg-white dark:bg-slate-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
             {/* Question Type */}
             <div className="md:col-span-3">
-              <label className="block text-xs font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 dark:text-slate-200 mb-1">
                 Type
               </label>
               <select
                 {...register(`sections.${sectionIndex}.questions.${questionIndex}.type` as const)}
-                className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+                className="w-full px-3 py-1.5 border border-gray-200 dark:border-slate-800 rounded text-sm bg-white dark:bg-slate-950 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
               >
                 <option value="text">Text</option>
                 <option value="likert_scale">Likert Scale</option>
@@ -95,17 +95,17 @@ export function Question({ sectionIndex, questionIndex, removeQuestion }: Questi
                   {...register(`sections.${sectionIndex}.questions.${questionIndex}.required` as const)}
                   className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
                 />
-                <span className="text-xs font-medium text-gray-700">Required</span>
+                <span className="text-xs font-medium text-gray-700 dark:text-slate-200">Required</span>
               </label>
             </div>
           </div>
 
           {/* Preview Section - Shows how question will appear to respondents */}
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <label className="block text-xs font-medium text-gray-700 mb-3">
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-800">
+            <label className="block text-xs font-medium text-gray-700 dark:text-slate-200 mb-3">
               Preview (How respondents will see this)
             </label>
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+            <div className="bg-gray-50 dark:bg-slate-900 rounded-lg p-4 border border-gray-100 dark:border-slate-800">
               {currentQuestionType === 'multiple_choice' && (
                 <MultipleChoicePreview />
               )}

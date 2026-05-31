@@ -9,8 +9,8 @@ const SurveyResponses = () => {
         <>
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Link to={`/dashboard/survey/${id}`} className="hover:text-black flex items-center gap-1">
+                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400">
+                    <Link to={`/dashboard/survey/${id}`} className="hover:text-slate-900 dark:hover:text-white flex items-center gap-1">
                         <ChevronLeft size={16} />
                         Back to Survey Details
                     </Link>
@@ -18,7 +18,7 @@ const SurveyResponses = () => {
             </div>
 
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">Responses for [Survey Title]</h1>
+                <h1 className="text-2xl font-bold text-white">Responses for [Survey Title]</h1>
             </div>
 
             <Table/>

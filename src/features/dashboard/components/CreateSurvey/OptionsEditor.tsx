@@ -12,26 +12,25 @@ export function OptionsEditor({ sectionIndex, questionIndex, questionType }: Opt
   });
 
   return (
-    <div className="mt-4 pt-4 border-t border-gray-100">
-      <label className="block text-xs font-medium text-gray-700 mb-3">
+    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-800">
+      <label className="block text-xs font-medium text-gray-700 dark:text-slate-200 mb-3">
         {questionType === 'single_choice' ? 'Response Options' : 'Options'}
       </label>
       <div className="space-y-2">
         {options.map((_, oIndex) => (
           <div key={oIndex}>
             <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 flex-1 px-3 py-1.5 border border-gray-200 rounded-lg bg-gray-50">
+            <div className="flex items-center gap-2 flex-1 px-3 py-1.5 border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900">
               <input
                 type={inputType}
                 disabled
-                className={`w-4 h-4 text-blue-600 ${inputType === 'radio' ? 'border-gray-300' : 'rounded border-gray-300'} cursor-not-allowed`}
+                className={`w-4 h-4 text-blue-600 ${inputType === 'radio' ? 'border-gray-300 dark:border-slate-700' : 'rounded border-gray-300 dark:border-slate-700'} cursor-not-allowed`}
               />
               <input
                 type="text"
                 {...register(`sections.${sectionIndex}.questions.${questionIndex}.options.${oIndex}.value` as const)}
                 placeholder={`Option ${oIndex + 1}`}
-                className="flex-1 bg-transparent text-sm focus:outline-none placeholder-gray-400"
-                
+                className="flex-1 bg-transparent text-sm text-gray-200 dark:text-slate-100 placeholder-gray-200 dark:placeholder-slate-500 focus:outline-none"
               />
             </div>
             <button
@@ -53,7 +52,7 @@ export function OptionsEditor({ sectionIndex, questionIndex, questionType }: Opt
       </div>
       <button
         type="button"
-        className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 mt-3"
+        className="text-sm text-blue-600 dark:text-blue-300 hover:text-blue-700 dark:hover:text-blue-400 font-medium flex items-center gap-1 mt-3"
         onClick={() => addOption({ value: '' })}
       >
         <Plus size={14} />

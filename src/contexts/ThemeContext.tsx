@@ -2,13 +2,16 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from '
 import { type AccentColor, accentColors } from '../types';
 
 export type Appearance = 'light' | 'dark';
+export type ThemePicture = 'city' | 'nature' | 'marble' | 'none';
 
 interface ThemeContextType {
   appearance: Appearance;
   accent: AccentColor;
   colors: typeof accentColors[AccentColor];
+  picture: ThemePicture;
   setAppearance: (mode: Appearance) => void;
   setAccent: (color: AccentColor) => void;
+  setPicture: (p: ThemePicture) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -34,6 +37,14 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     return 'default';
   });
 
+  const [picture, setPicture] = useState<ThemePicture>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('survey-theme-picture');
+      if (stored === 'city' || stored === 'nature' || stored === 'marble' || stored === 'none') return stored as ThemePicture;
+    }
+    return 'none';
+  });
+
   // Track active resolved palette
   const colors = accentColors[accent];
 
@@ -56,8 +67,13 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('survey-theme-accent', accent);
   }, [accent]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem('survey-theme-picture', picture);
+  }, [picture]);
+
   return (
-    <ThemeContext.Provider value={{ appearance, accent, colors, setAppearance, setAccent }}>
+    <ThemeContext.Provider value={{ appearance, accent, colors, picture, setAppearance, setAccent, setPicture }}>
       {children}
     </ThemeContext.Provider>
   );

@@ -14,9 +14,9 @@ export function MultipleChoicePreview() {
           <input
             type="checkbox"
             disabled
-            className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-not-allowed"
+            className="w-4 h-4 text-blue-600 rounded border-gray-300 dark:border-slate-700 cursor-not-allowed"
           />
-          <span className="text-sm text-gray-700">{option}</span>
+          <span className="text-sm text-gray-700 dark:text-slate-200">{option}</span>
         </label>
       ))}
     </div>
@@ -34,9 +34,9 @@ export function SingleChoicePreview() {
           <input
             type="radio"
             disabled
-            className="w-4 h-4 text-blue-600 border-gray-300 cursor-not-allowed"
+            className="w-4 h-4 text-blue-600 border-gray-300 dark:border-slate-700 cursor-not-allowed"
           />
-          <span className="text-sm text-gray-700">{option}</span>
+          <span className="text-sm text-gray-700 dark:text-slate-200">{option}</span>
         </label>
       ))}
     </div>
@@ -53,7 +53,7 @@ export function TextPreview() {
         type="text"
         disabled
         placeholder="Respondent will type their answer here..."
-        className="w-full px-3 py-2 border border-gray-200 rounded text-sm bg-gray-100 text-gray-500 cursor-not-allowed"
+        className="w-full px-3 py-2 border border-gray-200 dark:border-slate-800 rounded text-sm bg-gray-100 dark:bg-slate-900 text-gray-500 dark:text-slate-400 cursor-not-allowed"
       />
     </div>
   );
@@ -72,9 +72,9 @@ export function LikertScalePreview() {
             type="radio"
             disabled
             name="likert_preview"
-            className="w-4 h-4 text-blue-600 border-gray-300 cursor-not-allowed"
+            className="w-4 h-4 text-blue-600 border-gray-300 dark:border-slate-700 cursor-not-allowed"
           />
-          <span className="text-sm text-gray-700">{option}</span>
+          <span className="text-sm text-gray-700 dark:text-slate-200">{option}</span>
         </label>
       ))}
     </div>
@@ -93,9 +93,9 @@ export function YesNoPreview() {
             type="radio"
             disabled
             name="yesno_preview"
-            className="w-4 h-4 text-blue-600 border-gray-300 cursor-not-allowed"
+            className="w-4 h-4 text-blue-600 border-gray-300 dark:border-slate-700 cursor-not-allowed"
           />
-          <span className="text-sm text-gray-700">{option}</span>
+          <span className="text-sm text-gray-700 dark:text-slate-200">{option}</span>
         </label>
       ))}
     </div>

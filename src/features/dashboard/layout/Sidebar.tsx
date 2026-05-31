@@ -24,7 +24,11 @@ const Sidebar = () => {
     return (
         <aside className="w-64 bg-white dark:bg-slate-950 h-screen fixed left-0 top-0 border-r border-gray-200 dark:border-slate-900 hidden md:flex flex-col font-poppins transition-colors duration-300">
             <div className="p-6">
-                <div className="font-gravitas text-xl tracking-wide cursor-pointer text-black dark:text-white">
+                <div className={`font-gravitas text-xl tracking-wide cursor-pointer ${
+                    accent === 'default'
+                        ? 'text-black dark:text-white'
+                        : 'text-accent-600 dark:text-accent-400'
+                }`}>
                     Eye_Patch
                 </div>
             </div>
