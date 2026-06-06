@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { ChevronLeft, Mail, Edit2, Trash2 } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const ParticipantDetail = () => {
+    const { textTitle } = useTheme();
 
     const handleFeatureComingSoon = () => {
         alert("Feature coming soon");
@@ -37,7 +39,7 @@ const ParticipantDetail = () => {
             </div>
 
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-white">[Participant Name]</h1>
+                <h1 className={`text-2xl font-bold ${textTitle}`}>[Participant Name]</h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

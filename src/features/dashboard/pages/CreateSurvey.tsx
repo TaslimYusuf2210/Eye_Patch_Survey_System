@@ -5,6 +5,7 @@ import { useLocation, Outlet } from 'react-router-dom';
 import type { CreateSurveyFormData } from '@/types/dashboard/common';
 import { CreateSurveyProvider } from '@/contexts/CreateSurveyContext';
 import { useEffect } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const surveyInformationSchema = yup.object().shape({
   title: yup
@@ -105,6 +106,7 @@ const noSchema = yup.object().shape({});
 
 export default function CreateSurvey() {
   const location = useLocation();
+  const { textTitle, textSubtitle } = useTheme();
   // const { currentRoute } = useCreateSurveyContext();
   // // console.log('Current Route in CreateSurvey:', currentRoute);
   // // console.log('Location Pathname in CreateSurvey:', location.pathname);
@@ -157,12 +159,12 @@ export default function CreateSurvey() {
   return (
     <CreateSurveyProvider>
       <div className="min-h-screen dark:bg-slate-950 py-8 ">
-        <div className="mx-auto px-6">
+        <div className="">
           {/* Header */}
           <div className="mb-8 bg-transparent">
             <div>
-              <h1 className="text-3xl font-bold text-white">Create Survey</h1>
-              <p className="text-gray-200 mt-2">Build a comprehensive survey to gather feedback and insights</p>
+              <h1 className={`text-3xl font-bold ${textTitle}`}>Create Survey</h1>
+              <p className={`${textSubtitle} mt-2`}>Build a comprehensive survey to gather feedback and insights</p>
             </div>
             <div>
               <p className="text-gray-500 dark:text-slate-400">Position for interactive stepper</p>

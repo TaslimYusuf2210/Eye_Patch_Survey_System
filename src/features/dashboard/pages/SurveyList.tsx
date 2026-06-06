@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
 import {
   Dialog,
   DialogContent,
@@ -59,12 +60,13 @@ const surveys = [
 ];
 
 const SurveyList = () => {
+    const { textTitle } = useTheme();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     return (
         <>
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-white">All Surveys</h1>
+                <h1 className={`text-2xl font-bold ${textTitle}`}>All Surveys</h1>
                 <button 
                     onClick={() => setIsDialogOpen(true)}
                     className="bg-accent-600 cursor-pointer text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-accent-700 active:bg-accent-800 shadow-sm shadow-accent-600/10 transition-all duration-300 whitespace-nowrap flex items-center gap-2">

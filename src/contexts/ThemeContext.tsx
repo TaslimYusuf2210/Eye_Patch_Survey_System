@@ -9,6 +9,8 @@ interface ThemeContextType {
   accent: AccentColor;
   colors: typeof accentColors[AccentColor];
   picture: ThemePicture;
+  textTitle: string;
+  textSubtitle: string;
   setAppearance: (mode: Appearance) => void;
   setAccent: (color: AccentColor) => void;
   setPicture: (p: ThemePicture) => void;
@@ -72,8 +74,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('survey-theme-picture', picture);
   }, [picture]);
 
+  const hasPicture = picture !== 'none';
+  const textTitle = hasPicture ? 'text-white' : 'text-slate-900 dark:text-white';
+  const textSubtitle = hasPicture ? 'text-slate-200' : 'text-slate-500 dark:text-slate-400';
+
   return (
-    <ThemeContext.Provider value={{ appearance, accent, colors, picture, setAppearance, setAccent, setPicture }}>
+    <ThemeContext.Provider value={{ appearance, accent, colors, picture, textTitle, textSubtitle, setAppearance, setAccent, setPicture }}>
       {children}
     </ThemeContext.Provider>
   );

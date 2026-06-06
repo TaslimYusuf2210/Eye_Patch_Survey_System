@@ -1,10 +1,12 @@
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, MoreHorizontal, Copy, QrCode, Code, Edit3, Settings, PieChart, Share2 } from 'lucide-react';
 import { useState } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const SurveyDetail = () => {
     const { id } = useParams();
     const [activeTab, setActiveTab] = useState('builder');
+    const { textTitle, textSubtitle } = useTheme();
 
     // Mock data based on ID (real app would fetch this)
     const survey = {
@@ -39,8 +41,8 @@ const SurveyDetail = () => {
             </div>
 
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white">{survey.title}</h1>
-                <p className="text-gray-200 mt-2 text-sm">Last updated {survey.lastUpdated} • {survey.responses} Responses</p>
+                <h1 className={`text-3xl font-bold ${textTitle}`}>{survey.title}</h1>
+                <p className={`${textSubtitle} mt-2 text-sm`}>Last updated {survey.lastUpdated} • {survey.responses} Responses</p>
             </div>
 
             {/* Tabs */}
@@ -48,39 +50,39 @@ const SurveyDetail = () => {
                 <div className="flex items-center gap-8 min-w-max">
                     <button
                         onClick={() => setActiveTab('builder')}
-                        className={`pb-4 text-sm font-medium flex items-center gap-2 transition-colors relative ${activeTab === 'builder' ? 'text-white' : 'text-gray-400 hover:text-white'
+                        className={`pb-4 text-sm font-medium flex items-center gap-2 transition-colors relative ${activeTab === 'builder' ? textTitle : `${textSubtitle} hover:${textTitle}`
                             }`}
                     >
                         <Edit3 size={18} />
                         Builder
-                        {activeTab === 'builder' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white rounded-t-full"></span>}
+                        {activeTab === 'builder' && <span className={`absolute bottom-0 left-0 w-full h-0.5 rounded-t-full ${textTitle.includes('text-white') ? 'bg-white' : 'bg-slate-900 dark:bg-white'}`}></span>}
                     </button>
                     <button
                         onClick={() => setActiveTab('share')}
-                        className={`pb-4 text-sm font-medium flex items-center gap-2 transition-colors relative ${activeTab === 'share' ? 'text-white' : 'text-gray-400 hover:text-white'
+                        className={`pb-4 text-sm font-medium flex items-center gap-2 transition-colors relative ${activeTab === 'share' ? textTitle : `${textSubtitle} hover:${textTitle}`
                             }`}
                     >
                         <Share2 size={18} />
                         Share
-                        {activeTab === 'share' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white rounded-t-full"></span>}
+                        {activeTab === 'share' && <span className={`absolute bottom-0 left-0 w-full h-0.5 rounded-t-full ${textTitle.includes('text-white') ? 'bg-white' : 'bg-slate-900 dark:bg-white'}`}></span>}
                     </button>
                     <button
                         onClick={() => setActiveTab('analytics')}
-                        className={`pb-4 text-sm font-medium flex items-center gap-2 transition-colors relative ${activeTab === 'analytics' ? 'text-white' : 'text-gray-400 hover:text-white'
+                        className={`pb-4 text-sm font-medium flex items-center gap-2 transition-colors relative ${activeTab === 'analytics' ? textTitle : `${textSubtitle} hover:${textTitle}`
                             }`}
                     >
                         <PieChart size={18} />
                         Analytics
-                        {activeTab === 'analytics' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white rounded-t-full"></span>}
+                        {activeTab === 'analytics' && <span className={`absolute bottom-0 left-0 w-full h-0.5 rounded-t-full ${textTitle.includes('text-white') ? 'bg-white' : 'bg-slate-900 dark:bg-white'}`}></span>}
                     </button>
                     <button
                         onClick={() => setActiveTab('settings')}
-                        className={`pb-4 text-sm font-medium flex items-center gap-2 transition-colors relative ${activeTab === 'settings' ? 'text-white' : 'text-gray-400 hover:text-white'
+                        className={`pb-4 text-sm font-medium flex items-center gap-2 transition-colors relative ${activeTab === 'settings' ? textTitle : `${textSubtitle} hover:${textTitle}`
                             }`}
                     >
                         <Settings size={18} />
                         Settings
-                        {activeTab === 'settings' && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white rounded-t-full"></span>}
+                        {activeTab === 'settings' && <span className={`absolute bottom-0 left-0 w-full h-0.5 rounded-t-full ${textTitle.includes('text-white') ? 'bg-white' : 'bg-slate-900 dark:bg-white'}`}></span>}
                     </button>
                 </div>
             </div>

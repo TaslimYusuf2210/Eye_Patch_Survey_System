@@ -1,9 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import Table from '../../../components/table';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const SurveyResponses = () => {
     const { id } = useParams();
+    const { textTitle } = useTheme();
 
     return (
         <>
@@ -18,7 +20,7 @@ const SurveyResponses = () => {
             </div>
 
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-white">Responses for [Survey Title]</h1>
+                <h1 className={`text-2xl font-bold ${textTitle}`}>Responses for [Survey Title]</h1>
             </div>
 
             <Table/>

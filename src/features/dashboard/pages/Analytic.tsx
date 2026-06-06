@@ -2,9 +2,11 @@ import StatsCard from '../components/Analytic/StatsCard';
 import RecentSurveyList from '../components/Analytic/RecentSurveyList';
 import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const Analytic = () => {
     const { user } = useAuth();
+    const { textTitle } = useTheme();
 
     useEffect(() => {
     }, [])
@@ -15,8 +17,8 @@ const Analytic = () => {
             {/* Stats Grid */}
 
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-white mb-6">Welcome {user?.user_name || "Loading..."}</h1>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <h1 className={`text-2xl font-bold ${textTitle} mb-6`}>Welcome {user?.user_name || "Loading..."}</h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-col-4 gap-6">
                     <StatsCard
                         title="Survey Quantity"
                         value="13"
@@ -45,16 +47,16 @@ const Analytic = () => {
             </div>
 
             {/* Content Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1  gap-8">
                 {/* Recent Surveys */}
-                <div className="lg:col-span-2">
+                <div className="w-full lg:w-3/4">
                     <RecentSurveyList />
                 </div>
 
                 {/* Right Column (Placeholder for future widgets or just empty space as requested to remove "AI Power") */}
-                <div className="hidden lg:block">
+                {/* <div className="hidden xl:block"> */}
                     {/* Intentionally left empty or could be used for other widgets */}
-                </div>
+                {/* </div> */}
             </div>
         </>
     );

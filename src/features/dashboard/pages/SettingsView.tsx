@@ -18,7 +18,7 @@ const colorAccents = [
 
 const SettingsView = () => {
     const [activeTab, setActiveTab] = useState('profile');
-    const { appearance, accent, setAppearance, setAccent, picture, setPicture } = useTheme();
+    const { appearance, accent, setAppearance, setAccent, picture, setPicture, textTitle, textSubtitle } = useTheme();
 
     const isDefaultTheme = accent === 'default';
 
@@ -58,10 +58,10 @@ const SettingsView = () => {
     };
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <div className="">
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-white">Settings</h1>
-                <p className="text-gray-200 dark:text-slate-400 text-sm mt-1">Manage your account settings and preferences.</p>
+                <h1 className={`text-2xl font-bold ${textTitle}`}>Settings </h1>
+                <p className={`${textSubtitle} text-sm mt-1`}>Manage your account settings and preferences.</p>
             </div>
 
             {/* Horizontal Tabs */}
@@ -73,13 +73,13 @@ const SettingsView = () => {
                             onClick={() => setActiveTab(tab.id)}
                             className={`pb-4 text-sm font-medium transition-all relative ${
                                 activeTab === tab.id
-                                    ? 'text-white font-semibold'
+                                    ? `${textTitle} font-semibold`
                                     : 'text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200'
                             }`}
                         >
                             {tab.label}
                             {activeTab === tab.id && (
-                                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white"></span>
+                                <span className={`absolute bottom-0 left-0 w-full h-0.5 ${textTitle.includes('text-white') ? 'bg-white' : 'bg-slate-900 dark:bg-white'}`}></span>
                             )}
                         </button>
                     ))}
