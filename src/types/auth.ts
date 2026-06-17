@@ -8,7 +8,7 @@ export const loginSchema = yup.object().shape({
 export type LoginFormData = yup.InferType<typeof loginSchema>;
 
 export const signUpSchema = yup.object().shape({
-  username: yup.string().required("Username is required"),
+  userName: yup.string().required("Username is required"),
   email: yup
     .string()
     .email("Invalid email format")
@@ -30,3 +30,14 @@ export const signUpSchema = yup.object().shape({
 });
 
 export type SignUpFormData = yup.InferType<typeof signUpSchema>;
+
+export type signUpPayload = {
+  email: string;
+  password: string;
+  userName: string;
+} 
+
+export type loginPayload = {
+  email: string;
+  password: string;
+}

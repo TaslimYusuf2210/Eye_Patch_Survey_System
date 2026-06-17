@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 import type { SignUpFormData } from "@/types/auth";
+import { signUp } from "@/services/authService";
 
 const signUpSchema = yup.object().shape({
-  username: yup.string().required("Username is required"),
+  userName: yup.string().required("Username is required"),
   email: yup
     .string()
     .email("Invalid email format")
@@ -72,51 +72,20 @@ function SignUp() {
   const onSubmit = async (data: SignUpFormData) => {
     console.log("SignUp Form Data:", data);
     setLoading(true);
-    const email = data.email;
-    const password = data.password;
-    const user_name = data.username;
-      const { data:signUpData, error } = await supabase.auth.signUp({email, password})
-      console.log(signUpData)
+    try {
       const payload = {
-        id: signUpData.user?.id,
-            email: email,
-            user_name: user_name
+        email: data.email,
+        password: data.password,
+        userName: data.userName,
       }
-      if (error) {
-        console.log(error)
-          let errorMessage = "Something went wrong. Please try again.";
-
-          if (error?.message) {
-            errorMessage = error.message;
-            return
-          }
-    
-          // Common friendly messages
-          if (error?.message?.includes("Failed to fetch")) {
-            errorMessage =
-              "Cannot connect to server. Please check your internet connection.";
-              return
-          } else if (error?.message?.includes("Email")) {
-            errorMessage = "Please enter a valid email address.";
-            return
-          } else if (error?.message?.includes("Password")) {
-            errorMessage = "Password should be at least 6 characters.";
-            return
-          }
-    
-          setError(errorMessage);
-          console.error("Caught error in form:", error);
-        
-      } else {
-          await supabase.from('profiles').insert(payload)
-          console.log("Insert code to supabase line runs")
-          const {} = await supabase.auth.signOut();
-          console.log("signUpData after sign out")
-          setShowSuccessDialog(true);
-          reset();
-      }
-
-      setLoading(false);
+      await signUp(payload)
+    } catch (error: any) {
+      const message = error.userMessage || error.response?.data?.message || error.message
+      setError(message);
+      console.error('Registration failed:', message);
+    } finally {
+      setLoading(false)
+    }
   };
 
   return (
@@ -133,15 +102,15 @@ function SignUp() {
             </label>
             <input
               type="text"
-              {...register("username")}
+              {...register("userName")}
               className={`w-full px-4 py-2 border ${
-                errors.username ? "border-red-500" : "border-gray-300"
+                errors.userName ? "border-red-500" : "border-gray-300"
               } rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all`}
               placeholder="your_username"
             />
-            {errors.username && (
+            {errors.userName && (
               <p className="text-red-500 text-xs mt-1">
-                {errors.username.message}
+                {errors.userName.message}
               </p>
             )}
           </div>
