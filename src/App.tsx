@@ -18,6 +18,8 @@ import { SettingsStep } from './features/dashboard/components/CreateSurvey/Setti
 import { ReviewSummaryStep } from './features/dashboard/components/CreateSurvey/ReviewSummaryStep';
 import { CreateSurveyProvider } from './contexts/CreateSurveyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { Toaster } from './components/ui/sonner';
+
 
 function App() {
 
@@ -55,6 +57,7 @@ function App() {
           <Route path="/dashboard/settings" element={<SettingsView />} />
         </Route>
       </Routes>
+      <Toaster richColors />
     </Router>
   )
 }

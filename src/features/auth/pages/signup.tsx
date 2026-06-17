@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle } from "lucide-react";
 import type { SignUpFormData } from "@/types/auth";
 import { signUp } from "@/services/authService";
+import { toast } from "sonner"
 
 const signUpSchema = yup.object().shape({
   userName: yup.string().required("Username is required"),
@@ -79,9 +80,11 @@ function SignUp() {
         userName: data.userName,
       }
       await signUp(payload)
+      toast.success("Registration successful! Please log in to view your dashboard.")
+      console.log("Registration successful:", data);
     } catch (error: any) {
       const message = error.userMessage || error.response?.data?.message || error.message
-      setError(message);
+      toast.error(message)
       console.error('Registration failed:', message);
     } finally {
       setLoading(false)

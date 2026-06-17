@@ -1,5 +1,6 @@
 import React from 'react'
 import ResponsiveSidebar from './ResponsiveSidebar'
+import { Toaster } from "@/components/ui/sonner"
 
 type Props = {
   children: React.ReactNode
@@ -18,6 +19,7 @@ export default function MainLayout({ children }: Props) {
       <main className="min-h-screen pl-14 md:pl-64 transition-padding">
         {children}
       </main>
+      <Toaster />
     </div>
   )
 }
