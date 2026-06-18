@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, MessageSquare, Users, Settings, PencilRuler, X } from 'lucide-react';
+import { LayoutDashboard, FileText, MessageSquare, Users, Settings, PencilRuler, X, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useRef, useEffect } from 'react';
@@ -22,7 +22,7 @@ const Sidebar = ({
     setIsTabletHovered
 }: SidebarProps) => {
     const location = useLocation();
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
     const { accent } = useTheme();
     const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -137,7 +137,7 @@ const Sidebar = ({
                     {renderNavLinks(true)}
                 </nav>
 
-                <div className="p-4 border-t border-gray-150 dark:border-slate-900">
+                <div className="p-4 border-t border-gray-150 dark:border-slate-900 space-y-2">
                     <div className="flex items-center gap-3 p-2 rounded-lg">
                         <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-800 overflow-hidden">
                             <img
@@ -151,6 +151,17 @@ const Sidebar = ({
                             <p className="text-xs text-gray-500 dark:text-slate-400 truncate">View Profile</p>
                         </div>
                     </div>
+                    {/* Logout */}
+                    <button
+                        onClick={() => {
+                            signOut();
+                            
+                        }}
+                        className="flex items-center gap-3 w-full px-5 py-4 rounded-lg text-sm font-medium text-red-200 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                    >
+                        <LogOut size={20} className="text-red-500" />
+                        <span className='py-6'>Logout</span>
+                    </button>
                 </div>
             </aside>
 
@@ -183,7 +194,7 @@ const Sidebar = ({
                     {renderNavLinks(isExpanded)}
                 </nav>
 
-                <div className="p-4 border-t border-gray-150 dark:border-slate-900">
+                <div className="p-4 pt-3 border-t border-gray-150 dark:border-slate-900 space-y-3">
                     <div 
                         onClick={() => setIsTabletToggled(!isTabletToggled)}
                         className="flex items-center gap-3 p-1 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
@@ -202,6 +213,23 @@ const Sidebar = ({
                             <p className="text-xs text-gray-500 dark:text-slate-400 truncate">View Profile</p>
                         </div>
                     </div>
+                    {/* Logout */}
+                    <button
+                        onClick={() => {
+                            signOut();
+                            window.location.href = '/login';
+                        }}
+                        className={`flex items-center gap-3 w-full py-2.5 px-4 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors cursor-pointer ${
+                            isExpanded ? '' : 'justify-center md:justify-center lg:justify-start'
+                        }`}
+                    >
+                        <LogOut size={20} className="min-w-[20px] text-red-500" />
+                        <span className={`transition-all duration-300 whitespace-nowrap overflow-hidden ${
+                            isExpanded ? 'opacity-100 max-w-xs' : 'opacity-0 max-w-0 md:hidden lg:opacity-100 lg:max-w-xs lg:block'
+                        }`}>
+                            Logout
+                        </span>
+                    </button>
                 </div>
             </aside>
         </>

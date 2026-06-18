@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { Profile, AuthContextType } from "@/types/common";
 import {getMe} from "@/services/authService"
 import { toast } from "sonner"
+import { useNavigate } from "react-router-dom"
 // import checkToken from "@/lib/authHelpers";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -10,6 +11,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Profile | null>(null);(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   async function getUserData() {
         setLoading(true);
@@ -37,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } finally {
           setTimeout(() => {
             setLoading(false);
-          }, 3000);
+          }, 1000);
         }
     }
 
@@ -48,7 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 
   const signOut = async () => {
-    
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    setUser(null);
+    navigate('/login');
   };
 
   return (
