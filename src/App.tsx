@@ -18,6 +18,7 @@ import { SettingsStep } from './features/dashboard/components/CreateSurvey/Setti
 import { ReviewSummaryStep } from './features/dashboard/components/CreateSurvey/ReviewSummaryStep';
 import { CreateSurveyProvider } from './contexts/CreateSurveyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from './components/ui/sonner';
 
 
@@ -34,9 +35,11 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard/" element={
+          <AuthProvider>
           <ThemeProvider>
             <DashboardLayout />
           </ThemeProvider>
+          </AuthProvider>
         } >
           <Route index element={<Dashboard />} />
           <Route path="/dashboard/create-survey" element={

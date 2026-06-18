@@ -1,31 +1,45 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import type { Session } from "@supabase/supabase-js";
 import type { Profile, AuthContextType } from "@/types/common";
+import {getMe} from "@/services/authService"
+import { toast } from "sonner"
+// import checkToken from "@/lib/authHelpers";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<Profile | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<Profile | null>(null);(null);
 
   async function getUserData() {
         // Get current user
-        
+        try {
+          const userDataExists = sessionStorage.getItem('user') !== null;
+          if (userDataExists) {
+            console.log("User data found in session storage.", userDataExists);
+            setUser(JSON.parse(sessionStorage.getItem('user')!));
+          }
+          if(!userDataExists) {
+            const response = await getMe();
+            console.log("Get Me response:", response.data);
+            const userData = {
+                userName: response.data.data.userName,
+                email: response.data.data.email,
+            }
+            sessionStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
+            console.log("User data fetched successfully:", userData);
+          }
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+            toast.error("Error fetching user data. Please try again.");
+        }
     }
 
   useEffect(() => {
     // Get initial session
-    
+    getUserData();
   }, []);
 
-  const signUp = async (email: string, password: string, userName: string) => {
-    
-  };
-
-  const signIn = async (email: string, password: string) => {
-    
-  };
 
   const signOut = async () => {
     
@@ -35,9 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
-        session,
-        signUp,
-        signIn,
         signOut,
       }}
     >

@@ -1,6 +1,6 @@
 import api from './axios';
 import type { signUpPayload, loginPayload } from '@/types';
-
+import { checkToken } from '@/lib/authHelpers';
 
 export async function signUp(payload:signUpPayload) {
     try {
@@ -24,6 +24,22 @@ export async function login(payload:loginPayload) {
         return response;
     } catch (error) {
         console.error('Sign In error:', error);
+        throw error;
+    }
+}
+
+export async function getMe() {
+    const isToken = checkToken() // Check if token exists in sessionStorage
+    if (!isToken) {
+        throw new Error('No token found. User is not authenticated.');
+    }
+    try {
+        const response = await api.get(
+            'api/v1/auth/me'
+        )
+        return response;
+    } catch (error) {
+        console.error('Get Me error:', error);
         throw error;
     }
 }

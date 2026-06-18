@@ -25,6 +25,7 @@ const Sidebar = ({
     const { user } = useAuth();
     const { accent } = useTheme();
     const sidebarRef = useRef<HTMLDivElement>(null);
+    console.log("Sidebar user data:", user);
 
     const isActive = (path: string) => {
         return location.pathname === path;
@@ -147,7 +148,7 @@ const Sidebar = ({
                             />
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-medium text-gray-900 dark:text-slate-100 truncate">{user?.user_name || "Loading..."}</p>
+                            <p className="text-sm font-medium text-gray-900 dark:text-slate-100 truncate">{user?.userName || "Loading..."}</p>
                             <p className="text-xs text-gray-500 dark:text-slate-400 truncate">View Profile</p>
                         </div>
                     </div>
@@ -198,7 +199,7 @@ const Sidebar = ({
                         <div className={`flex-1 overflow-hidden transition-all duration-300 ${
                             isExpanded ? 'opacity-100' : 'opacity-0 md:hidden lg:opacity-100 lg:block'
                         }`}>
-                            <p className="text-sm font-medium text-gray-900 dark:text-slate-100 truncate">{user?.user_name || "Loading..."}</p>
+                            <p className="text-sm font-medium text-gray-900 dark:text-slate-100 truncate">{user?.userName || "Loading..."}</p>
                             <p className="text-xs text-gray-500 dark:text-slate-400 truncate">View Profile</p>
                         </div>
                     </div>

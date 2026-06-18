@@ -31,9 +31,17 @@ function Login() {
         setLoading(true);
         console.log('Login Form Data:', data);
         try {
-            await login(data)
+            const response = await login(data)
+            // console.log("Login successful:", response.data);
+            // const userData = {
+            //     userName: response.data.data.user.userName,
+            //     email: response.data.data.user.email,
+            // }
+            // console.log("User data:", user);
+            const token = response.data.data.token;
+            sessionStorage.setItem('token', token);
             toast.success("Login successful! Redirecting to dashboard...");
-            // navigate("/dashboard/*")
+            navigate("/dashboard/")
         } catch (error: any) {
             const message = error.userMessage || error.response?.data?.message || error.message
             toast.error(message);
