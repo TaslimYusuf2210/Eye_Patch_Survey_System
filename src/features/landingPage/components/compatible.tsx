@@ -1,3 +1,5 @@
+import onlineSurvey from "../../../assets/onlineSurvey.svg";
+
 const data = [
     {
         icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512"><path fill="currentColor" d="M64 384h384v-42.67H64Zm0-106.67h384v-42.66H64ZM64 128v42.67h384V128Z" /></svg>,
@@ -23,7 +25,7 @@ const data = [
 
 function Compatible() {
     return (
-        <div className="flex flex-col lg:flex-row bg-custom-grey py-15 px-4 md:px-10 lg:px-20 gap-10">
+        <div id="compatible" className="flex flex-col lg:flex-row bg-custom-grey py-15 px-4 md:px-10 lg:px-20 gap-10">
             <div className="w-full lg:w-1/2">
                 <h2 className="font-semibold text-2xl md:text-3xl font-zalando-expanded mb-8">Compatible with <br /> your business</h2>
                 {data.map((item, index) => (
@@ -44,10 +46,8 @@ function Compatible() {
                 }
 
             </div>
-            <div className="w-full lg:w-1/2 hidden lg:flex items-center justify-center">
-                <div className="w-full h-full min-h-100 bg-gray-200/50 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400">
-                    Image Placeholder
-                </div>
+            <div className="w-full lg:w-1/2 hidden lg:flex items-center justify-center p-6">
+                <img src={onlineSurvey} alt="Online survey illustration" className="w-full h-full object-contain" />
             </div>
         </div>
     );

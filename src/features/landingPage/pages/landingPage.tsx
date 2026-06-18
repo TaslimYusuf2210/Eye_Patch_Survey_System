@@ -8,7 +8,7 @@ import Demo from "../components/demo";
 
 function LandingPage() {
     return (
-        <div className="pb-10">
+        <div className="pb-10 pt-8">
             <div>
                 <Hero></Hero>
             </div>

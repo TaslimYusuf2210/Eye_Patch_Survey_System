@@ -26,7 +26,7 @@ const info3 =
 
 function Info() {
     return (
-        <div className="flex justify-center items-center py-10 md:py-20 px-4 md:px-8">
+        <div id="features" className="flex justify-center items-center py-10 md:py-20 px-4 md:px-8">
             <p className="font-poppins text-base md:text-lg lg:text-xl max-w-xl text-left leading-relaxed">
                 Our survey management platform provides
                 <span className="mx-1"><InfoCard mainText={info1.mainText} image={info1.image} note={info1.note} /></span> and reporting,

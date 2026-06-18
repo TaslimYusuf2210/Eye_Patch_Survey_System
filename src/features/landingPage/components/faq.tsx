@@ -37,7 +37,7 @@ const faqData = [
 
 function FrequentlyAskedQuestion() {
   return (
-    <div className="flex flex-col lg:flex-row gap-10 px-4 md:px-10 lg:px-20 py-20 container mx-auto">
+    <div id="faq" className="flex flex-col lg:flex-row gap-10 px-4 md:px-10 lg:px-20 py-20 container mx-auto">
       <div className="space-y-6 w-full lg:w-1/2">
         <h2 className="font-semibold text-4xl lg:text-3xl font-zalando-expanded leading-tight">
           Frequently <br /> Asked <br /> Questions.

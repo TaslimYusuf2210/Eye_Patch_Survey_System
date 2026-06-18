@@ -21,7 +21,7 @@ const data = [
 
 function Impact() {
     return (
-        <div className="text-center bg-custom-grey pb-10 pt-12 px-4 md:px-8">
+        <div id="impact" className="text-center bg-custom-grey pb-10 pt-12 px-4 md:px-8">
             <h2 className="font-semibold text-2xl md:text-3xl font-zalando-expanded mb-4">Drive business success with <br className="hidden md:block" /> smarter data</h2>
             <p className="font-poppins text-sm md:text-base text-gray-600 max-w-2xl mx-auto">Our survey solutions capture valuable insights and fuel better business outcomes.</p>
             <div className="flex flex-col md:flex-row flex-wrap justify-center gap-6 mt-10 container mx-auto">
