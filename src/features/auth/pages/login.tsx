@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import type { LoginFormData } from '@/types/auth';
+import {login} from '@/services/authService'
+import { toast } from "sonner"
 
 const loginSchema = yup.object().shape({
     email: yup.string().email('Invalid email format').required('Email is required'),
@@ -28,9 +30,16 @@ function Login() {
     const onSubmit = async (data: LoginFormData) => {
         setLoading(true);
         console.log('Login Form Data:', data);
-        
-        setLoading(false);
-        navigate("/dashboard/*")
+        try {
+            await login(data)
+            toast.success("Login successful! Redirecting to dashboard...");
+            // navigate("/dashboard/*")
+        } catch (error: any) {
+            const message = error.userMessage || error.response?.data?.message || error.message
+            toast.error(message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

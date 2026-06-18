@@ -44,12 +44,12 @@ function Navbar() {
 
     return (
         <>
-            <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-200 flex justify-between items-center px-0 py-4 w-full max-w-360 mx-auto">
+            <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-200 flex justify-between items-center px-0 py-4 w-full max-w-360 mx-auto relative">
                 {/* Logo */}
                 <div className="font-gravitas md:text-xl text-base tracking-wide cursor-pointer">Eye_Patch</div>
 
-                {/* Desktop Nav Links - Center (lg screens only) */}
-                <div className="hidden lg:flex items-center gap-6 font-poppins text-sm">
+                {/* Desktop Nav Links - Perfectly centered (lg screens only) */}
+                <div className="hidden lg:flex items-center gap-6 font-poppins text-sm absolute left-1/2 -translate-x-1/2">
                     {navLinks.map((link) => (
                         <a key={link.href} href={link.href} onClick={(e) => handleSmoothScroll(e, link.href.slice(1))} className="text-gray-600 hover:text-black transition-colors">{link.label}</a>
                     ))}
