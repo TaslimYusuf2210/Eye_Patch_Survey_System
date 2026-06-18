@@ -11,7 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, Eye, EyeOff } from "lucide-react";
 import type { SignUpFormData } from "@/types/auth";
 import { signUp } from "@/services/authService";
 import { toast } from "sonner"
@@ -55,6 +55,8 @@ function SignUp() {
   const [uppercase, setUpperCase] = useState(false);
   const [number, setNumber] = useState(false);
   const [specialCharacter, setSpecialCharacter] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const passwordValue = watch("password", "");
@@ -94,10 +96,14 @@ function SignUp() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 font-poppins h-[100dvh]">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md my-auto max-h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Create an Account
-        </h2>
-
+        <div className="relative flex items-center mb-6">
+          <Link to="/" className="absolute left-0 text-gray-600 hover:text-black transition-colors cursor-pointer">
+            <ArrowLeft size={20} />
+          </Link>
+          <h2 className="text-2xl font-bold text-center text-gray-800 w-full">
+            Create an Account
+          </h2>
+        </div>
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -141,14 +147,23 @@ function SignUp() {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
-            <input
-              type="password"
-              {...register("password")}
-              className={`w-full px-4 py-2 border ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              } rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all`}
-              placeholder="Create a password"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                className={`w-full px-4 py-2 border ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all pr-10`}
+                placeholder="Create a password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.password.message}
@@ -367,14 +382,23 @@ function SignUp() {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Confirm Password
             </label>
-            <input
-              type="password"
-              {...register("confirmPassword")}
-              className={`w-full px-4 py-2 border ${
-                errors.confirmPassword ? "border-red-500" : "border-gray-300"
-              } rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all`}
-              placeholder="Confirm your password"
-            />
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                {...register("confirmPassword")}
+                className={`w-full px-4 py-2 border ${
+                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all pr-10`}
+                placeholder="Confirm your password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 cursor-pointer"
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             {errors.confirmPassword && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.confirmPassword.message}
