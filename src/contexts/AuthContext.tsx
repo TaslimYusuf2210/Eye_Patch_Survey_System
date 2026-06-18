@@ -9,8 +9,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Profile | null>(null);(null);
+  const [loading, setLoading] = useState(false);
 
   async function getUserData() {
+        setLoading(true);
         // Get current user
         try {
           const userDataExists = sessionStorage.getItem('user') !== null;
@@ -32,6 +34,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             console.error("Error fetching user data:", error);
             toast.error("Error fetching user data. Please try again.");
+        } finally {
+          setTimeout(() => {
+            setLoading(false);
+          }, 3000);
         }
     }
 
@@ -49,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
+        loading,
         signOut,
       }}
     >

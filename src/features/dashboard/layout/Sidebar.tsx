@@ -25,7 +25,6 @@ const Sidebar = ({
     const { user } = useAuth();
     const { accent } = useTheme();
     const sidebarRef = useRef<HTMLDivElement>(null);
-    console.log("Sidebar user data:", user);
 
     const isActive = (path: string) => {
         return location.pathname === path;

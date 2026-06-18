@@ -10,4 +10,5 @@ export interface Profile {
 export type AuthContextType = {
   user: Profile | null;
   signOut: () => Promise<void>;
+  loading: boolean;
 };

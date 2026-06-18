@@ -4,12 +4,16 @@ import { Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import themePictures, { preloadThemeImage } from '@/theme/themePictures';
+import { useAuth } from '@/contexts/AuthContext';
+import { LineSpinner } from "ldrs/react";
+import "ldrs/react/LineSpinner.css";
 
 const DashboardLayout = () => {
     const { picture } = useTheme();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isTabletToggled, setIsTabletToggled] = useState(false);
     const [isTabletHovered, setIsTabletHovered] = useState(false);
+    const { loading } = useAuth();
 
     useEffect(() => {
         if (picture && picture !== 'none') preloadThemeImage(picture as any);
@@ -45,6 +49,19 @@ const DashboardLayout = () => {
     }, [isMobileOpen]);
 
     const selected = picture ? themePictures[picture as keyof typeof themePictures] : themePictures.none;
+
+    if (loading) {
+        return (
+            <div className="w-screen h-screen flex justify-center items-center bg-slate-50 dark:bg-slate-900 text-gray-900 dark:text-slate-100 font-poppins transition-colors duration-300">
+                <LineSpinner 
+                size="40" 
+                stroke="3" 
+                speed="1" 
+                color="black"
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-gray-900 dark:text-slate-100 font-poppins transition-colors duration-300">
