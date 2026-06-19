@@ -1,9 +1,20 @@
 import { useState } from 'react';
 import { useTheme, type Appearance } from '../../../contexts/ThemeContext';
 import { type AccentColor } from '../../../types';
-import { Sun, Moon, Check, Sparkles, RotateCcw, Ban, Camera, Upload, Trash2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { Sun, Moon, Check, Sparkles, RotateCcw, Ban, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import themePictures, { type ThemePictureKey } from '@/theme/themePictures';
+import avatar1 from '@/assets/avatars/avatar1.svg';
+import avatar2 from '@/assets/avatars/avatar2.svg';
+import avatar3 from '@/assets/avatars/avatar3.svg';
+import avatar4 from '@/assets/avatars/avatar4.svg';
+import avatar5 from '@/assets/avatars/avatar5.svg';
+import avatar6 from '@/assets/avatars/avatar6.svg';
+import avatar7 from '@/assets/avatars/avatar7.svg';
+import avatar8 from '@/assets/avatars/avatar8.svg';
+import avatar9 from '@/assets/avatars/avatar9.svg';
+import avatar10 from '@/assets/avatars/avatar10.svg';
+import avatar11 from '@/assets/avatars/avatar11.svg';
 
 const baseModes = [
     { id: 'light' as Appearance, name: 'Light Mode', icon: Sun, description: 'Crisp and easy on the eyes' },
@@ -17,8 +28,14 @@ const colorAccents = [
     { id: 'purple' as AccentColor, name: 'Royal Purple', colorClass: 'bg-purple-600', activeClass: 'text-purple-600' }
 ];
 
+const avatarOptions = [
+    avatar1, avatar2, avatar3, avatar4, avatar5,
+    avatar6, avatar7, avatar8, avatar9, avatar10, avatar11,
+];
+
 const SettingsView = () => {
     const [activeTab, setActiveTab] = useState('profile');
+    const [selectedAvatar, setSelectedAvatar] = useState(avatarOptions[0]);
     const { appearance, accent, setAppearance, setAccent, picture, setPicture, textTitle, textSubtitle } = useTheme();
     const { user, signOut } = useAuth();
 
@@ -385,24 +402,41 @@ const SettingsView = () => {
                     </div>
                 ) : activeTab === 'profile' ? (
                     <div className="space-y-8">
-                        {/* ─────── Avatar Section ─────── */}
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pb-8 border-b border-gray-100 dark:border-slate-900">
-                            <div className="relative group">
-                                <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-slate-800 overflow-hidden">
-                                    <img
-                                        src="https://ui-avatars.com/api/?name=Indra+Lesmana&background=random"
-                                        alt="Avatar"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                                    <Camera size={22} className="text-white" />
-                                    <input type="file" accept="image/*" className="hidden" />
-                                </label>
-                            </div>
-                            <div>
+                        {/* ─────── Avatar Selection ─────── */}
+                        <div className="pb-8 border-b border-gray-100 dark:border-slate-900">
+                            <div className="mb-5">
                                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Profile Picture</h3>
-                                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Click the camera icon to upload a new avatar. Square images work best.</p>
+                                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Choose an avatar from the options below.</p>
+                            </div>
+
+                            {/* Preview */}
+                            <div className="flex items-center gap-5 mb-6 p-4 rounded-xl bg-gray-50 dark:bg-slate-900/50 border border-gray-100 dark:border-slate-800">
+                                <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-gray-200 dark:border-slate-700 shrink-0">
+                                    <img src={selectedAvatar} alt="Selected avatar" className="w-full h-full object-cover" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Avatar preview</p>
+                                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">This is how your avatar will appear.</p>
+                                </div>
+                                <button className="px-4 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer">
+                                    Confirm Selection
+                                </button>
+                            </div>
+
+                            <div className="flex items-center gap-4 flex-wrap">
+                                {avatarOptions.map((avatar, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setSelectedAvatar(avatar)}
+                                        className={`w-14 h-14 rounded-full overflow-hidden border-2 transition-all cursor-pointer ${
+                                            selectedAvatar === avatar
+                                                ? 'border-black dark:border-white ring-2 ring-black/10 dark:ring-white/20 scale-110'
+                                                : 'border-gray-200 dark:border-slate-800 hover:border-gray-400 dark:hover:border-slate-600'
+                                        }`}
+                                    >
+                                        <img src={avatar} alt={`Avatar ${index + 1}`} className="w-full h-full object-cover" />
+                                    </button>
+                                ))}
                             </div>
                         </div>
 
