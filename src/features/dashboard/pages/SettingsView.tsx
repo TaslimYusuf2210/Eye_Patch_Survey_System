@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTheme, type Appearance } from '../../../contexts/ThemeContext';
 import { type AccentColor } from '../../../types';
-import { Sun, Moon, Check, Sparkles, RotateCcw, Ban } from 'lucide-react';
+import { Sun, Moon, Check, Sparkles, RotateCcw, Ban, Camera, Upload, Trash2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import themePictures, { type ThemePictureKey } from '@/theme/themePictures';
 
 const baseModes = [
@@ -19,6 +20,7 @@ const colorAccents = [
 const SettingsView = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const { appearance, accent, setAppearance, setAccent, picture, setPicture, textTitle, textSubtitle } = useTheme();
+    const { user, signOut } = useAuth();
 
     const isDefaultTheme = accent === 'default';
 
@@ -381,14 +383,110 @@ const SettingsView = () => {
                             </div>
                         </div>
                     </div>
+                ) : activeTab === 'profile' ? (
+                    <div className="space-y-8">
+                        {/* ─────── Avatar Section ─────── */}
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pb-8 border-b border-gray-100 dark:border-slate-900">
+                            <div className="relative group">
+                                <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-slate-800 overflow-hidden">
+                                    <img
+                                        src="https://ui-avatars.com/api/?name=Indra+Lesmana&background=random"
+                                        alt="Avatar"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                                    <Camera size={22} className="text-white" />
+                                    <input type="file" accept="image/*" className="hidden" />
+                                </label>
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Profile Picture</h3>
+                                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Click the camera icon to upload a new avatar. Square images work best.</p>
+                            </div>
+                        </div>
+
+                        {/* ─────── Account Information ─────── */}
+                        <div className="space-y-6">
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Account Information</h3>
+                                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Update your profile details and email address.</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                {/* Email */}
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-medium text-gray-700 dark:text-slate-300">Email</label>
+                                    <div className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 text-sm text-gray-500 dark:text-slate-400 cursor-not-allowed">
+                                        {user?.email || "user@example.com"}
+                                    </div>
+                                    <p className="text-[10px] text-gray-400">Email cannot be changed.</p>
+                                </div>
+
+                                {/* Username */}
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-medium text-gray-700 dark:text-slate-300">Username</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            defaultValue={user?.userName || ""}
+                                            className="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all"
+                                            placeholder="Your username"
+                                        />
+                                        <button className="px-4 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer">
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ─────── Change Password ─────── */}
+                        <div className="space-y-6 pb-8 border-b border-gray-100 dark:border-slate-900">
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Change Password</h3>
+                                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Ensure your account is secure with a strong password.</p>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                {['New Password', 'Confirm Password'].map((field) => (
+                                    <div key={field} className="space-y-1.5">
+                                        <label className="text-xs font-medium text-gray-700 dark:text-slate-300">{field}</label>
+                                        <div className="relative">
+                                            <input
+                                                type="password"
+                                                className="w-full px-4 py-2.5 pr-10 rounded-lg border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition-all"
+                                                placeholder="••••••••"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <button className="px-5 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer">
+                                Update Password
+                            </button>
+                        </div>
+
+                        {/* ─────── Delete Account ─────── */}
+                        <div className="space-y-4">
+                            <div>
+                                <h3 className="text-sm font-semibold text-red-600 dark:text-red-400">Delete Account</h3>
+                                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">Permanently remove your account and all associated data. This action cannot be undone.</p>
+                            </div>
+                            <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer">
+                                <Trash2 size={16} />
+                                Delete my account
+                            </button>
+                        </div>
+                    </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="p-4 bg-gray-50 rounded-full mb-4">
+                        <div className="p-4 bg-gray-50 dark:bg-slate-900 rounded-full mb-4">
                             <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                             </svg>
                         </div>
-                        <h3 className="text-gray-900 font-medium mb-1">Feature coming soon</h3>
+                        <h3 className="text-gray-900 dark:text-white font-medium mb-1">Feature coming soon</h3>
                         <p className="text-gray-500 text-sm max-w-sm">
                             We are currently working on this feature. Check back later for updates.
                         </p>
