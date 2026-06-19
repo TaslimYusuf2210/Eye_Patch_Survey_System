@@ -19,3 +19,15 @@ export interface DashboardStats {
     new_questions: number;
   };
 }
+
+export interface RecentSurvey {
+  id: string;
+  title: string;
+  status: string;
+  description: string;
+  author_name: string;
+  author_avatar: string;
+  response_count: number;
+  response_limit: number;
+  created_at: string;
+}

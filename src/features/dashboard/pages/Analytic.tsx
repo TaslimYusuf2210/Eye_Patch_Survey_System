@@ -5,8 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Spiral } from 'ldrs/react'
 import 'ldrs/react/Spiral.css'
-import {getDashboardStats} from '@/services/dashboard/analytics';
-import type { DashboardStats } from '@/types';
+import {getDashboardStats, getRecentSurveys} from '@/services/dashboard/analytics';
+import type { DashboardStats, RecentSurvey } from '@/types';
 import {toast} from 'sonner';
 import { Bouncy } from 'ldrs/react'
 import 'ldrs/react/Bouncy.css'
@@ -16,6 +16,7 @@ const Analytic = () => {
     const { user } = useAuth();
     const { textTitle } = useTheme();
 
+    const [recentSurveys, setRecentSurveys] = useState<RecentSurvey[]>([]);
     const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null);
 
     useEffect(() => {
@@ -30,7 +31,19 @@ const Analytic = () => {
             }
         };
 
+        const fetchRecentSurveys = async () => {
+            try {
+                const response = await getRecentSurveys();
+                console.log('Recent Surveys:', response.data.data);
+                setRecentSurveys(response.data.data);
+            } catch (error) {
+                console.error('Error fetching recent surveys:', error);
+                toast.error('Error fetching recent surveys. Please refresh page or try again later.');
+            }
+        };
+
         fetchDashboardStats();
+        fetchRecentSurveys();
     }, []);
 
     // Statistics derived from the dashboardStats state, with fallbacks to "..." while loading
@@ -89,7 +102,7 @@ const Analytic = () => {
             <div className="grid grid-cols-1  gap-8">
                 {/* Recent Surveys */}
                 <div className="w-full lg:w-3/4">
-                    <RecentSurveyList />
+                    <RecentSurveyList surveys={recentSurveys} />
                 </div>
 
                 {/* Right Column (Placeholder for future widgets or just empty space as requested to remove "AI Power") */}
