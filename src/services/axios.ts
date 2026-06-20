@@ -29,17 +29,42 @@ api.interceptors.response.use(
   (error) => {
     let errorMessage = 'An unexpected error occurred';
 
-    if (error.response?.data) {
-      const data = error.response.data;
+    if (error.response) {
+      const status = error.response.status;
 
-      // Handle your backend's error format
-      if (data.message) {
-        errorMessage = data.message;
-      } else if (typeof data === 'string') {
-        errorMessage = data;
-      } else if (data.error) {
-        errorMessage = data.error;
+      switch (status) {
+        case 400:
+          errorMessage = 'Invalid request. Please check your input.';
+          break;
+        case 401:
+          errorMessage = 'Session expired. Please log in again.';
+          break;
+        case 403:
+          errorMessage = 'You do not have permission to perform this action.';
+          break;
+        case 404:
+          errorMessage = 'The requested resource was not found.';
+          break;
+        case 409:
+          errorMessage = 'A conflict occurred. The data may already exist.';
+          break;
+        case 422:
+          errorMessage = 'Validation failed. Please check your input.';
+          break;
+        case 429:
+          errorMessage = 'Too many requests. Please try again later.';
+          break;
+        case 500:
+          errorMessage = 'Server error. Please try again later.';
+          break;
+        case 503:
+          errorMessage = 'Service unavailable. Please try again later.';
+          break;
       }
+    } else if (error.code === 'ECONNABORTED') {
+      errorMessage = 'Request timed out. Please try again.';
+    } else if (!navigator.onLine) {
+      errorMessage = 'No internet connection.';
     } else if (error.message) {
       errorMessage = error.message;
     }

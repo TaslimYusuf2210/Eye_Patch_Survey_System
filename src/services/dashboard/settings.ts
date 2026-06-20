@@ -14,7 +14,7 @@ export async function getProfile() {
 export async function updateUserName (payload: { userName: string }) {
     try {
         const response = await api.put(
-            'api/v1/me/username',
+            'api/v1/users/me/username',
             payload
         )
         return response;
@@ -24,10 +24,10 @@ export async function updateUserName (payload: { userName: string }) {
     }
 }
 
-export async function updateAvatar (payload: { avatar: string | null }) {
+export async function updateAvatar (payload: { avatarUrl: string | null }) {
     try {
         const response = await api.put(
-            'api/v1/me/avatar',
+            'api/v1/users/me/avatar',
             payload
         )
         return response;

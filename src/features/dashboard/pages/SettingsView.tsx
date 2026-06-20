@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme, type Appearance } from '../../../contexts/ThemeContext';
 import { type AccentColor } from '../../../types';
 import { Sun, Moon } from 'lucide-react';
@@ -39,7 +39,7 @@ const SettingsView = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
     const { appearance, accent, setAppearance, setAccent, picture, setPicture, textTitle, textSubtitle } = useTheme();
-    const { user, profileData } = useAuth();
+    const { profileData } = useAuth();
 
     const isDefaultTheme = accent === 'default';
 
@@ -76,6 +76,12 @@ const SettingsView = () => {
         }
         setAppearance(mode);
     };
+
+    useEffect(() => {
+        if (profileData) {
+            setSelectedAvatar(profileData.avatar_url);
+        }
+    }, [profileData]);
 
     return (
         <div className="">
@@ -139,7 +145,7 @@ const SettingsView = () => {
                         selectedAvatar={selectedAvatar}
                         setSelectedAvatar={setSelectedAvatar}
                         avatarOptions={avatarOptions}
-                        user={user}
+                        user={profileData}
                         isDefaultTheme={isDefaultTheme}
                         textTitle={textTitle}
                         textSubtitle={textSubtitle}

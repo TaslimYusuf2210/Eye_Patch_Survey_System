@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import type { Profile } from '@/types/common';
+import type { UserProfile } from '@/types/common';
 import { updateUserName, updateAvatar } from '@/services/dashboard/settings';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -26,7 +26,7 @@ interface ProfileTabProps {
     selectedAvatar: string | null;
     setSelectedAvatar: (avatar: string) => void;
     avatarOptions: string[];
-    user: Profile | null;
+    user: UserProfile | null;
     isDefaultTheme: boolean;
     textTitle: string;
     textSubtitle: string;
@@ -47,7 +47,7 @@ const ProfileTab = ({
         formState: { errors: usernameErrors },
     } = useForm<{ userName: string }>({
         resolver: yupResolver(usernameSchema),
-        defaultValues: { userName: user?.userName || '' },
+        defaultValues: { userName: user?.user_name || '' },
     });
 
     const {
@@ -69,8 +69,13 @@ const ProfileTab = ({
     }
 
     async function handleAvatarChange(newAvatar: string | null) {
+        console.log('Selected avatar:', newAvatar);
+        if(!newAvatar) {
+            toast.error('Please select an avatar before confirming the change.');
+            return;
+        }
         try {
-            await updateAvatar({ avatar: newAvatar });
+            await updateAvatar({ avatarUrl: newAvatar });
             toast.success('Avatar updated successfully!');
         } catch (error) {
             console.error('Error updating avatar:', error);

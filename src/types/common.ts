@@ -1,10 +1,3 @@
-export interface Profile {
-  // id: string;
-  // created_at: string; // ISO timestamp
-  userName: string;
-  email: string;
-}
-
 export interface UserProfile {
   id: string;
   email: string;
@@ -19,7 +12,6 @@ export interface UserProfile {
 }
 
 export type AuthContextType = {
-  user: Profile | null;
   profileData: UserProfile | null;
   signOut: () => Promise<void>;
   loading: boolean;

@@ -13,7 +13,7 @@ import 'ldrs/react/Bouncy.css'
 
 
 const Analytic = () => {
-    const { user } = useAuth();
+    const { profileData } = useAuth();
     const { textTitle } = useTheme();
 
     const [recentSurveys, setRecentSurveys] = useState<RecentSurvey[]>([]);
@@ -61,7 +61,7 @@ const Analytic = () => {
             {/* Stats Grid */}
 
             <div className="mb-8">
-                <h1 className={`text-2xl font-bold ${textTitle} mb-6`}>Welcome {user?.userName || 
+                <h1 className={`text-2xl font-bold ${textTitle} mb-6`}>Welcome {profileData?.user_name || 
                     <Spiral
                     size="40"
                     speed="0.9"
