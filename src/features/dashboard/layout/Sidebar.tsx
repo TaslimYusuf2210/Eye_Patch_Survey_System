@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, FileText, MessageSquare, Users, Settings, PencilRuler, X, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { resolveAvatarUrl } from '@/lib/avatarMap';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useRef, useEffect } from 'react';
 
@@ -22,7 +23,7 @@ const Sidebar = ({
     setIsTabletHovered
 }: SidebarProps) => {
     const location = useLocation();
-    const { user, signOut } = useAuth();
+    const { profileData, signOut } = useAuth();
     const { accent } = useTheme();
     const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -141,13 +142,13 @@ const Sidebar = ({
                     <div className="flex items-center gap-3 p-2 rounded-lg">
                         <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-slate-800 overflow-hidden">
                             <img
-                                src="https://ui-avatars.com/api/?name=Indra+Lesmana&background=random"
+                                src={resolveAvatarUrl(profileData?.avatar_url)}
                                 alt="User"
                                 className="w-full h-full object-cover"
                             />
                         </div>
                         <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-medium text-gray-900 dark:text-slate-100 truncate">{user?.userName || "Loading..."}</p>
+                            <p className="text-sm font-medium text-gray-900 dark:text-slate-100 truncate">{profileData?.user_name || "Loading..."}</p>
                             <p className="text-xs text-gray-500 dark:text-slate-400 truncate">View Profile</p>
                         </div>
                     </div>
@@ -201,7 +202,7 @@ const Sidebar = ({
                     >
                         <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-slate-800 overflow-hidden shrink-0">
                             <img
-                                src="https://ui-avatars.com/api/?name=Indra+Lesmana&background=random"
+                                src={resolveAvatarUrl(profileData?.avatar_url)}
                                 alt="User"
                                 className="w-full h-full object-cover"
                             />
@@ -209,7 +210,7 @@ const Sidebar = ({
                         <div className={`flex-1 overflow-hidden transition-all duration-300 ${
                             isExpanded ? 'opacity-100' : 'opacity-0 md:hidden lg:opacity-100 lg:block'
                         }`}>
-                            <p className="text-sm font-medium text-gray-900 dark:text-slate-100 truncate">{user?.userName || "Loading..."}</p>
+                            <p className="text-sm font-medium text-gray-900 dark:text-slate-100 truncate">{profileData?.user_name || "Loading..."}</p>
                             <p className="text-xs text-gray-500 dark:text-slate-400 truncate">View Profile</p>
                         </div>
                     </div>
