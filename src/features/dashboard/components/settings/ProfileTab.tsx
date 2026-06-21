@@ -1,6 +1,7 @@
 import { Trash2 } from 'lucide-react';
 import type { UserProfile } from '@/types/common';
 import { updateUserName, updateAvatar } from '@/services/dashboard/settings';
+import {updatePassword} from '@/services/authService';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -100,11 +101,13 @@ const ProfileTab = ({
         }
     }
 
-    async function handlePasswordChange(data: { newPassword: string; confirmPassword: string }) {
-        // const payload = {
-        //     currentPassword
-        // }
+    async function handlePasswordChange(data: { currentPassword: string; newPassword: string; confirmPassword: string }) {
+        const payload = {
+            currentPassword: data.currentPassword,
+            newPassword: data.newPassword,
+        }
         try {
+            await updatePassword(payload);
             // TODO: Call update password endpoint
             console.log('Password data:', data);
             toast.success('Password updated successfully!');

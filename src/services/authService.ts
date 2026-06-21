@@ -48,3 +48,16 @@ export async function getMe() {
         throw error;
     }
 }
+
+export async function updatePassword(payload: { currentPassword: string; newPassword: string }) {
+    try {
+        const response = await api.put(
+            'api/v1/auth/password',
+            payload
+        )
+        return response;
+    } catch (error) {
+        console.error('Update Password error:', error);
+        throw error;
+     }
+}
