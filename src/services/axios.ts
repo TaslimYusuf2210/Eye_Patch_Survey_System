@@ -29,7 +29,10 @@ api.interceptors.response.use(
   (error) => {
     let errorMessage = 'An unexpected error occurred';
 
-    if (error.response) {
+    // Prefer the backend's specific message when available
+    if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error.response) {
       const status = error.response.status;
 
       switch (status) {

@@ -6,12 +6,16 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'sonner';
+import { DotSpinner } from 'ldrs/react'
+import 'ldrs/react/DotSpinner.css'
+
 
 const usernameSchema = yup.object().shape({
     userName: yup.string().required('Username is required'),
 });
 
 const passwordSchema = yup.object().shape({
+    currentPassword: yup.string().required('Current password is required'),
     newPassword: yup
         .string()
         .min(8, 'Password must be at least 8 characters')
@@ -54,17 +58,27 @@ const ProfileTab = ({
         register: registerPassword,
         handleSubmit: handleSubmitPassword,
         formState: { errors: passwordErrors },
-    } = useForm<{ newPassword: string; confirmPassword: string }>({
+    } = useForm<{ currentPassword: string; newPassword: string; confirmPassword: string }>({
         resolver: yupResolver(passwordSchema),
     });
 
+    const [avatarLoading, setAvatarLoading] = useState(false);
+    const [usernameLoading, setUsernameLoading] = useState(false);
+
     async function handleUsernameChange(data: { userName: string }) {
+        if (data.userName === user?.user_name) {
+            toast.error('New username cannot be the same as the current username.');
+            return;
+        }
+        setUsernameLoading(true);
         try {
             await updateUserName({ userName: data.userName });
             toast.success('Username updated successfully!');
         } catch (error) {
             console.error('Error updating username:', error);
             toast.error('Failed to update username.');
+        } finally {
+            setUsernameLoading(false);
         }
     }
 
@@ -74,16 +88,22 @@ const ProfileTab = ({
             toast.error('Please select an avatar before confirming the change.');
             return;
         }
+        setAvatarLoading(true);
         try {
             await updateAvatar({ avatarUrl: newAvatar });
             toast.success('Avatar updated successfully!');
         } catch (error) {
             console.error('Error updating avatar:', error);
             toast.error('Failed to update Avatar');
+        } finally {
+            setAvatarLoading(false);
         }
     }
 
     async function handlePasswordChange(data: { newPassword: string; confirmPassword: string }) {
+        // const payload = {
+        //     currentPassword
+        // }
         try {
             // TODO: Call update password endpoint
             console.log('Password data:', data);
@@ -118,12 +138,19 @@ const ProfileTab = ({
                     </div>
                     <button 
                     onClick={() => handleAvatarChange(selectedAvatar)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer ${
+                    disabled={avatarLoading}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-2 ${
+                        avatarLoading ? 'opacity-60 cursor-not-allowed' : ''
+                    } ${
                         isDefaultTheme
                             ? 'bg-black dark:bg-white text-white dark:text-black'
                             : 'bg-accent-600 text-white'
                     }`}>
-                        Confirm Change
+                        {avatarLoading ? (
+                            <DotSpinner size="18" speed="0.9" color="currentColor" />
+                        ) : (
+                            'Confirm Change'
+                        )}
                     </button>
                 </div>
 
@@ -158,7 +185,7 @@ const ProfileTab = ({
                     <div className="space-y-1.5">
                         <label className="text-xs font-medium text-gray-700 dark:text-slate-300">Email</label>
                         <div className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 text-sm text-gray-500 dark:text-slate-400 cursor-not-allowed">
-                            {user?.email || "user@example.com"}
+                            {user?.email || "Unable to fetch user email."}
                         </div>
                         <p className="text-[10px] text-gray-400">Email cannot be changed.</p>
                     </div>
@@ -181,13 +208,20 @@ const ProfileTab = ({
                             />
                             <button
                                 type="submit"
-                                className={`px-4 py-2.5 rounded-lg text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer ${
+                                disabled={usernameLoading}
+                                className={`px-4 py-2.5 rounded-lg text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-2 ${
+                                    usernameLoading ? 'opacity-60 cursor-not-allowed' : ''
+                                } ${
                                     isDefaultTheme
                                         ? 'bg-black dark:bg-white text-white dark:text-black'
                                         : 'bg-accent-600 text-white'
                                 }`}
                             >
-                                Save
+                                {usernameLoading ? (
+                                    <DotSpinner size="18" speed="0.9" color="currentColor" />
+                                ) : (
+                                    'Save'
+                                )}
                             </button>
                         </div>
                         {usernameErrors.userName && (
@@ -205,7 +239,27 @@ const ProfileTab = ({
                 </div>
 
                 <form onSubmit={handleSubmitPassword(handlePasswordChange)}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-gray-700 dark:text-slate-300">Current Password</label>
+                            <div className="relative">
+                                <input
+                                    type="password"
+                                    {...registerPassword('currentPassword')}
+                                    className={`w-full px-4 py-2.5 pr-10 rounded-lg border text-sm bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 transition-all ${
+                                        passwordErrors.currentPassword
+                                            ? 'border-red-500 focus:ring-red-500'
+                                            : isDefaultTheme
+                                                ? 'border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white focus:ring-black dark:focus:ring-white'
+                                                : 'border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white focus:ring-accent-600'
+                                    }`}
+                                    placeholder="••••••••"
+                                />
+                            </div>
+                            {passwordErrors.currentPassword && (
+                                <p className="text-red-500 text-xs mt-1">{passwordErrors.currentPassword.message}</p>
+                            )}
+                        </div>
                         <div className="space-y-1.5">
                             <label className="text-xs font-medium text-gray-700 dark:text-slate-300">New Password</label>
                             <div className="relative">
