@@ -25,9 +25,9 @@ const Analytic = () => {
                 const response = await getDashboardStats();
                 console.log('Dashboard Stats:', response.data);
                 setDashboardStats(response.data);
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error fetching dashboard stats:', error);
-                toast.error('Error fetching dashboard stats. Please refresh page or try again later.');
+                toast.error(error.userMessage || 'Error fetching dashboard stats. Please refresh page or try again later.');
             }
         };
 
@@ -36,9 +36,9 @@ const Analytic = () => {
                 const response = await getRecentSurveys();
                 console.log('Recent Surveys:', response.data.data);
                 setRecentSurveys(response.data.data);
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error fetching recent surveys:', error);
-                toast.error('Error fetching recent surveys. Please refresh page or try again later.');
+                toast.error(error.userMessage || 'Error fetching recent surveys. Please refresh page or try again later.');
             }
         };
 

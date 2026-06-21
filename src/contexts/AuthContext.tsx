@@ -39,9 +39,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               
             }
           }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error fetching user data:", error);
-            toast.error("Error fetching user data. Please try again.");
+            toast.error(error.userMessage || "Error fetching user data. Please try again.");
         } finally {
           setTimeout(() => {
             setLoading(false);

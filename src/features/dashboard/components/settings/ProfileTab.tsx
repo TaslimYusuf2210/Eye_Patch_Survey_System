@@ -79,9 +79,9 @@ const ProfileTab = ({
         try {
             await updateUserName({ userName: data.userName });
             toast.success('Username updated successfully!');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error updating username:', error);
-            toast.error('Failed to update username.');
+            toast.error(error.userMessage || 'Failed to update username.');
         } finally {
             setUsernameLoading(false);
         }
@@ -97,9 +97,9 @@ const ProfileTab = ({
         try {
             await updateAvatar({ avatarUrl: newAvatar });
             toast.success('Avatar updated successfully!');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error updating avatar:', error);
-            toast.error('Failed to update Avatar');
+            toast.error(error.userMessage || 'Failed to update Avatar');
         } finally {
             setAvatarLoading(false);
         }
@@ -115,9 +115,9 @@ const ProfileTab = ({
             resetPassword();
             console.log('Password data:', data);
             toast.success('Password updated successfully!');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error updating password:', error);
-            toast.error('Failed to update password.');
+            toast.error(error.userMessage || 'Failed to update password.');
         }
     }
 
