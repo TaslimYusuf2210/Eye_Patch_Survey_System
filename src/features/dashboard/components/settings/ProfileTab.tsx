@@ -1,4 +1,4 @@
-import { Trash2 } from 'lucide-react';
+import { Trash2, Eye, EyeOff } from 'lucide-react';
 import type { UserProfile } from '@/types/common';
 import { updateUserName, updateAvatar } from '@/services/dashboard/settings';
 import {updatePassword} from '@/services/authService';
@@ -58,6 +58,7 @@ const ProfileTab = ({
     const {
         register: registerPassword,
         handleSubmit: handleSubmitPassword,
+        reset: resetPassword,
         formState: { errors: passwordErrors },
     } = useForm<{ currentPassword: string; newPassword: string; confirmPassword: string }>({
         resolver: yupResolver(passwordSchema),
@@ -65,6 +66,9 @@ const ProfileTab = ({
 
     const [avatarLoading, setAvatarLoading] = useState(false);
     const [usernameLoading, setUsernameLoading] = useState(false);
+    const [showCurrentPwd, setShowCurrentPwd] = useState(false);
+    const [showNewPwd, setShowNewPwd] = useState(false);
+    const [showConfirmPwd, setShowConfirmPwd] = useState(false);
 
     async function handleUsernameChange(data: { userName: string }) {
         if (data.userName === user?.user_name) {
@@ -108,7 +112,7 @@ const ProfileTab = ({
         }
         try {
             await updatePassword(payload);
-            // TODO: Call update password endpoint
+            resetPassword();
             console.log('Password data:', data);
             toast.success('Password updated successfully!');
         } catch (error) {
@@ -247,7 +251,7 @@ const ProfileTab = ({
                             <label className="text-xs font-medium text-gray-700 dark:text-slate-300">Current Password</label>
                             <div className="relative">
                                 <input
-                                    type="password"
+                                    type={showCurrentPwd ? "text" : "password"}
                                     {...registerPassword('currentPassword')}
                                     className={`w-full px-4 py-2.5 pr-10 rounded-lg border text-sm bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 transition-all ${
                                         passwordErrors.currentPassword
@@ -258,6 +262,9 @@ const ProfileTab = ({
                                     }`}
                                     placeholder="••••••••"
                                 />
+                                <button type="button" onClick={() => setShowCurrentPwd(!showCurrentPwd)} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 cursor-pointer">
+                                    {showCurrentPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
                             {passwordErrors.currentPassword && (
                                 <p className="text-red-500 text-xs mt-1">{passwordErrors.currentPassword.message}</p>
@@ -267,7 +274,7 @@ const ProfileTab = ({
                             <label className="text-xs font-medium text-gray-700 dark:text-slate-300">New Password</label>
                             <div className="relative">
                                 <input
-                                    type="password"
+                                    type={showNewPwd ? "text" : "password"}
                                     {...registerPassword('newPassword')}
                                     className={`w-full px-4 py-2.5 pr-10 rounded-lg border text-sm bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 transition-all ${
                                         passwordErrors.newPassword
@@ -278,6 +285,9 @@ const ProfileTab = ({
                                     }`}
                                     placeholder="••••••••"
                                 />
+                                <button type="button" onClick={() => setShowNewPwd(!showNewPwd)} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 cursor-pointer">
+                                    {showNewPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
                             {passwordErrors.newPassword && (
                                 <p className="text-red-500 text-xs mt-1">{passwordErrors.newPassword.message}</p>
@@ -287,7 +297,7 @@ const ProfileTab = ({
                             <label className="text-xs font-medium text-gray-700 dark:text-slate-300">Confirm Password</label>
                             <div className="relative">
                                 <input
-                                    type="password"
+                                    type={showConfirmPwd ? "text" : "password"}
                                     {...registerPassword('confirmPassword')}
                                     className={`w-full px-4 py-2.5 pr-10 rounded-lg border text-sm bg-white dark:bg-slate-950 focus:outline-none focus:ring-2 transition-all ${
                                         passwordErrors.confirmPassword
@@ -298,6 +308,9 @@ const ProfileTab = ({
                                     }`}
                                     placeholder="••••••••"
                                 />
+                                <button type="button" onClick={() => setShowConfirmPwd(!showConfirmPwd)} className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 cursor-pointer">
+                                    {showConfirmPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
                             {passwordErrors.confirmPassword && (
                                 <p className="text-red-500 text-xs mt-1">{passwordErrors.confirmPassword.message}</p>
