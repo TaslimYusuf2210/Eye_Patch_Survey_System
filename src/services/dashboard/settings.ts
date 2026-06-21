@@ -36,3 +36,13 @@ export async function updateAvatar (payload: { avatarUrl: string | null }) {
         throw error;
     }
 }
+
+export async function deleteAccount() {
+    try {
+        const response = await api.delete('api/v1/users/me');
+        return response;
+    } catch (error) {
+        console.error('Delete Account error:', error);
+        throw error;
+    }
+}

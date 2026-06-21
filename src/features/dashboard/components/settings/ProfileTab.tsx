@@ -1,11 +1,18 @@
-import { Trash2, Eye, EyeOff } from 'lucide-react';
+import { Trash2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import type { UserProfile } from '@/types/common';
-import { updateUserName, updateAvatar } from '@/services/dashboard/settings';
+import { updateUserName, updateAvatar, deleteAccount } from '@/services/dashboard/settings';
 import {updatePassword} from '@/services/authService';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from 'sonner';
 import { DotSpinner } from 'ldrs/react'
 import 'ldrs/react/DotSpinner.css'
@@ -69,6 +76,16 @@ const ProfileTab = ({
     const [showCurrentPwd, setShowCurrentPwd] = useState(false);
     const [showNewPwd, setShowNewPwd] = useState(false);
     const [showConfirmPwd, setShowConfirmPwd] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deleteCode] = useState(() => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+    });
+    const [typedCode, setTypedCode] = useState('');
 
     async function handleUsernameChange(data: { userName: string }) {
         if (data.userName === user?.user_name) {
@@ -118,6 +135,18 @@ const ProfileTab = ({
         } catch (error: any) {
             console.error('Error updating password:', error);
             toast.error(error.userMessage || 'Failed to update password.');
+        }
+    }
+
+    async function handleAccountDeletion() {
+        try {
+            await deleteAccount();
+            toast.success('Account deleted successfully!');
+            setDeleteDialogOpen(false);
+            window.location.href = '/signup';
+        } catch (error: any) {
+            console.error('Error deleting account:', error);
+            toast.error(error.userMessage || 'Failed to delete account.');
         }
     }
 
@@ -336,11 +365,61 @@ const ProfileTab = ({
                     <h3 className="text-sm font-semibold text-red-600 dark:text-red-400">Delete Account</h3>
                     <p className={`text-xs ${textSubtitle} mt-1`}>Permanently remove your account and all associated data. This action cannot be undone.</p>
                 </div>
-                <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer">
+                <button
+                    onClick={() => setDeleteDialogOpen(true)}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
+                >
                     <Trash2 size={16} />
                     Delete my account
                 </button>
             </div>
+
+            {/* ─────── Delete Confirmation Dialog ─────── */}
+            <Dialog open={deleteDialogOpen} onOpenChange={(open) => { setDeleteDialogOpen(open); if (!open) setTypedCode(''); }}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 rounded-full bg-red-100 dark:bg-red-900/30">
+                                <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
+                            </div>
+                            <DialogTitle className="text-lg font-bold text-gray-900 dark:text-white">Delete Account</DialogTitle>
+                        </div>
+                        <DialogDescription className="text-sm text-gray-500 dark:text-slate-400 leading-relaxed">
+                            This action is <span className="font-semibold text-red-600 dark:text-red-400">permanent and cannot be undone</span>. 
+                            All your surveys, responses, and account data will be deleted immediately.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="space-y-4">
+                        <p className="text-sm text-gray-600 dark:text-slate-300">
+                            Please type <span className="font-mono font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded">{deleteCode}</span> below to confirm.
+                        </p>
+                        <input
+                            type="text"
+                            value={typedCode}
+                            onChange={(e) => setTypedCode(e.target.value)}
+                            placeholder="Enter the code above"
+                            className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+                        />
+                        <div className="flex items-center gap-3 justify-end">
+                            <button
+                                onClick={() => { setDeleteDialogOpen(false); setTypedCode(''); }}
+                                className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleAccountDeletion}
+                                disabled={typedCode !== deleteCode}
+                                className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                            >
+                                <Trash2 size={16} />
+                                Delete my account
+                            </button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
