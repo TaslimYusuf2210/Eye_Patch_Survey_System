@@ -67,7 +67,7 @@ export async function updateAppearanceAndAccent(payload: { appearance: string; a
     }
 }
 
-export async function updateThemePicture(payload: { themePicture: string }) {
+export async function updateThemePicture(payload: { theme_picture: string }) {
     try {
         const response = await api.put('api/v1/settings/theme-picture', payload);
         return response;

@@ -1,13 +1,24 @@
 import { Check, Sparkles, Save } from 'lucide-react';
 import themePictures, { type ThemePictureKey } from '@/theme/themePictures';
 import { useTheme } from '@/contexts/ThemeContext';
+import {toast} from 'sonner';
+import {updateThemePicture} from '@/services/dashboard/settings'
 
 const ThemeTab = () => {
     const { picture, setPicture, accent } = useTheme();
     const isDefaultTheme = accent === 'default';
 
-    const handleSaveChanges = () => {
+    async function handleSaveChanges () {
+        const payload = { theme_picture: picture };
         console.log('Theme payload:', { theme_picture: picture });
+        try {
+            // Call API to update theme picture
+            await updateThemePicture(payload);
+            toast.success("Theme picture updated successfully.");
+        } catch (error) {
+            toast.error("Failed to update theme picture.");
+            console.log(error);
+        }
     };
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
