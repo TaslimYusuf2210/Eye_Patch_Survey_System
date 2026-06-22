@@ -1,6 +1,8 @@
 import { Sun, Moon, Check, Sparkles, RotateCcw, Ban, Save } from 'lucide-react';
 import { type AccentColor } from '@/types';
 import { type Appearance, useTheme } from '@/contexts/ThemeContext';
+import { updateAppearanceAndAccent } from '@/services/dashboard/settings';
+import {toast} from 'sonner';
 
 const baseModes = [
     { id: 'light' as Appearance, name: 'Light Mode', icon: Sun, description: 'Crisp and easy on the eyes' },
@@ -45,8 +47,17 @@ const AppearanceTab = () => {
         setAppearance(mode);
     };
 
-    const handleSaveChanges = () => {
-        console.log('Appearance payload:', { appearance, accent_color: accent });
+    const handleSaveChanges = async () => {
+        const payload = {
+            appearance, accent_color: accent 
+        }
+        try {
+            await updateAppearanceAndAccent(payload);
+            toast.success("Appearance settings updated successfully.");
+        } catch (error) {
+            toast.error("Failed to update appearance settings.");
+            console.log(error)
+        }
     };
 
     return (
@@ -176,7 +187,11 @@ const AppearanceTab = () => {
                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-800">
                     <button
                         onClick={handleSaveChanges}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer ${
+                            isDefaultTheme
+                                ? 'bg-black dark:bg-white text-white dark:text-black'
+                                : 'bg-accent-600 text-white'
+                        }`}
                     >
                         <Save className="w-4 h-4" />
                         Save Changes

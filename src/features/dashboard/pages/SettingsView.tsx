@@ -121,12 +121,9 @@ const SettingsView = () => {
                 </div>
 
                 {activeTab === 'appearance' ? (
-                    <AppearanceTab />
+                <AppearanceTab />
                 ) : activeTab === 'theme' ? (
-                    <ThemeTab
-                        picture={picture}
-                        setPicture={setPicture}
-                    />
+                    <ThemeTab />
                 ) : activeTab === 'profile' ? (
                     <ProfileTab
                         selectedAvatar={selectedAvatar}
