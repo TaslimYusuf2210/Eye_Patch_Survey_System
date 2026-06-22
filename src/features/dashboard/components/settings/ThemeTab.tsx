@@ -1,4 +1,4 @@
-import { Check, Sparkles } from 'lucide-react';
+import { Check, Sparkles, Save } from 'lucide-react';
 import themePictures, { type ThemePictureKey } from '@/theme/themePictures';
 
 interface ThemeTabProps {
@@ -53,6 +53,17 @@ const ThemeTab = ({ picture, setPicture }: ThemeTabProps) => {
                         className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors text-sm text-gray-600 dark:text-slate-400"
                     >
                         Disable Theme Picture
+                    </button>
+                </div>
+
+                {/* Save Button */}
+                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-800">
+                    <button
+                        onClick={() => console.log('Theme payload:', { theme_picture: picture })}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
+                    >
+                        <Save className="w-4 h-4" />
+                        Save Changes
                     </button>
                 </div>
             </div>

@@ -121,20 +121,7 @@ const SettingsView = () => {
                 </div>
 
                 {activeTab === 'appearance' ? (
-                    <AppearanceTab
-                        appearance={appearance}
-                        accent={accent}
-                        isDefaultTheme={isDefaultTheme}
-                        baseModes={baseModes}
-                        colorAccents={colorAccents}
-                        getAccentBgClass={getAccentBgClass}
-                        getPreviewAccentTextClass={getPreviewAccentTextClass}
-                        handleSelectDefault={handleSelectDefault}
-                        handleSetAppearance={handleSetAppearance}
-                        setAccent={setAccent}
-                        setAppearance={setAppearance}
-                        textTitle={textTitle}
-                    />
+                    <AppearanceTab />
                 ) : activeTab === 'theme' ? (
                     <ThemeTab
                         picture={picture}

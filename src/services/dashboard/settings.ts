@@ -46,3 +46,33 @@ export async function deleteAccount() {
         throw error;
     }
 }
+
+export async function getUserSettings() {
+    try {
+        const response = await api.get('api/v1/settings');
+        return response.data;
+    } catch (error) {
+        console.error('Get User Settings error:', error);
+        throw error;
+    }
+}
+
+export async function updateAppearanceAndAccent(payload: { appearance: string; accent_color: string }) {
+    try {
+        const response = await api.put('api/v1/settings/appearance-accent', payload);
+        return response;
+    } catch (error) {
+        console.error('Update Appearance and Accent error:', error);
+        throw error;
+    }
+}
+
+export async function updateThemePicture(payload: { themePicture: string }) {
+    try {
+        const response = await api.put('api/v1/settings/theme-picture', payload);
+        return response;
+    } catch (error) {
+        console.error('Update Theme Picture error:', error);
+        throw error;
+    }
+}

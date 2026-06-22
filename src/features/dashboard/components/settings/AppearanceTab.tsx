@@ -1,35 +1,54 @@
-import { Sun, Moon, Check, Sparkles, RotateCcw, Ban } from 'lucide-react';
-import { type Appearance, type AccentColor } from '@/types';
+import { Sun, Moon, Check, Sparkles, RotateCcw, Ban, Save } from 'lucide-react';
+import { type AccentColor } from '@/types';
+import { type Appearance, useTheme } from '@/contexts/ThemeContext';
 
-interface AppearanceTabProps {
-    appearance: Appearance;
-    accent: AccentColor;
-    isDefaultTheme: boolean;
-    baseModes: { id: Appearance; name: string; icon: typeof Sun; description: string }[];
-    colorAccents: { id: AccentColor; name: string; colorClass: string; activeClass: string }[];
-    getAccentBgClass: (color: AccentColor) => string;
-    getPreviewAccentTextClass: () => string;
-    handleSelectDefault: () => void;
-    handleSetAppearance: (mode: Appearance) => void;
-    setAccent: (color: AccentColor) => void;
-    setAppearance: (mode: Appearance) => void;
-    textTitle: string;
-}
+const baseModes = [
+    { id: 'light' as Appearance, name: 'Light Mode', icon: Sun, description: 'Crisp and easy on the eyes' },
+    { id: 'dark' as Appearance, name: 'Dark Mode', icon: Moon, description: 'Easy for low-light environments' }
+];
 
-const AppearanceTab = ({
-    appearance,
-    accent,
-    isDefaultTheme,
-    baseModes,
-    colorAccents,
-    getAccentBgClass,
-    getPreviewAccentTextClass,
-    handleSelectDefault,
-    handleSetAppearance,
-    setAccent,
-    setAppearance,
-    textTitle,
-}: AppearanceTabProps) => {
+const colorAccents = [
+    { id: 'blue' as AccentColor, name: 'Ocean Blue', colorClass: 'bg-blue-600', activeClass: 'text-blue-600' },
+    { id: 'green' as AccentColor, name: 'Forest Green', colorClass: 'bg-emerald-600', activeClass: 'text-emerald-600' },
+    { id: 'red' as AccentColor, name: 'Crimson Red', colorClass: 'bg-rose-600', activeClass: 'text-rose-600' },
+    { id: 'purple' as AccentColor, name: 'Royal Purple', colorClass: 'bg-purple-600', activeClass: 'text-purple-600' }
+];
+
+const AppearanceTab = () => {
+    const { appearance, accent, setAppearance, setAccent, textTitle } = useTheme();
+    const isDefaultTheme = accent === 'default';
+
+    const getAccentBgClass = (color: AccentColor) => {
+        switch (color) {
+            case 'green': return 'bg-emerald-600';
+            case 'red': return 'bg-rose-600';
+            case 'purple': return 'bg-purple-600';
+            case 'blue': return 'bg-blue-600';
+            default: return 'bg-gray-600';
+        }
+    };
+
+    const getPreviewAccentTextClass = () => {
+        if (isDefaultTheme) return 'text-gray-600';
+        const found = colorAccents.find(a => a.id === accent);
+        return found?.activeClass ?? 'text-gray-600';
+    };
+
+    const handleSelectDefault = () => {
+        setAccent('default');
+    };
+
+    const handleSetAppearance = (mode: Appearance) => {
+        if (isDefaultTheme) {
+            setAccent('blue');
+        }
+        setAppearance(mode);
+    };
+
+    const handleSaveChanges = () => {
+        console.log('Appearance payload:', { appearance, accent_color: accent });
+    };
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Settings Form */}
@@ -150,6 +169,17 @@ const AppearanceTab = ({
                     >
                         <RotateCcw className="w-3.5 h-3.5" />
                         Reset to Default
+                    </button>
+                </div>
+
+                {/* Save Button */}
+                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-800">
+                    <button
+                        onClick={handleSaveChanges}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer"
+                    >
+                        <Save className="w-4 h-4" />
+                        Save Changes
                     </button>
                 </div>
             </div>
