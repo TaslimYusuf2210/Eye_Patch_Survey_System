@@ -7,7 +7,7 @@ import SignUp from './features/auth/pages/signup';
 import Dashboard from './features/dashboard/pages/dashboard';
 import CreateSurvey from './features/dashboard/pages/CreateSurvey';
 import DashboardLayout from './features/dashboard/layout/DashboardLayout';
-import SurveyDetail from './features/dashboard/pages/SurveyDetail';
+import SurveyList from './features/dashboard/pages/SurveyList';
 import SurveyResponses from './features/dashboard/pages/SurveyResponses';
 import ParticipantList from './features/dashboard/pages/ParticipantList';
 import SettingsView from './features/dashboard/pages/SettingsView';
@@ -54,7 +54,7 @@ function App() {
             <Route path='/dashboard/create-survey/survey-settings' element={<SettingsStep/>}></Route>
             <Route path='/dashboard/create-survey/survey-review' element={<ReviewSummaryStep/>}></Route>
           </Route>
-          <Route path="/dashboard/surveys" element={<SurveyDetail />} />
+          <Route path="/dashboard/surveys" element={<SurveyList />} />
           <Route path="/dashboard/responses" element={<SurveyResponses />} />
           <Route path="/dashboard/participant" element={<ParticipantList />} />
           <Route path="/dashboard/settings" element={<SettingsView />} />
