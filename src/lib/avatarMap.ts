@@ -28,9 +28,7 @@ export function resolveAvatarUrl(path: string | null | undefined): string {
   if (!path) return 'https://ui-avatars.com/api/?name=User&background=random';
   
   const filename = path.split('/').pop();
-  console.log("filename",filename)
   if (filename && avatarMap[filename]) {
-      console.log(avatarMap[filename])
     return avatarMap[filename];
   }
   
