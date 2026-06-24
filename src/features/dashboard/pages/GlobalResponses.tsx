@@ -14,6 +14,13 @@ interface GlobalResponseItem {
     time_taken_sec: number;
 }
 
+interface GlobalResponseDisplay {
+    survey_title: string;
+    respondent_email: string;
+    completed_at: string;
+    time_taken_sec: number;
+}
+
 interface PaginationInfo {
     page: number;
     limit: number;
@@ -23,7 +30,7 @@ interface PaginationInfo {
 
 const GlobalResponses = () => {
     const { textTitle } = useTheme();
-    const [responses, setResponses] = useState<GlobalResponseItem[]>([]);
+    const [responses, setResponses] = useState<GlobalResponseDisplay[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>()
 
     const columns = [
@@ -37,7 +44,13 @@ const GlobalResponses = () => {
         async function getResponses() {
             try {
                 const response = await getGlobalResponse()
-                setResponses(response.data)
+                const mapped = response.data.map((item: GlobalResponseItem) => ({
+                    survey_title: item.survey_title,
+                    respondent_email: item.respondent_email,
+                    completed_at: item.completed_at,
+                    time_taken_sec: item.time_taken_sec,
+                }))
+                setResponses(mapped)
                 setPagination(response.pagination)
             } catch (error) {
                 console.log(error)
