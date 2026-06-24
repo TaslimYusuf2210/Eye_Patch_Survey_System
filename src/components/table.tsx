@@ -24,6 +24,9 @@ interface tableProps<T extends Record<string, any>> {
   onSelectionChange?: (selectedIds: (string | number)[]) => void;
   rowKey?: string;
   responsive?: boolean;
+  totalItems?: number;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
 }
 
 // ─────────────────────────────────────────────────────────
@@ -63,6 +66,9 @@ function Table<T extends Record<string, any>>({
   onSelectionChange,
   rowKey = "id",
   responsive = false,
+  totalItems,
+  currentPage: controlledPage,
+  onPageChange,
 }: tableProps<T>) {
   // ── State ──
   const [actionOpen, setActionOpen] = useState(false);
@@ -70,15 +76,25 @@ function Table<T extends Record<string, any>>({
   const [searchQuery, setSearchQuery] = useState("");
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [internalPage, setInternalPage] = useState(1);
   const [internalSelectedIds, setInternalSelectedIds] = useState<(string | number)[]>([]);
 
   const selectedIds = controlledSelectedIds ?? internalSelectedIds;
+  const currentPage = controlledPage ?? internalPage;
+  const setCurrentPage = (page: number) => {
+    if (controlledPage !== undefined) {
+      onPageChange?.(page);
+    } else {
+      setInternalPage(page);
+    }
+  };
 
-  // Reset page when filters change
+  // Reset internal page when filters change (only in uncontrolled mode)
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, sortKey, sortDirection]);
+    if (controlledPage === undefined) {
+      setInternalPage(1);
+    }
+  }, [searchQuery, sortKey, sortDirection, controlledPage]);
 
   // ── Derived data ──
   const filteredData = useMemo(() => {
@@ -106,7 +122,8 @@ function Table<T extends Record<string, any>>({
     return result;
   }, [data, searchQuery, sortKey, sortDirection]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
+  const itemCount = totalItems ?? filteredData.length;
+  const totalPages = Math.max(1, Math.ceil(itemCount / pageSize));
   const safePage = Math.min(currentPage, totalPages);
 
   const paginatedData = useMemo(() => {
@@ -267,7 +284,7 @@ function Table<T extends Record<string, any>>({
           {/* Prev */}
           <button
             disabled={safePage === 1}
-            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            onClick={() => setCurrentPage(safePage - 1)}
             className={`${btnBase} ${
               safePage === 1
                 ? "text-gray-300 dark:text-slate-600 cursor-not-allowed"
@@ -300,7 +317,7 @@ function Table<T extends Record<string, any>>({
           {/* Next */}
           <button
             disabled={safePage === totalPages}
-            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            onClick={() => setCurrentPage(safePage + 1)}
             className={`${btnBase} ${
               safePage === totalPages
                 ? "text-gray-300 dark:text-slate-600 cursor-not-allowed"

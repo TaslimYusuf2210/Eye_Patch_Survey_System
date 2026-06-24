@@ -1,6 +1,6 @@
 import api from "../axios"
 
-export async function getGlobalResponse(params: {
+export async function getGlobalResponse(params?: {
     page?: number,
     limit?: number,
 }) {
