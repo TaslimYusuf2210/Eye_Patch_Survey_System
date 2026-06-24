@@ -9,7 +9,7 @@ import CreateSurvey from './features/dashboard/pages/CreateSurvey';
 import DashboardLayout from './features/dashboard/layout/DashboardLayout';
 import SurveyList from './features/dashboard/pages/SurveyList';
 import SurveyResponses from './features/dashboard/pages/SurveyResponses';
-import ParticipantList from './features/dashboard/pages/ParticipantList';
+import GlobalParticipants from './features/dashboard/pages/GlobalParticipants';
 import SettingsView from './features/dashboard/pages/SettingsView';
 import { SurveyInformationStep } from './features/dashboard/components/CreateSurvey/SurveyInformationStep';
 import { SectionsAndQuestionsStep } from './features/dashboard/components/CreateSurvey/SectionsAndQuestionsStep';
@@ -57,7 +57,7 @@ function App() {
           </Route>
           <Route path="/dashboard/surveys" element={<SurveyList />} />
           <Route path="/dashboard/responses" element={<GlobalResponses />} />
-          <Route path="/dashboard/participant" element={<ParticipantList />} />
+          <Route path="/dashboard/participant" element={<GlobalParticipants />} />
           <Route path="/dashboard/settings" element={<SettingsView />} />
         </Route>
       </Routes>

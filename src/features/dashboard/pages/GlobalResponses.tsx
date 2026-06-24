@@ -32,6 +32,7 @@ const GlobalResponses = () => {
     const { textTitle } = useTheme();
     const [responses, setResponses] = useState<GlobalResponseDisplay[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>()
+    const [loading, setLoading] = useState(false)
 
     const columns = [
         { name: "Survey", key: "survey_title" },
@@ -42,6 +43,7 @@ const GlobalResponses = () => {
 
     useEffect(() => {
         async function getResponses() {
+            setLoading(true)
             try {
                 const response = await getGlobalResponse()
                 const mapped = response.data.map((item: GlobalResponseItem) => ({
@@ -55,6 +57,8 @@ const GlobalResponses = () => {
             } catch (error) {
                 console.log(error)
                 toast.error("Failed to get global response")
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -74,6 +78,7 @@ const GlobalResponses = () => {
                 onView={(row) => console.log(row)}
                 searchable
                 sortable
+                loading={loading}
                 emptyMessage="No responses yet"
                 totalItems={pagination?.total}
                 currentPage={pagination?.page}
