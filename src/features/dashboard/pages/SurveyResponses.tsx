@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import Table from '../../../components/table';
@@ -6,6 +7,14 @@ import { useTheme } from '@/contexts/ThemeContext';
 const SurveyResponses = () => {
     const { id } = useParams();
     const { textTitle } = useTheme();
+    const [responses] = useState<any[]>([]);
+
+    const columns = [
+        { name: "Respondent", key: "respondent" },
+        { name: "Email", key: "email" },
+        { name: "Date", key: "date" },
+        { name: "Status", key: "status" },
+    ];
 
     return (
         <>
@@ -23,7 +32,15 @@ const SurveyResponses = () => {
                 <h1 className={`text-2xl font-bold ${textTitle}`}>Responses for [Survey Title]</h1>
             </div>
 
-            <Table/>
+            <Table
+                columns={columns}
+                data={responses}
+                actions={['view']}
+                onView={(row) => console.log(row)}
+                searchable
+                sortable
+                emptyMessage="No responses yet"
+            />
         </>
     );
 };

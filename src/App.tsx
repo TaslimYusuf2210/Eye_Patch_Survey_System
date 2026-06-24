@@ -20,6 +20,7 @@ import { CreateSurveyProvider } from './contexts/CreateSurveyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from './components/ui/sonner';
+import GlobalResponses from './features/dashboard/pages/GlobalResponses';
 
 
 function App() {
@@ -55,7 +56,7 @@ function App() {
             <Route path='/dashboard/create-survey/survey-review' element={<ReviewSummaryStep/>}></Route>
           </Route>
           <Route path="/dashboard/surveys" element={<SurveyList />} />
-          <Route path="/dashboard/responses" element={<SurveyResponses />} />
+          <Route path="/dashboard/responses" element={<GlobalResponses />} />
           <Route path="/dashboard/participant" element={<ParticipantList />} />
           <Route path="/dashboard/settings" element={<SettingsView />} />
         </Route>
