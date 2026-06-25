@@ -23,6 +23,8 @@ import { Toaster } from './components/ui/sonner';
 import Participants from './features/dashboard/pages/Participants';
 import GlobalResponses from './features/dashboard/pages/GlobalResponses';
 import Responses from './features/dashboard/pages/Responses';
+import ResponseDetail from './features/dashboard/pages/ResponseDetail';
+import ParticipantDetail from './features/dashboard/pages/ParticipantDetail';
 
 
 function App() {
@@ -60,11 +62,11 @@ function App() {
           <Route path="/dashboard/surveys" element={<SurveyList />} />
           <Route path="/dashboard/responses" element={<Responses />}>
             <Route index element={<GlobalResponses/>}></Route>
-            <Route path="/dashboard/responses/:id"></Route>
+            <Route path="/dashboard/responses/:id" element={<ResponseDetail />}></Route>
           </Route>
           <Route path="/dashboard/participant" element={<Participants />}>
             <Route index element={<GlobalParticipants/>}></Route>
-            <Route path="/dashboard/participant/:id"></Route>
+            <Route path="/dashboard/participant/:id" element={<ParticipantDetail />}></Route>
           </Route>
           <Route path="/dashboard/settings" element={<SettingsView />} />
         </Route>

@@ -3,6 +3,7 @@ import Table from '../../../components/table';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getGlobalParticipants } from '@/services/dashboard/participants';
 import { toast } from "sonner"
+import { useNavigate } from 'react-router-dom';
 
 
 interface ParticipantItem {
@@ -15,6 +16,7 @@ interface ParticipantItem {
 }
 
 interface ParticipantDisplay {
+    id: string;
     name: string;
     email: string;
     response_count: number;
@@ -33,6 +35,8 @@ const GlobalParticipants = () => {
     const [pagination, setPagination] = useState<PaginationInfo>()
     const [loading, setLoading] = useState(false)
 
+    const navigate = useNavigate()
+
     const columns = [
         { name: "Name", key: "name" },
         { name: "Email", key: "email" },
@@ -45,6 +49,7 @@ const GlobalParticipants = () => {
             try {
                 const response = await getGlobalParticipants()
                 const mapped = response.data.map((item: ParticipantItem) => ({
+                    id: item.id,
                     name: item.name,
                     email: item.email,
                     response_count: item.response_count,
@@ -72,7 +77,9 @@ const GlobalParticipants = () => {
                 columns={columns}
                 data={participants}
                 actions={['view']}
-                onView={(row) => console.log(row)}
+                onView={(row) => navigate(`/dashboard/participant/${row.id}`, {
+                    state: { participantName: row.name }
+                })}
                 searchable
                 sortable
                 loading={loading}

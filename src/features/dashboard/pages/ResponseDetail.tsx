@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
 import Table from '../../../components/table';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getGlobalResponse } from '@/services/dashboard/responses';
-import {toast} from "sonner"
-import { useNavigate } from 'react-router-dom';
+import { toast } from "sonner"
 
-interface GlobalResponseItem {
+interface ResponseItem {
     id: string;
     survey_id: string;
     survey_title: string;
@@ -15,12 +16,10 @@ interface GlobalResponseItem {
     time_taken_sec: number;
 }
 
-interface GlobalResponseDisplay {
-    survey_title: string;
+interface ResponseDisplay {
     respondent_email: string;
     completed_at: string;
     time_taken_sec: number;
-    survey_id: string;
 }
 
 interface PaginationInfo {
@@ -30,67 +29,71 @@ interface PaginationInfo {
     totalPages: number;
 }
 
-const GlobalResponses = () => {
+const ResponseDetail = () => {
+    const { id } = useParams();
+    const location = useLocation();
     const { textTitle } = useTheme();
-    const [responses, setResponses] = useState<GlobalResponseDisplay[]>([]);
+    const surveyTitle = (location.state as { surveyTitle?: string })?.surveyTitle;
+
+    const [responses, setResponses] = useState<ResponseDisplay[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>()
     const [loading, setLoading] = useState(false)
 
-    const navigate = useNavigate()
-
     const columns = [
-        { name: "Survey", key: "survey_title" },
         { name: "Email", key: "respondent_email" },
         { name: "Date", key: "completed_at" },
         { name: "Time Taken", key: "time_taken_sec" },
     ];
 
     useEffect(() => {
-        async function getResponses() {
+        async function fetchResponses() {
             setLoading(true)
             try {
-                const response = await getGlobalResponse()
-                const mapped = response.data.map((item: GlobalResponseItem) => ({
-                    survey_title: item.survey_title,
+                // TODO: Replace with filtered endpoint when ready
+                // const response = await getSurveyResponses(id)
+                const response = await getGlobalResponse({ page: 1, limit: 20 })
+                const mapped = response.data.map((item: ResponseItem) => ({
                     respondent_email: item.respondent_email,
                     completed_at: item.completed_at,
                     time_taken_sec: item.time_taken_sec,
-                    survey_id: item.survey_id,
                 }))
                 setResponses(mapped)
                 setPagination(response.pagination)
             } catch (error) {
                 console.log(error)
-                toast.error("Failed to get global response")
+                toast.error("Failed to load responses")
             } finally {
                 setLoading(false)
             }
         }
 
-        getResponses()
-    }, [])
-
-    function onView (row:GlobalResponseDisplay) {
-        navigate(`/dashboard/responses/${row.survey_id}`, {
-            state: { surveyTitle: row.survey_title }
-        })
-    }
+        fetchResponses()
+    }, [id])
 
     return (
         <>
+            {/* Header */}
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400 mb-8">
+                <Link to="/dashboard/responses" className="hover:text-slate-900 dark:hover:text-white flex items-center gap-1">
+                    <ChevronLeft size={16} />
+                    Back to Responses
+                </Link>
+            </div>
+
             <div className="mb-8">
-                <h1 className={`text-2xl font-bold ${textTitle}`}>Global Responses</h1>
+                <h1 className={`text-2xl font-bold ${textTitle}`}>{surveyTitle ?? "Survey Responses"}</h1>
+                <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Survey ID: {id}</p>
             </div>
 
             <Table
                 columns={columns}
                 data={responses}
                 actions={['view']}
-                onView={onView}
+                onView={(row) => console.log(row)}
                 searchable
                 sortable
                 loading={loading}
-                emptyMessage="No responses yet"
+                emptyMessage="No responses for this survey yet"
                 totalItems={pagination?.total}
                 currentPage={pagination?.page}
                 onPageChange={(page) => console.log("fetch page:", page)}
@@ -99,5 +102,4 @@ const GlobalResponses = () => {
     );
 };
 
-export default GlobalResponses;
-
+export default ResponseDetail;
