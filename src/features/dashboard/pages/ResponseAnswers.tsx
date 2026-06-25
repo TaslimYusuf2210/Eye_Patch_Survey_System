@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { ChevronLeft, Clock, Mail, Calendar } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { getResponseById } from '@/services/dashboard/responses';
 
 interface Answer {
     question_id: string;
@@ -12,6 +14,14 @@ interface Answer {
 }
 
 interface ResponseData {
+    id: string;
+    respondent_email: string;
+    completed_at: string;
+    time_taken_sec: number;
+    answers: Answer[];
+}
+
+interface RawResponse {
     id: string;
     respondent_email: string;
     completed_at: string;
@@ -105,12 +115,51 @@ const ResponseAnswers = () => {
     const { surveyId, responseId } = useParams();
     const location = useLocation();
     const { textTitle } = useTheme();
-    const responseData = (location.state as { response?: ResponseData })?.response;
+    const [responseData, setResponseData] = useState<ResponseData | null>(
+        (location.state as { response?: ResponseData })?.response ?? null
+    );
+    const [loading, setLoading] = useState(!responseData);
+
+    useEffect(() => {
+        // If we already have data from route state, skip fetching
+        if (responseData) return;
+
+        async function fetchResponse() {
+            setLoading(true);
+            try {
+                const res = await getResponseById({ id: surveyId!, page: 1, limit: 100 });
+                const found = res.data.find((item: RawResponse) => item.id === responseId);
+                if (found) {
+                    setResponseData({
+                        id: found.id,
+                        respondent_email: found.respondent_email,
+                        completed_at: found.completed_at,
+                        time_taken_sec: found.time_taken_sec,
+                        answers: found.answers,
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchResponse();
+    }, [surveyId, responseId, responseData]);
+
+    if (loading) {
+        return (
+            <div className="text-center py-16 text-gray-500 dark:text-slate-400">
+                Loading response...
+            </div>
+        );
+    }
 
     if (!responseData) {
         return (
             <div className="text-center py-16 text-gray-500 dark:text-slate-400">
-                Response data not available.
+                Response not found.
                 <br />
                 <Link to={`/dashboard/responses/${surveyId}`} className="text-blue-600 hover:underline mt-2 inline-block">
                     Go back
