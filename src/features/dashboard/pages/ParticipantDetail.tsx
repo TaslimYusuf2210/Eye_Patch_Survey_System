@@ -85,8 +85,7 @@ const ParticipantDetail = () => {
             <Table
                 columns={columns}
                 data={participants}
-                actions={['view']}
-                onView={(row) => console.log(row)}
+                actions={[]}
                 searchable
                 sortable
                 loading={loading}
