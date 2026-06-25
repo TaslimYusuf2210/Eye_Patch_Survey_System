@@ -24,6 +24,7 @@ import Participants from './features/dashboard/pages/Participants';
 import GlobalResponses from './features/dashboard/pages/GlobalResponses';
 import Responses from './features/dashboard/pages/Responses';
 import ResponseDetail from './features/dashboard/pages/ResponseDetail';
+import ResponseAnswers from './features/dashboard/pages/ResponseAnswers';
 import ParticipantDetail from './features/dashboard/pages/ParticipantDetail';
 
 
@@ -63,6 +64,7 @@ function App() {
           <Route path="/dashboard/responses" element={<Responses />}>
             <Route index element={<GlobalResponses/>}></Route>
             <Route path="/dashboard/responses/:id" element={<ResponseDetail />}></Route>
+            <Route path="/dashboard/responses/:surveyId/:responseId" element={<ResponseAnswers />}></Route>
           </Route>
           <Route path="/dashboard/participant" element={<Participants />}>
             <Route index element={<GlobalParticipants/>}></Route>

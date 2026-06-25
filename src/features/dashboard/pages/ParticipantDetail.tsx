@@ -3,7 +3,7 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import Table from '../../../components/table';
 import { useTheme } from '@/contexts/ThemeContext';
-import { getGlobalParticipants } from '@/services/dashboard/participants';
+import { getParticipantsBySurveyId } from '@/services/dashboard/participants';
 import { toast } from "sonner"
 
 interface ParticipantItem {
@@ -48,9 +48,7 @@ const ParticipantDetail = () => {
         async function fetchParticipants() {
             setLoading(true)
             try {
-                // TODO: Replace with filtered endpoint when ready
-                // const response = await getSurveyParticipants(id)
-                const response = await getGlobalParticipants({ page: 1, limit: 20 })
+                const response = await getParticipantsBySurveyId({ id: id!, page: 1, limit: 20 })
                 const mapped = response.data.map((item: ParticipantItem) => ({
                     name: item.name,
                     email: item.email,

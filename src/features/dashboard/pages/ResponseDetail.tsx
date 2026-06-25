@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import Table from '../../../components/table';
 import { useTheme } from '@/contexts/ThemeContext';
-import { getGlobalResponse } from '@/services/dashboard/responses';
+import { getResponseById } from '@/services/dashboard/responses';
 import { toast } from "sonner"
+
+interface AnswerItem {
+    question_id: string;
+    question_text: string;
+    answer_text?: string;
+    likert_value?: number;
+    yes_no_value?: boolean;
+    selected_options?: string[];
+}
 
 interface ResponseItem {
     id: string;
@@ -14,12 +23,15 @@ interface ResponseItem {
     completed_at: string;
     started_at: string;
     time_taken_sec: number;
+    answers: AnswerItem[];
 }
 
 interface ResponseDisplay {
+    id: string;
     respondent_email: string;
     completed_at: string;
     time_taken_sec: number;
+    answers: AnswerItem[];
 }
 
 interface PaginationInfo {
@@ -35,6 +47,8 @@ const ResponseDetail = () => {
     const { textTitle } = useTheme();
     const surveyTitle = (location.state as { surveyTitle?: string })?.surveyTitle;
 
+    const navigate = useNavigate()
+
     const [responses, setResponses] = useState<ResponseDisplay[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>()
     const [loading, setLoading] = useState(false)
@@ -49,13 +63,13 @@ const ResponseDetail = () => {
         async function fetchResponses() {
             setLoading(true)
             try {
-                // TODO: Replace with filtered endpoint when ready
-                // const response = await getSurveyResponses(id)
-                const response = await getGlobalResponse({ page: 1, limit: 20 })
+                const response = await getResponseById({ id: id!, page: 1, limit: 20 })
                 const mapped = response.data.map((item: ResponseItem) => ({
+                    id: item.id,
                     respondent_email: item.respondent_email,
                     completed_at: item.completed_at,
                     time_taken_sec: item.time_taken_sec,
+                    answers: item.answers,
                 }))
                 setResponses(mapped)
                 setPagination(response.pagination)
@@ -89,7 +103,9 @@ const ResponseDetail = () => {
                 columns={columns}
                 data={responses}
                 actions={['view']}
-                onView={(row) => console.log(row)}
+                onView={(row: any) => navigate(`/dashboard/responses/${id}/${row.id}`, {
+                    state: { response: row }
+                })}
                 searchable
                 sortable
                 loading={loading}
