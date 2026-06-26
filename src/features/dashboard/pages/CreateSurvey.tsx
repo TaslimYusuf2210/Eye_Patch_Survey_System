@@ -6,6 +6,7 @@ import type { CreateSurveyFormData } from '@/types/dashboard/common';
 import { CreateSurveyProvider } from '@/contexts/CreateSurveyContext';
 import { useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { SurveyStepper } from '../components/CreateSurvey/SurveyStepper';
 
 const surveyInformationSchema = yup.object().shape({
   title: yup
@@ -161,13 +162,13 @@ export default function CreateSurvey() {
       <div className="min-h-screen dark:bg-slate-950 py-8 ">
         <div className="">
           {/* Header */}
-          <div className="mb-8 bg-transparent">
+          <div className="mb-8 bg-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className={`text-3xl font-bold ${textTitle}`}>Create Survey</h1>
               <p className={`${textSubtitle} mt-2`}>Build a comprehensive survey to gather feedback and insights</p>
             </div>
-            <div>
-              <p className="text-gray-500 dark:text-slate-400">Position for interactive stepper</p>
+            <div className="shrink-0">
+              <SurveyStepper />
             </div>
           </div>
           <FormProvider {...methods}>  
