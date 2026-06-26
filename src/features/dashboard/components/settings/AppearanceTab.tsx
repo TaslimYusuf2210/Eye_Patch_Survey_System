@@ -5,8 +5,8 @@ import { updateAppearanceAndAccent } from '@/services/dashboard/settings';
 import {toast} from 'sonner';
 
 const baseModes = [
-    { id: 'light' as Appearance, name: 'Light Mode', icon: Sun, description: 'Crisp and easy on the eyes' },
-    { id: 'dark' as Appearance, name: 'Dark Mode', icon: Moon, description: 'Easy for low-light environments' }
+    { id: 'light' as Appearance, name: 'Light Mode', icon: Sun, description: 'Neutral light — clean, no accent.' },
+    { id: 'dark' as Appearance, name: 'Dark Mode', icon: Moon, description: 'Neutral dark — easy on the eyes, no accent.' }
 ];
 
 const colorAccents = [
@@ -17,8 +17,9 @@ const colorAccents = [
 ];
 
 const AppearanceTab = () => {
-    const { appearance, accent, setAppearance, setAccent, textTitle } = useTheme();
+    const { appearance, accent, setAppearance, setAccent } = useTheme();
     const isDefaultTheme = accent === 'default';
+    const isDefaultAppearance = appearance === 'default';
 
     const getAccentBgClass = (color: AccentColor) => {
         switch (color) {
@@ -37,13 +38,11 @@ const AppearanceTab = () => {
     };
 
     const handleSelectDefault = () => {
+        setAppearance('default');
         setAccent('default');
     };
 
     const handleSetAppearance = (mode: Appearance) => {
-        if (isDefaultTheme) {
-            setAccent('blue');
-        }
         setAppearance(mode);
     };
 
@@ -67,31 +66,31 @@ const AppearanceTab = () => {
                 {/* ─── Default Theme Toggle ─── */}
                 <div className="space-y-4">
                     <div>
-                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Theme Preset</h3>
-                        <p className="text-gray-500 dark:text-slate-400 text-xs">Use the original neutral design or customise with an accent color.</p>
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Default Theme</h3>
+                        <p className="text-gray-500 dark:text-slate-400 text-xs">The signature forest-green palette — the main identity of the app.</p>
                     </div>
 
                     <button
                         onClick={handleSelectDefault}
                         className={`w-full flex items-center gap-4 rounded-xl border p-4 text-left cursor-pointer transition-all duration-200 focus:outline-none ${
-                            isDefaultTheme
-                                ? 'border-black dark:border-white ring-1 ring-black dark:ring-white bg-gray-50/50 dark:bg-slate-900/50'
+                            isDefaultAppearance
+                                ? 'border-emerald-600 ring-2 ring-emerald-600/30 bg-emerald-50/50 dark:bg-emerald-950/20'
                                 : 'border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700 hover:bg-gray-50/20 dark:hover:bg-slate-900/20'
                         }`}
                     >
                         <div className="flex -space-x-1">
-                            <div className="w-5 h-5 rounded-full bg-gray-300 border-2 border-white dark:border-slate-950" />
-                            <div className="w-5 h-5 rounded-full bg-gray-500 border-2 border-white dark:border-slate-950" />
-                            <div className="w-5 h-5 rounded-full bg-gray-700 border-2 border-white dark:border-slate-950" />
-                            <div className="w-5 h-5 rounded-full bg-gray-900 border-2 border-white dark:border-slate-950" />
+                            <div className="w-5 h-5 rounded-full bg-emerald-900 border-2 border-white dark:border-slate-950" />
+                            <div className="w-5 h-5 rounded-full bg-emerald-700 border-2 border-white dark:border-slate-950" />
+                            <div className="w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950" />
+                            <div className="w-5 h-5 rounded-full bg-emerald-300 border-2 border-white dark:border-slate-950" />
                         </div>
                         <div className="flex-1">
-                            <span className="text-sm font-semibold text-gray-900 dark:text-white block">Default (Neutral)</span>
-                            <span className="text-xs text-gray-400 dark:text-slate-500 block mt-0.5">Classic gray & black — the original look. No accent color.</span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white block">Forest Default</span>
+                            <span className="text-xs text-gray-400 dark:text-slate-500 block mt-0.5">Deep green surfaces with vibrant emerald accents — the full themed look.</span>
                         </div>
-                        {isDefaultTheme && (
-                            <div className="p-1 rounded-full bg-black dark:bg-white">
-                                <Check className="w-3 h-3 text-white dark:text-black" />
+                        {isDefaultAppearance && (
+                            <div className="p-1 rounded-full bg-emerald-600">
+                                <Check className="w-3 h-3 text-white" />
                             </div>
                         )}
                     </button>
@@ -101,12 +100,12 @@ const AppearanceTab = () => {
                 <div className="space-y-4">
                     <div>
                         <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Base Theme</h3>
-                        <p className="text-gray-500 dark:text-slate-400 text-xs">Choose the primary background style for the application.</p>
+                        <p className="text-gray-500 dark:text-slate-400 text-xs">Choose neutral light or dark. No accent is applied — clean and minimal.</p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         {baseModes.map((mode) => {
                             const Icon = mode.icon;
-                            const isSelected = !isDefaultTheme && appearance === mode.id;
+                            const isSelected = !isDefaultAppearance && appearance === mode.id;
                             return (
                                 <button
                                     key={mode.id}
@@ -131,17 +130,17 @@ const AppearanceTab = () => {
                 </div>
 
                 {/* ─── Accent Color Selector ─── */}
-                <div className={`space-y-4 transition-opacity duration-300 ${isDefaultTheme ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+                <div className={`space-y-4 transition-opacity duration-300 ${isDefaultAppearance || isDefaultTheme ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
                     <div className="flex items-center justify-between">
                         <div>
                             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Accent Color</h3>
                             <p className="text-gray-500 dark:text-slate-400 text-xs">
-                                {isDefaultTheme
-                                    ? 'Switch away from Default theme to pick an accent color.'
+                                {isDefaultAppearance || isDefaultTheme
+                                    ? 'Switch to Light or Dark base theme to pick an accent color.'
                                     : 'Choose the highlight palette for active actions, tags, and links.'}
                             </p>
                         </div>
-                        {isDefaultTheme && (
+                        {(isDefaultAppearance || isDefaultTheme) && (
                             <Ban className="w-4 h-4 text-gray-400 dark:text-slate-500" />
                         )}
                     </div>
@@ -152,12 +151,12 @@ const AppearanceTab = () => {
                                 <button
                                     key={color.id}
                                     onClick={() => setAccent(color.id)}
-                                    disabled={isDefaultTheme}
+                                    disabled={isDefaultAppearance || isDefaultTheme}
                                     className={`flex flex-col items-center justify-center rounded-xl border p-3.5 text-center cursor-pointer transition-all duration-200 focus:outline-none ${
                                         isSelected
                                             ? 'border-black dark:border-white ring-1 ring-black dark:ring-white bg-gray-50/50 dark:bg-slate-900/50'
                                             : 'border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700 hover:bg-gray-50/20'
-                                    } ${isDefaultTheme ? 'cursor-not-allowed' : ''}`}
+                                    } ${isDefaultAppearance || isDefaultTheme ? 'cursor-not-allowed' : ''}`}
                                 >
                                     <div className={`w-6 h-6 rounded-full ${color.colorClass} mb-2 shadow-inner flex items-center justify-center text-white`}>
                                         {isSelected && <Check className="w-3.5 h-3.5" />}
@@ -173,7 +172,7 @@ const AppearanceTab = () => {
                 <div className="mt-4">
                     <button
                         onClick={() => {
-                            setAppearance('light');
+                            setAppearance('default');
                             setAccent('default');
                         }}
                         className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors text-sm text-gray-600 dark:text-slate-400"
@@ -188,9 +187,11 @@ const AppearanceTab = () => {
                     <button
                         onClick={handleSaveChanges}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer ${
-                            isDefaultTheme
-                                ? 'bg-black dark:bg-white text-white dark:text-black'
-                                : 'bg-accent-600 text-white'
+                            isDefaultAppearance
+                                ? 'bg-emerald-600 text-white'
+                                : isDefaultTheme
+                                    ? 'bg-black dark:bg-white text-white dark:text-black'
+                                    : 'bg-accent-600 text-white'
                         }`}
                     >
                         <Save className="w-4 h-4" />

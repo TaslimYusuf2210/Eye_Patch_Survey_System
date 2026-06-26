@@ -72,12 +72,6 @@ const SettingsView = () => {
     };
 
     const handleSetAppearance = (mode: Appearance) => {
-        if (mode !== 'default' && isDefaultTheme) {
-            setAccent('blue');
-        }
-        if (mode === 'default') {
-            setAccent('default');
-        }
         setAppearance(mode);
     };
 

@@ -82,12 +82,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const textTitle = hasPicture
     ? 'text-white'
     : appearance === 'default'
-      ? 'text-gray-900'
+      ? 'text-white'
       : 'text-slate-900 dark:text-white';
   const textSubtitle = hasPicture
     ? 'text-slate-200'
     : appearance === 'default'
-      ? 'text-gray-600'
+      ? 'text-gray-300'
       : 'text-slate-500 dark:text-slate-400';
 
   return (
