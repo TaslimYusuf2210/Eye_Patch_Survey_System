@@ -66,12 +66,34 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const root = document.documentElement;
-    const selectedPalette = accentColors[accent];
-    Object.entries(selectedPalette).forEach(([shade, value]) => {
-      root.style.setProperty(`--accent-${shade}`, value);
-    });
+
+    // When in default appearance, use a custom accent palette that
+    // works with the mid-tone gray background instead of the user's accent picker
+    if (appearance === 'default') {
+      const defaultPalette = {
+        50: '#f8f9fa',
+        100: '#e2e6e8',
+        200: '#adb5bd',
+        300: '#6c757d',
+        400: '#495057',
+        500: '#343a40',
+        600: '#212529',
+        700: '#000000',
+        800: '#000000',
+        900: '#000000',
+      };
+      Object.entries(defaultPalette).forEach(([shade, value]) => {
+        root.style.setProperty(`--accent-${shade}`, value);
+      });
+    } else {
+      const selectedPalette = accentColors[accent];
+      Object.entries(selectedPalette).forEach(([shade, value]) => {
+        root.style.setProperty(`--accent-${shade}`, value);
+      });
+    }
+
     localStorage.setItem('survey-theme-accent', accent);
-  }, [accent]);
+  }, [accent, appearance]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -82,12 +104,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const textTitle = hasPicture
     ? 'text-white'
     : appearance === 'default'
-      ? 'text-white'
+      ? ''
       : 'text-slate-900 dark:text-white';
   const textSubtitle = hasPicture
     ? 'text-slate-200'
     : appearance === 'default'
-      ? 'text-gray-300'
+      ? 'text-slate-400'
       : 'text-slate-500 dark:text-slate-400';
 
   return (

@@ -74,23 +74,23 @@ const AppearanceTab = () => {
                         onClick={handleSelectDefault}
                         className={`w-full flex items-center gap-4 rounded-xl border p-4 text-left cursor-pointer transition-all duration-200 focus:outline-none ${
                             isDefaultAppearance
-                                ? 'border-emerald-600 ring-2 ring-emerald-600/30 bg-emerald-50/50 dark:bg-emerald-950/20'
+                                ? 'border-black dark:border-white ring-1 ring-black dark:ring-white bg-gray-50/50 dark:bg-slate-900/50'
                                 : 'border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700 hover:bg-gray-50/20 dark:hover:bg-slate-900/20'
                         }`}
                     >
                         <div className="flex -space-x-1">
-                            <div className="w-5 h-5 rounded-full bg-emerald-900 border-2 border-white dark:border-slate-950" />
-                            <div className="w-5 h-5 rounded-full bg-emerald-700 border-2 border-white dark:border-slate-950" />
-                            <div className="w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950" />
-                            <div className="w-5 h-5 rounded-full bg-emerald-300 border-2 border-white dark:border-slate-950" />
+                            <div className="w-5 h-5 rounded-full bg-gray-300 border-2 border-white dark:border-slate-950" />
+                            <div className="w-5 h-5 rounded-full bg-gray-500 border-2 border-white dark:border-slate-950" />
+                            <div className="w-5 h-5 rounded-full bg-gray-700 border-2 border-white dark:border-slate-950" />
+                            <div className="w-5 h-5 rounded-full bg-gray-900 border-2 border-white dark:border-slate-950" />
                         </div>
                         <div className="flex-1">
-                            <span className="text-sm font-semibold text-gray-900 dark:text-white block">Forest Default</span>
-                            <span className="text-xs text-gray-400 dark:text-slate-500 block mt-0.5">Deep green surfaces with vibrant emerald accents — the full themed look.</span>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white block">Default</span>
+                            <span className="text-xs text-gray-400 dark:text-slate-500 block mt-0.5">Mid-tone gray — balanced, distinct from light and dark mode.</span>
                         </div>
                         {isDefaultAppearance && (
-                            <div className="p-1 rounded-full bg-emerald-600">
-                                <Check className="w-3 h-3 text-white" />
+                            <div className="p-1 rounded-full bg-black dark:bg-white">
+                                <Check className="w-3 h-3 text-white dark:text-black" />
                             </div>
                         )}
                     </button>
@@ -188,7 +188,7 @@ const AppearanceTab = () => {
                         onClick={handleSaveChanges}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-80 transition-opacity cursor-pointer ${
                             isDefaultAppearance
-                                ? 'bg-emerald-600 text-white'
+                                ? 'bg-black dark:bg-white text-white dark:text-black'
                                 : isDefaultTheme
                                     ? 'bg-black dark:bg-white text-white dark:text-black'
                                     : 'bg-accent-600 text-white'
