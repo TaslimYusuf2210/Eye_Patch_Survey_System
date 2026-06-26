@@ -138,6 +138,41 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* ── Default theme (neutral gray ── */
+.theme-default {
+  --background: #e9ecef;
+  --foreground: #212529;
+  --card: #ffffff;
+  --card-foreground: #212529;
+  --popover: #ffffff;
+  --popover-foreground: #212529;
+  --primary: #343a40;
+  --primary-foreground: #ffffff;
+  --secondary: #f8f9fa;
+  --secondary-foreground: #495057;
+  --muted: #dee2e6;
+  --muted-foreground: #6c757d;
+  --accent: #e9ecef;
+  --accent-foreground: #343a40;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #ced4da;
+  --input: #ced4da;
+  --ring: #adb5bd;
+  --chart-1: #adb5bd;
+  --chart-2: #6c757d;
+  --chart-3: #495057;
+  --chart-4: #343a40;
+  --chart-5: #212529;
+  --sidebar: #f8f9fa;
+  --sidebar-foreground: #212529;
+  --sidebar-primary: #343a40;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e9ecef;
+  --sidebar-accent-foreground: #343a40;
+  --sidebar-border: #ced4da;
+  --sidebar-ring: #adb5bd;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTheme, type Appearance } from '../../../contexts/ThemeContext';
 import { type AccentColor } from '../../../types';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Palette } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import avatar1 from '@/assets/avatars/avatar1.svg';
 import avatar2 from '@/assets/avatars/avatar2.svg';
@@ -19,6 +19,7 @@ import AppearanceTab from '../components/settings/AppearanceTab';
 import ThemeTab from '../components/settings/ThemeTab';
 
 const baseModes = [
+    { id: 'default' as Appearance, name: 'Default', icon: Palette, description: 'Neutral gray — balanced, easy on the eyes' },
     { id: 'light' as Appearance, name: 'Light Mode', icon: Sun, description: 'Crisp and easy on the eyes' },
     { id: 'dark' as Appearance, name: 'Dark Mode', icon: Moon, description: 'Easy for low-light environments' }
 ];
@@ -71,8 +72,11 @@ const SettingsView = () => {
     };
 
     const handleSetAppearance = (mode: Appearance) => {
-        if (isDefaultTheme) {
+        if (mode !== 'default' && isDefaultTheme) {
             setAccent('blue');
+        }
+        if (mode === 'default') {
+            setAccent('default');
         }
         setAppearance(mode);
     };
