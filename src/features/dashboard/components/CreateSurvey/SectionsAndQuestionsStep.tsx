@@ -47,7 +47,7 @@ export function SectionsAndQuestionsStep() {
               questions: [
                 {
                   text: '',
-                  type: 'multiple_choice',
+                  type: 'text',
                   required: true,
                   options: [],
                 },

@@ -101,3 +101,24 @@ export function YesNoPreview() {
     </div>
   );
 };
+
+/**
+ * True/False Preview - Shows True and False radio buttons
+ */
+export function TrueFalsePreview() {
+  return (
+    <div className="space-y-2">
+      {['True', 'False'].map((option, idx) => (
+        <label key={idx} className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="radio"
+            disabled
+            name="truefalse_preview"
+            className="w-4 h-4 text-blue-600 border-gray-300 dark:border-slate-700 cursor-not-allowed"
+          />
+          <span className="text-sm text-gray-700 dark:text-slate-200">{option}</span>
+        </label>
+      ))}
+    </div>
+  );
+};

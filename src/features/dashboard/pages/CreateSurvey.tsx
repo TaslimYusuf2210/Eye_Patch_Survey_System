@@ -66,6 +66,7 @@ const sectionsAndQuestionsSchema = yup.object<Pick<CreateSurveyFormData, "sectio
                   "single_choice",
                   "likert_scale",
                   "yes_no",
+                  "true_false",
                 ])
                 .required("Question type is required"),
 
