@@ -1,12 +1,14 @@
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useLocation, Outlet } from 'react-router-dom';
+import { useLocation, Outlet, useNavigate } from 'react-router-dom';
 import type { CreateSurveyFormData } from '@/types/dashboard/common';
 import { CreateSurveyProvider } from '@/contexts/CreateSurveyContext';
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { SurveyStepper } from '../components/CreateSurvey/SurveyStepper';
+import { Save, Clock, ArrowRight, Send } from 'lucide-react';
+import { toast } from 'sonner';
 
 const surveyInformationSchema = yup.object().shape({
   title: yup
@@ -120,7 +122,7 @@ export default function CreateSurvey() {
     return surveyInformationSchema; // Default to information step
   }
 
-  const savedFormData = sessionStorage.getItem("createSurveyForm");
+  const savedFormData = sessionStorage.getItem("createSurveyForm") || localStorage.getItem("createSurveyDraft");
 
   const methods = useForm<CreateSurveyFormData>({
     defaultValues: savedFormData
@@ -151,6 +153,45 @@ export default function CreateSurvey() {
   return () => subscription.unsubscribe();
 }, [methods]);
 
+  const [lastSaved, setLastSaved] = useState<string | null>(() => {
+    const saved = localStorage.getItem("createSurveyDraftTimestamp");
+    return saved || null;
+  });
+
+  const handleSaveDraft = useCallback(() => {
+    const data = methods.getValues();
+    localStorage.setItem("createSurveyDraft", JSON.stringify(data));
+    const now = new Date();
+    localStorage.setItem("createSurveyDraftTimestamp", now.toISOString());
+    setLastSaved(now.toISOString());
+    toast.success("Progress saved! You can continue later.");
+  }, [methods]);
+
+  const navigate = useNavigate();
+
+  const handleNext = useCallback(() => {
+    const pathname = location.pathname;
+    let nextPath: string;
+
+    if (pathname.includes('/survey-goal')) nextPath = '/dashboard/create-survey/sections-and-questions';
+    else if (pathname.includes('/sections-and-questions')) nextPath = '/dashboard/create-survey/survey-settings';
+    else if (pathname.includes('/survey-settings')) nextPath = '/dashboard/create-survey/survey-review';
+    else if (pathname.includes('/survey-review')) nextPath = '';
+    else nextPath = '/dashboard/create-survey/survey-goal';
+
+    if (pathname.includes('/survey-review')) {
+      // Submit the survey
+      const data = methods.getValues();
+      console.log('Final Survey Data:', data);
+      toast.success('Survey created successfully!');
+    } else {
+      methods.handleSubmit(
+        () => navigate(nextPath),
+        (errors) => console.log('Validation errors:', errors)
+      )();
+    }
+  }, [location.pathname, methods, navigate]);
+
   useEffect(() => {
     const schema = getSchemaForRoute(location.pathname);
     console.log('schema name', schema === sectionsAndQuestionsSchema)
@@ -159,7 +200,7 @@ export default function CreateSurvey() {
 
   return (
     <CreateSurveyProvider>
-      <div className="min-h-screen dark:bg-slate-950 py-8 ">
+      <div className="min-h-screen py-8 flex flex-col">
         <div className="">
           {/* Header */}
           <div className="mb-8 bg-transparent flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -174,6 +215,44 @@ export default function CreateSurvey() {
           <FormProvider {...methods}>  
             <Outlet/>
           </FormProvider>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="mt-auto pt-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleSaveDraft}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer shadow-sm"
+            >
+              <Save className="w-4 h-4" />
+              Save Progress
+            </button>
+            {lastSaved && (
+              <span className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 dark:text-slate-500">
+                <Clock className="w-3 h-3" />
+                {new Date(lastSaved).toLocaleString()}
+              </span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={handleNext}
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition-colors cursor-pointer shadow-sm"
+          >
+            {location.pathname.includes('/survey-review') ? (
+              <>
+                <Send className="w-4 h-4" />
+                Create Survey
+              </>
+            ) : (
+              <>
+                Next
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
         </div>
       </div>
     </CreateSurveyProvider>

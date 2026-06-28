@@ -114,14 +114,7 @@ export function SurveyGoalStep() {
           )}
         </div>
 
-        <div className="flex justify-end pt-4">
-          <button
-            type="submit"
-            className="px-6 py-2.5 bg-accent-600 text-white rounded-lg hover:bg-accent-700 transition-colors font-medium"
-          >
-            Next
-          </button>
-        </div>
+
       </form>
     </div>
   );
