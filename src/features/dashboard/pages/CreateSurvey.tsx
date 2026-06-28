@@ -41,9 +41,8 @@ const surveySettingsSchema = yup.object().shape({
     .optional()
     .test('is-today-or-later', 'Start date cannot be earlier than today', (value) => {
       if (!value) return true;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return new Date(value) >= today;
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      return value >= today;
     }),
   endDate: yup
     .string()
@@ -52,13 +51,16 @@ const surveySettingsSchema = yup.object().shape({
       if (!value) return true;
       const startDate = this.parent.startDate;
       if (!startDate) return true;
-      const start = new Date(startDate);
-      const end = new Date(value);
-      start.setHours(0, 0, 0, 0);
-      end.setHours(0, 0, 0, 0);
-      return end > start;
+      return value > startDate;
     }),
-  responseLimit: yup.number().positive('Response limit must be positive').optional(),
+  responseLimit: yup
+    .number()
+    .nullable()
+    .test('min-10-or-unlimited', 'Response limit must be at least 10', (value) => {
+      if (value === -1 || value === null) return true; // Unlimited
+      if (value === undefined || Number.isNaN(value)) return false;
+      return value >= 10;
+    }),
 });
 
 const sectionsAndQuestionsSchema = yup.object<Pick<CreateSurveyFormData, "sections">>().shape({
@@ -210,6 +212,32 @@ export default function CreateSurvey() {
     // Validate against the current step's schema manually
     const schema = getSchemaForRoute(pathname);
     const data = methods.getValues();
+
+    // Extra check for response limit on settings step
+    if (pathname.includes('/survey-settings')) {
+      const limit = data.responseLimit;
+      console.log('responseLimit value:', limit, typeof limit);
+      if (limit === -1) {
+        // -1 means No limit is ON - skip, it's valid
+        console.log('→ No limit is ON (-1), skipping responseLimit validation');
+      } else if (limit === undefined || Number.isNaN(limit)) {
+        console.log('→ Setting error: responseLimit is empty');
+        methods.setError('responseLimit', {
+          type: 'manual',
+          message: 'Response limit is required when No limit is disabled',
+        });
+        const errorsAfter = methods.formState.errors;
+        console.log('→ Errors after setError:', errorsAfter.responseLimit);
+        return;
+      } else if (limit < 10) {
+        console.log('→ Setting error: responseLimit is', limit);
+        methods.setError('responseLimit', {
+          type: 'manual',
+          message: 'Response limit must be at least 10',
+        });
+        return;
+      }
+    }
 
     try {
       await schema.validate(data, { abortEarly: false });

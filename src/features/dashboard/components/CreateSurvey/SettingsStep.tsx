@@ -55,10 +55,13 @@ export function SettingsStep() {
                 type="button"
                 role="switch"
                 aria-checked={unlimited}
-                onClick={(e) => {
+                onClick={() => {
                   const checked = !unlimited;
+                  console.log('No limit toggle:', checked, '| responseLimit set to:', checked ? -1 : undefined);
                   setUnlimited(checked);
                   if (checked) {
+                    setValue('responseLimit', -1);
+                  } else {
                     setValue('responseLimit', undefined);
                   }
                 }}
@@ -122,35 +125,6 @@ export function SettingsStep() {
             {errors.endDate && (
               <p className="text-sm text-red-600 mt-1">{String(errors.endDate.message)}</p>
             )}
-          </div>
-        </div>
-
-        {/* Additional Settings */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Survey Status */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-slate-200 mb-2">
-              Survey Status
-            </label>
-            <select
-              disabled
-              className="w-full px-4 py-2 border border-gray-200 dark:border-slate-800 rounded-lg bg-gray-50 dark:bg-slate-900 text-gray-600 dark:text-slate-400 cursor-not-allowed"
-            >
-              <option>Draft</option>
-            </select>
-          </div>
-
-          {/* Response Collection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-slate-200 mb-2">
-              Response Collection
-            </label>
-            <select
-              disabled
-              className="w-full px-4 py-2 border border-gray-200 dark:border-slate-800 rounded-lg bg-gray-50 dark:bg-slate-900 text-gray-600 dark:text-slate-400 cursor-not-allowed"
-            >
-              <option>Active</option>
-            </select>
           </div>
         </div>
 
