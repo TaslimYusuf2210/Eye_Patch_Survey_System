@@ -87,9 +87,15 @@ export function SurveyInformationStep() {
               }`}
             >
               <option value="">Select a category</option>
-              <option value="education">Education</option>
-              <option value="health">Health</option>
-              <option value="feedback">Product Feedback</option>
+              <option value="customer-satisfaction">Customer Satisfaction</option>
+              <option value="employee-engagement">Employee Engagement</option>
+              <option value="market-research">Market Research</option>
+              <option value="product-feedback">Product Feedback</option>
+              <option value="website-app-feedback">Website / App Feedback</option>
+              <option value="event-feedback">Event Feedback</option>
+              <option value="education-training">Education & Training</option>
+              <option value="healthcare-wellness">Healthcare & Wellness</option>
+              <option value="other">Other</option>
             </select>
             {errors.category && (
               <p className="text-sm text-red-600 mt-1">{String(errors.category?.message)}</p>
@@ -110,10 +116,14 @@ export function SurveyInformationStep() {
               }`}
             >
               <option value="">Select an audience</option>
-              <option value="general">General public</option>
-              <option value="students">Students</option>
+              <option value="general-public">General Public</option>
               <option value="customers">Customers</option>
               <option value="employees">Employees</option>
+              <option value="students">Students</option>
+              <option value="patients">Patients</option>
+              <option value="event-attendees">Event Attendees</option>
+              <option value="partners-stakeholders">Partners / Stakeholders</option>
+              <option value="other">Other</option>
             </select>
             {errors.audience && (
               <p className="text-sm text-red-600 mt-1">{String(errors.audience?.message)}</p>
