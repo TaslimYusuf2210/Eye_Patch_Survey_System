@@ -38,6 +38,7 @@ export function Question({ sectionIndex, questionIndex, removeQuestion }: Questi
 
   const currentQuestionType = watch(`sections.${sectionIndex}.questions.${questionIndex}.type` as const);
   const questionText = watch(`sections.${sectionIndex}.questions.${questionIndex}.text` as const);
+  const isRequired = watch(`sections.${sectionIndex}.questions.${questionIndex}.required` as const);
 
   // Auto-populate options and log when type changes to a predefined type
   useEffect(() => {
@@ -124,14 +125,32 @@ export function Question({ sectionIndex, questionIndex, removeQuestion }: Questi
               </select>
             </div>
 
-            {/* Required Checkbox */}
+            {/* Required Toggle */}
             <div className="md:col-span-2 flex items-end">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   {...register(`sections.${sectionIndex}.questions.${questionIndex}.required` as const)}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 cursor-pointer"
+                  className="sr-only"
                 />
+                <button
+                  type="button"
+                  role="switch"
+                  onClick={() => {
+                    setValue(`sections.${sectionIndex}.questions.${questionIndex}.required` as const, !isRequired);
+                  }}
+                  className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 ${
+                    isRequired
+                      ? 'bg-accent-600'
+                      : 'bg-gray-300 dark:bg-slate-700'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                      isRequired ? 'translate-x-[18px]' : 'translate-x-[3px]'
+                    }`}
+                  />
+                </button>
                 <span className="text-xs font-medium text-gray-700 dark:text-slate-200">Required</span>
               </label>
             </div>

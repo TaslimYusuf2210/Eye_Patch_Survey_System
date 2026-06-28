@@ -36,8 +36,28 @@ const surveyGoalSchema = yup.object().shape({
 });
 
 const surveySettingsSchema = yup.object().shape({
-  startDate: yup.string().optional(),
-  endDate: yup.string().optional(),
+  startDate: yup
+    .string()
+    .optional()
+    .test('is-today-or-later', 'Start date cannot be earlier than today', (value) => {
+      if (!value) return true;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return new Date(value) >= today;
+    }),
+  endDate: yup
+    .string()
+    .optional()
+    .test('is-after-start', 'End date must be at least one day after the start date', function (value) {
+      if (!value) return true;
+      const startDate = this.parent.startDate;
+      if (!startDate) return true;
+      const start = new Date(startDate);
+      const end = new Date(value);
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
+      return end > start;
+    }),
   responseLimit: yup.number().positive('Response limit must be positive').optional(),
 });
 
@@ -116,10 +136,10 @@ export default function CreateSurvey() {
   // // console.log('Location Pathname in CreateSurvey:', location.pathname);
   
   function getSchemaForRoute(pathname: string) {
-    if (pathname.includes('/goal')) return surveyGoalSchema;
-    if (pathname.includes('/settings')) return surveySettingsSchema;
-    if (pathname.includes('/sections')) return sectionsAndQuestionsSchema;
-    if (pathname.includes('/review')) return noSchema;
+    if (pathname.includes('/survey-goal')) return surveyGoalSchema;
+    if (pathname.includes('/survey-settings')) return surveySettingsSchema;
+    if (pathname.includes('/sections-and-questions')) return sectionsAndQuestionsSchema;
+    if (pathname.includes('/survey-review')) return noSchema;
     return surveyInformationSchema; // Default to information step
   }
 
@@ -170,7 +190,7 @@ export default function CreateSurvey() {
 
   const navigate = useNavigate();
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
     const pathname = location.pathname;
     let nextPath: string;
 
@@ -181,23 +201,32 @@ export default function CreateSurvey() {
     else nextPath = '/dashboard/create-survey/survey-goal';
 
     if (pathname.includes('/survey-review')) {
-      // Submit the survey
       const data = methods.getValues();
       console.log('Final Survey Data:', data);
       toast.success('Survey created successfully!');
-    } else {
-      methods.handleSubmit(
-        () => navigate(nextPath),
-        (errors) => console.log('Validation errors:', errors)
-      )();
+      return;
+    }
+
+    // Validate against the current step's schema manually
+    const schema = getSchemaForRoute(pathname);
+    const data = methods.getValues();
+
+    try {
+      await schema.validate(data, { abortEarly: false });
+      methods.clearErrors();
+      navigate(nextPath);
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        methods.clearErrors();
+        err.inner.forEach((e) => {
+          if (e.path) {
+            methods.setError(e.path as any, { message: e.message, type: 'manual' });
+          }
+        });
+        console.log('Validation errors:', err.inner);
+      }
     }
   }, [location.pathname, methods, navigate]);
-
-  useEffect(() => {
-    const schema = getSchemaForRoute(location.pathname);
-    console.log('schema name', schema === sectionsAndQuestionsSchema)
-    console.log('Current schema', schema.describe())
-  }, [location.pathname]);
 
   return (
     <CreateSurveyProvider>
