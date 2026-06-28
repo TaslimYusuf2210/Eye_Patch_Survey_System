@@ -63,21 +63,35 @@ export function SurveyGoalStep() {
                 style={{ accentColor: colors[600] }}
               />
               <label htmlFor="improve-service" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
-                Improve service/product
+                Improve service / product
               </label>
             </div>
 
             <div className="flex items-center gap-3">
               <input
                 type="radio"
-                id="research"
-                value="research"
+                id="market-research"
+                value="market-research"
                 {...register('usage')}
                 className="w-4 h-4 cursor-pointer"
                 style={{ accentColor: colors[600] }}
               />
-              <label htmlFor="research" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
-                Research purposes
+              <label htmlFor="market-research" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
+                Market research
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="radio"
+                id="academic-research"
+                value="academic-research"
+                {...register('usage')}
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
+              />
+              <label htmlFor="academic-research" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
+                Academic research
               </label>
             </div>
 
@@ -98,6 +112,48 @@ export function SurveyGoalStep() {
             <div className="flex items-center gap-3">
               <input
                 type="radio"
+                id="employee-feedback"
+                value="employee-feedback"
+                {...register('usage')}
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
+              />
+              <label htmlFor="employee-feedback" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
+                Employee / internal feedback
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="radio"
+                id="event-planning"
+                value="event-planning"
+                {...register('usage')}
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
+              />
+              <label htmlFor="event-planning" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
+                Event planning & feedback
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="radio"
+                id="customer-insights"
+                value="customer-insights"
+                {...register('usage')}
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
+              />
+              <label htmlFor="customer-insights" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
+                Customer insights & analytics
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="radio"
                 id="general-feedback"
                 value="general-feedback"
                 {...register('usage')}
@@ -105,7 +161,21 @@ export function SurveyGoalStep() {
                 style={{ accentColor: colors[600] }}
               />
               <label htmlFor="general-feedback" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
-                General feedback
+                General feedback collection
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="radio"
+                id="other"
+                value="other"
+                {...register('usage')}
+                className="w-4 h-4 cursor-pointer"
+                style={{ accentColor: colors[600] }}
+              />
+              <label htmlFor="other" className="text-sm text-gray-700 dark:text-slate-200 cursor-pointer">
+                Other
               </label>
             </div>
           </div>
