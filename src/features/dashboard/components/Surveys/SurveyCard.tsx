@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Copy, Trash2, Clock, BarChart3, Users, AlertTriangle, MessageSquare, Eye, Edit3 } from 'lucide-react';
+import { Copy, Trash2, Clock, BarChart3, Users, AlertTriangle, Eye, Edit3 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -89,20 +89,6 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
                 >
                     <Eye size={14} />
                     View
-                </Link>
-                <Link
-                    to={`/dashboard/responses`}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-xs font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-900 hover:border-accent-300 dark:hover:border-accent-800 transition-all cursor-pointer"
-                >
-                    <MessageSquare size={14} />
-                    Responses
-                </Link>
-                <Link
-                    to={`/dashboard/participant`}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-xs font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-900 hover:border-accent-300 dark:hover:border-accent-800 transition-all cursor-pointer"
-                >
-                    <Users size={14} />
-                    Participants
                 </Link>
                 {survey.status?.toLowerCase() === 'draft' && (
                     <Link
