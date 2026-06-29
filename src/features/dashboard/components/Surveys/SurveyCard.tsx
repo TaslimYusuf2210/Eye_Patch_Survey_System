@@ -39,15 +39,21 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
-                            survey.status === 'Active'
+                            survey.status?.toLowerCase() === 'active'
                                 ? 'bg-green-50 dark:bg-emerald-950/30 text-green-600 dark:text-emerald-400 border-green-100 dark:border-emerald-900/30'
-                                : survey.status === 'Draft'
-                                    ? 'bg-gray-100 dark:bg-slate-900 text-gray-500 dark:text-slate-400 border-transparent'
-                                    : 'bg-red-50 dark:bg-rose-950/30 text-red-500 dark:text-rose-400 border-red-100 dark:border-rose-900/30'
+                                : survey.status?.toLowerCase() === 'draft'
+                                    ? 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400 border-gray-200 dark:border-slate-700'
+                                    : survey.status?.toLowerCase() === 'inactive'
+                                        ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/30'
+                                        : 'bg-red-50 dark:bg-rose-950/30 text-red-500 dark:text-rose-400 border-red-100 dark:border-rose-900/30'
                         }`}>
                             {survey.status}
                         </span>
-                        <span className="text-xs text-gray-400 dark:text-slate-500">{survey.date}</span>
+                        <span className="text-xs text-gray-400 dark:text-slate-500">
+                            {new Date(survey.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            &nbsp;
+                            {new Date(survey.date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
                     </div>
                     <h3 className="font-bold text-gray-900 dark:text-slate-100 text-base truncate">{survey.title}</h3>
                 </div>
@@ -93,7 +99,7 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
                     <Eye size={14} />
                     Participants
                 </Link>
-                {survey.status === 'Draft' && (
+                        {survey.status?.toLowerCase() === 'draft' && (
                     <Link
                         to={`/dashboard/create-survey`}
                         className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-xs font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-900 hover:border-accent-300 dark:hover:border-accent-800 transition-all cursor-pointer"

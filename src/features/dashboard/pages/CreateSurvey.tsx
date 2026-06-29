@@ -375,7 +375,7 @@ export default function CreateSurvey() {
             </div>
           </div>
 
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="gap-3">
             <button
               type="button"
               onClick={() => setShowSaveDialog(false)}

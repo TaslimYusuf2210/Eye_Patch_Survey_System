@@ -65,7 +65,7 @@ const SurveyList = () => {
 
     // Filter & sort surveys (client-side until backend filtering is wired up)
     let filtered = surveys.filter((s) => {
-        const matchesStatus = statusFilter === 'All' || s.status === statusFilter;
+        const matchesStatus = statusFilter === 'All' || s.status?.toLowerCase() === statusFilter.toLowerCase();
         const matchesSearch = search === '' || s.title.toLowerCase().includes(search.toLowerCase());
         return matchesStatus && matchesSearch;
     });
