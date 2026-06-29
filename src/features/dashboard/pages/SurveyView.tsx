@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ChevronLeft, Edit3, Play, Pause, XCircle } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { ChevronLeft, Edit3, Play, Pause, XCircle, Copy, MessageSquare, Users as UsersIcon, Trash2, AlertTriangle } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { getSurveyById, updateSurveyStatus } from '@/services/dashboard/surveys';
+import { getSurveyById, updateSurveyStatus, deleteSurvey } from '@/services/dashboard/surveys';
 import { toast } from 'sonner';
-
-const statusColors: Record<string, string> = {
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
     active: 'bg-green-50 dark:bg-emerald-950/30 text-green-600 dark:text-emerald-400 border-green-100 dark:border-emerald-900/30',
     draft: 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400 border-gray-200 dark:border-slate-700',
     inactive: 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/30',
@@ -58,9 +63,28 @@ function formatDate(dateStr?: string) {
 
 function SurveyView() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { textTitle } = useTheme();
     const [survey, setSurvey] = useState<SurveyData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [deleteOpen, setDeleteOpen] = useState(false);
+
+    const handleCopyLink = () => {
+        if (!id) return;
+        navigator.clipboard.writeText(`${window.location.origin}/survey/${id}`);
+        toast.success('Survey link copied to clipboard!');
+    };
+
+    const handleDelete = async () => {
+        if (!id) return;
+        try {
+            await deleteSurvey(id);
+            toast.success('Survey deleted successfully.');
+            navigate('/dashboard/surveys');
+        } catch {
+            toast.error('Failed to delete survey.');
+        }
+    };
 
     const handleStatusChange = async (newStatus: string) => {
         if (!id) return;
@@ -282,6 +306,71 @@ function SurveyView() {
                     </div>
                 ))}
             </div>
+
+            {/* Action Buttons */}
+            <div className="mt-10 pt-6 border-t border-gray-200 dark:border-slate-800 flex flex-wrap items-center gap-3">
+                <Link
+                    to={`/dashboard/responses`}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+                >
+                    <MessageSquare size={16} />
+                    View Responses
+                </Link>
+                <Link
+                    to={`/dashboard/participant`}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+                >
+                    <UsersIcon size={16} />
+                    View Participants
+                </Link>
+                <button
+                    onClick={handleCopyLink}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+                >
+                    <Copy size={16} />
+                    Copy Link
+                </button>
+                <button
+                    onClick={() => setDeleteOpen(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-red-200 dark:border-red-900/30 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
+                >
+                    <Trash2 size={16} />
+                    Delete
+                </button>
+            </div>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 rounded-full bg-red-100 dark:bg-red-900/30">
+                                <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
+                            </div>
+                            <DialogTitle className="text-lg font-bold text-gray-900 dark:text-white">Delete Survey</DialogTitle>
+                        </div>
+                        <DialogDescription className="text-sm text-gray-500 dark:text-slate-400 leading-relaxed">
+                            This action is <span className="font-semibold text-red-600 dark:text-red-400">permanent and cannot be undone</span>.
+                            All responses and data for <span className="font-semibold text-gray-900 dark:text-slate-100">"{survey?.title}"</span> will be deleted immediately.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex items-center gap-3 justify-end">
+                        <button
+                            onClick={() => setDeleteOpen(false)}
+                            className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={handleDelete}
+                            className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors cursor-pointer flex items-center gap-2"
+                        >
+                            <Trash2 size={16} />
+                            Delete Survey
+                        </button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }
