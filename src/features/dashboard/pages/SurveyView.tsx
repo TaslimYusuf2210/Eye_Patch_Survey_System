@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronLeft, Edit3 } from 'lucide-react';
+import { ChevronLeft, Edit3, Play, Pause, XCircle } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { getSurveyById } from '@/services/dashboard/surveys';
+import { getSurveyById, updateSurveyStatus } from '@/services/dashboard/surveys';
+import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
     active: 'bg-green-50 dark:bg-emerald-950/30 text-green-600 dark:text-emerald-400 border-green-100 dark:border-emerald-900/30',
@@ -61,6 +62,17 @@ function SurveyView() {
     const [survey, setSurvey] = useState<SurveyData | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const handleStatusChange = async (newStatus: string) => {
+        if (!id) return;
+        try {
+            await updateSurveyStatus(id, newStatus);
+            setSurvey((prev) => prev ? { ...prev, status: newStatus } : prev);
+            toast.success(`Survey status changed to ${newStatus}.`);
+        } catch {
+            toast.error('Failed to update survey status.');
+        }
+    };
+
     useEffect(() => {
         if (!id) return;
         (async () => {
@@ -112,10 +124,44 @@ function SurveyView() {
                         <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">{survey.description}</p>
                     )}
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-2 shrink-0 flex-wrap">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[survey.status?.toLowerCase()] || ''}`}>
                         {survey.status}
                     </span>
+
+                    {/* Status action buttons (not for drafts) */}
+                    {survey.status?.toLowerCase() !== 'draft' && (
+                        <>
+                            {survey.status?.toLowerCase() !== 'active' && (
+                                <button
+                                    onClick={() => handleStatusChange('active')}
+                                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 transition-colors cursor-pointer"
+                                >
+                                    <Play size={12} />
+                                    Activate
+                                </button>
+                            )}
+                            {survey.status?.toLowerCase() !== 'inactive' && survey.status?.toLowerCase() !== 'draft' && (
+                                <button
+                                    onClick={() => handleStatusChange('inactive')}
+                                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 text-white text-xs font-medium hover:bg-amber-600 transition-colors cursor-pointer"
+                                >
+                                    <Pause size={12} />
+                                    Deactivate
+                                </button>
+                            )}
+                            {survey.status?.toLowerCase() !== 'closed' && (
+                                <button
+                                    onClick={() => handleStatusChange('closed')}
+                                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors cursor-pointer"
+                                >
+                                    <XCircle size={12} />
+                                    Close
+                                </button>
+                            )}
+                        </>
+                    )}
+
                     {survey.status?.toLowerCase() === 'draft' && (
                         <Link
                             to={`/dashboard/create-survey?draftId=${survey.id}`}

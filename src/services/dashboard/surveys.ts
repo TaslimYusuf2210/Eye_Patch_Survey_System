@@ -95,3 +95,13 @@ export async function deleteSurvey(id: string) {
         throw error;
     }
 }
+
+export async function updateSurveyStatus(id: string, status: string) {
+    try {
+        const response = await api.patch(`api/v1/surveys/${id}/status`, { status });
+        return response.data;
+    } catch (error) {
+        console.error('Update Survey Status error:', error);
+        throw error;
+    }
+}

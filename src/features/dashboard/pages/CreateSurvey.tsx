@@ -185,18 +185,18 @@ export default function CreateSurvey() {
     (async () => {
       try {
         const res = await getSurveyById(draftId);
-        const data = res.data || res;
+        const raw = res.data || res;
         methods.reset({
-          title: data.title || '',
-          description: data.description || '',
-          category: data.category || '',
-          audience: data.audience || '',
-          goal: data.goal || '',
-          usage: data.usage || '',
-          startDate: data.startDate || '',
-          endDate: data.endDate || '',
-          responseLimit: data.responseLimit ?? undefined,
-          sections: data.sections || [],
+          title: raw.title || '',
+          description: raw.description || '',
+          category: raw.category || '',
+          audience: raw.targetAudience || '',
+          goal: raw.goal || '',
+          usage: raw.usage || '',
+          startDate: raw.startDate || '',
+          endDate: raw.endDate || '',
+          responseLimit: raw.responseLimit ?? undefined,
+          sections: raw.sections || [],
         });
         setDraftLoaded(true);
       } catch {
