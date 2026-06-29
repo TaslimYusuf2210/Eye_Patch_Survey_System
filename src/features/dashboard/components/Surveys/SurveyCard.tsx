@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Copy, Trash2, Clock, BarChart3, Users, AlertTriangle, MessageSquare, Eye, Edit3 } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
 import {
   Dialog,
   DialogContent,
@@ -10,6 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { deleteSurvey } from '@/services/dashboard/surveys';
 
 export interface SurveyCardData {
     id: number;
@@ -23,8 +23,6 @@ export interface SurveyCardData {
 }
 
 const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
-    const { accent } = useTheme();
-    const isDefaultTheme = accent === 'default';
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     const handleCopyLink = () => {
@@ -151,11 +149,17 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
                             Cancel
                         </button>
                         <button
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer flex items-center gap-2 ${
-                                isDefaultTheme
-                                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                                    : 'bg-red-600 hover:bg-red-700 text-white'
-                            }`}
+                            onClick={async () => {
+                                try {
+                                    await deleteSurvey(String(survey.id));
+                                    toast.success('Survey deleted successfully.');
+                                    setDeleteDialogOpen(false);
+                                    window.location.reload();
+                                } catch {
+                                    toast.error('Failed to delete survey. Please try again.');
+                                }
+                            }}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white`}
                         >
                             <Trash2 size={16} />
                             Delete Survey

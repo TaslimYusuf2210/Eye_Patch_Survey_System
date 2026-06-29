@@ -85,3 +85,13 @@ export async function getSurveyById(id: string) {
         throw error;
     }
 }
+
+export async function deleteSurvey(id: string) {
+    try {
+        const response = await api.delete(`api/v1/surveys/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Delete Survey error:', error);
+        throw error;
+    }
+}
