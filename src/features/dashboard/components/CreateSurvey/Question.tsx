@@ -97,7 +97,7 @@ export function Question({ sectionIndex, questionIndex, removeQuestion }: Questi
             {/* Question Text */}
             <div className="md:col-span-7">
               <label className="block text-xs font-medium text-gray-700 dark:text-slate-200 mb-1">
-                Question Text
+                Question Text <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"

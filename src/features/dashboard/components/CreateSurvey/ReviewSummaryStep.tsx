@@ -25,6 +25,9 @@ export function ReviewSummaryStep() {
               <span className="font-medium">Title:</span> {formData.title || 'Not provided'}
             </p>
             <p>
+              <span className="font-medium">Description:</span> {formData.description || 'Not provided'}
+            </p>
+            <p>
               <span className="font-medium">Category:</span> {formData.category || 'Not provided'}
             </p>
             <p>

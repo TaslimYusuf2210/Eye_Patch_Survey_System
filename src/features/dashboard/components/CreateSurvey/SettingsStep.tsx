@@ -31,7 +31,7 @@ export function SettingsStep() {
         {/* Response Limit */}
         <div>
           <label className="block text-sm font-medium text-gray-900 dark:text-slate-200 mb-2">
-            Response Limit
+            Response Limit <span className="text-red-500">*</span>
           </label>
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
@@ -90,7 +90,7 @@ export function SettingsStep() {
           {/* Start Date */}
           <div>
             <label className="block text-sm font-medium text-gray-900 dark:text-slate-200 mb-2">
-              Start Date
+              Start Date <span className="text-gray-400 dark:text-slate-500 font-normal">(optional)</span>
             </label>
             <input
               type="date"
@@ -110,7 +110,7 @@ export function SettingsStep() {
           {/* End Date */}
           <div>
             <label className="block text-sm font-medium text-gray-900 dark:text-slate-200 mb-2">
-              End Date
+              End Date <span className="text-gray-400 dark:text-slate-500 font-normal">(optional)</span>
             </label>
             <input
               type="date"

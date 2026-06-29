@@ -54,7 +54,7 @@ export function SurveyInformationStep() {
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-900 dark:text-slate-200 mb-2">
-            Description
+            Description <span className="text-red-500">*</span>
           </label>
           <textarea
             placeholder="Provide additional context about your survey..."
