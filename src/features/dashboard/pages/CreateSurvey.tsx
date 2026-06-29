@@ -1,7 +1,7 @@
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useLocation, Outlet, useNavigate } from 'react-router-dom';
+import { useLocation, Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import type { CreateSurveyFormData } from '@/types/dashboard/common';
 import { CreateSurveyProvider } from '@/contexts/CreateSurveyContext';
 import { useEffect, useState, useCallback } from 'react';
@@ -9,7 +9,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { SurveyStepper } from '../components/CreateSurvey/SurveyStepper';
 import { Save, Clock, ArrowRight, Send, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import { saveSurveyProgress, updateSurveyProgress } from '@/services/dashboard/surveys';
+import { saveSurveyProgress, updateSurveyProgress, createSurvey, getSurveyById } from '@/services/dashboard/surveys';
 import {
   Dialog,
   DialogContent,
@@ -141,6 +141,7 @@ const noSchema = yup.object().shape({});
 
 export default function CreateSurvey() {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { textTitle, textSubtitle } = useTheme();
   // const { currentRoute } = useCreateSurveyContext();
   // // console.log('Current Route in CreateSurvey:', currentRoute);
@@ -154,7 +155,11 @@ export default function CreateSurvey() {
     return surveyInformationSchema; // Default to information step
   }
 
-  const savedFormData = sessionStorage.getItem("createSurveyForm") || localStorage.getItem("createSurveyDraft");
+  // Load draft from query param, then fall back to localStorage
+  const draftId = searchParams.get('draftId');
+  const [draftLoaded, setDraftLoaded] = useState(false);
+
+  const savedFormData = null;
 
   const methods = useForm<CreateSurveyFormData>({
     defaultValues: savedFormData
@@ -174,6 +179,33 @@ export default function CreateSurvey() {
     shouldUnregister: false,
   });
 
+  // Fetch draft data if draftId is present
+  useEffect(() => {
+    if (!draftId || draftLoaded) return;
+    (async () => {
+      try {
+        const res = await getSurveyById(draftId);
+        const data = res.data || res;
+        methods.reset({
+          title: data.title || '',
+          description: data.description || '',
+          category: data.category || '',
+          audience: data.audience || '',
+          goal: data.goal || '',
+          usage: data.usage || '',
+          startDate: data.startDate || '',
+          endDate: data.endDate || '',
+          responseLimit: data.responseLimit ?? undefined,
+          sections: data.sections || [],
+        });
+        setDraftLoaded(true);
+      } catch {
+        toast.error('Failed to load draft.');
+      }
+    })();
+  }, [draftId, methods, draftLoaded]);
+
+  // Auto-save to sessionStorage, but clear it when leaving the page
   useEffect(() => {
   const subscription = methods.watch((value) => {
     sessionStorage.setItem(
@@ -182,7 +214,10 @@ export default function CreateSurvey() {
     );
   });
 
-  return () => subscription.unsubscribe();
+  return () => {
+    subscription.unsubscribe();
+    sessionStorage.removeItem('createSurveyForm');
+  };
 }, [methods]);
 
   const [lastSaved, setLastSaved] = useState<string | null>(() => {
@@ -190,6 +225,7 @@ export default function CreateSurvey() {
     return saved || null;
   });
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   const handleSaveDraft = useCallback(async () => {
     const data = methods.getValues();
@@ -231,8 +267,24 @@ export default function CreateSurvey() {
 
     if (pathname.includes('/survey-review')) {
       const data = methods.getValues();
-      console.log('Final Survey Data:', data);
-      toast.success('Survey created successfully!');
+      try {
+        await createSurvey(data);
+        // Clear all saved form data
+        sessionStorage.removeItem('createSurveyForm');
+        localStorage.removeItem('createSurveyDraft');
+        localStorage.removeItem('createSurveyDraftTimestamp');
+        localStorage.removeItem('activeDraftId');
+        localStorage.removeItem('createSurveyMaxStep');
+        methods.reset({
+          title: '', description: '', category: '', audience: '',
+          goal: '', usage: '', startDate: '', endDate: '',
+          responseLimit: undefined, sections: [],
+        });
+        toast.success('Survey created successfully!');
+        navigate('/dashboard/surveys');
+      } catch {
+        toast.error('Failed to create survey. Please try again.');
+      }
       return;
     }
 
@@ -323,7 +375,13 @@ export default function CreateSurvey() {
 
           <button
             type="button"
-            onClick={handleNext}
+            onClick={() => {
+              if (location.pathname.includes('/survey-review')) {
+                setShowCreateDialog(true);
+              } else {
+                handleNext();
+              }
+            }}
             className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition-colors cursor-pointer shadow-sm"
           >
             {location.pathname.includes('/survey-review') ? (
@@ -392,6 +450,62 @@ export default function CreateSurvey() {
               className="px-5 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition-colors cursor-pointer"
             >
               Save Progress
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Survey Confirmation Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Send className="w-5 h-5 text-accent-600" />
+              Create Survey
+            </DialogTitle>
+            <DialogDescription className="pt-2 space-y-2">
+              <p>You are about to publish this survey. Please note:</p>
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 text-sm text-gray-600 dark:text-slate-400">
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-amber-600">!</span>
+              </div>
+              <p><strong>You won't be able to edit</strong> the survey questions or settings after publishing.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-accent-600">i</span>
+              </div>
+              <p>The survey will be set to <strong>active</strong> and start collecting responses immediately.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-accent-600">i</span>
+              </div>
+              <p>Make sure you've reviewed all sections, questions, and settings carefully.</p>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-3">
+            <button
+              type="button"
+              onClick={() => setShowCreateDialog(false)}
+              className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowCreateDialog(false);
+                handleNext();
+              }}
+              className="px-5 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition-colors cursor-pointer"
+            >
+              Yes, Create Survey
             </button>
           </DialogFooter>
         </DialogContent>

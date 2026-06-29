@@ -65,3 +65,23 @@ export async function updateSurveyProgress(id: string, payload: SurveyProgressPa
         throw error;
     }
 }
+
+export async function createSurvey(payload: SurveyProgressPayload) {
+    try {
+        const response = await api.post('api/v1/surveys', payload);
+        return response.data;
+    } catch (error) {
+        console.error('Create Survey error:', error);
+        throw error;
+    }
+}
+
+export async function getSurveyById(id: string) {
+    try {
+        const response = await api.get(`api/v1/surveys/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Get Survey By ID error:', error);
+        throw error;
+    }
+}

@@ -101,7 +101,7 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
                 </Link>
                         {survey.status?.toLowerCase() === 'draft' && (
                     <Link
-                        to={`/dashboard/create-survey`}
+                        to={`/dashboard/create-survey?draftId=${survey.id}`}
                         className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-xs font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-900 hover:border-accent-300 dark:hover:border-accent-800 transition-all cursor-pointer"
                     >
                         <Edit3 size={14} />
