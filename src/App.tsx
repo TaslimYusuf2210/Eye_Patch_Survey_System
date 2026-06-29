@@ -9,6 +9,7 @@ import CreateSurvey from './features/dashboard/pages/CreateSurvey';
 import DashboardLayout from './features/dashboard/layout/DashboardLayout';
 import SurveyList from './features/dashboard/pages/SurveyList';
 import SurveyResponses from './features/dashboard/pages/SurveyResponses';
+import SurveyView from './features/dashboard/pages/SurveyView';
 import GlobalParticipants from './features/dashboard/pages/GlobalParticipants';
 import SettingsView from './features/dashboard/pages/SettingsView';
 import { SurveyInformationStep } from './features/dashboard/components/CreateSurvey/SurveyInformationStep';
@@ -61,6 +62,7 @@ function App() {
             <Route path='/dashboard/create-survey/survey-review' element={<ReviewSummaryStep/>}></Route>
           </Route>
           <Route path="/dashboard/surveys" element={<SurveyList />} />
+          <Route path="/dashboard/surveys/:id/view" element={<SurveyView />} />
           <Route path="/dashboard/responses" element={<Responses />}>
             <Route index element={<GlobalResponses/>}></Route>
             <Route path="/dashboard/responses/:id" element={<ResponseDetail />}></Route>

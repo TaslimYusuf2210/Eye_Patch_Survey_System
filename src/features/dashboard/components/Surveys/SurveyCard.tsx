@@ -84,6 +84,13 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
             {/* Action Buttons */}
             <div className="px-5 pb-3 flex flex-wrap gap-2">
                 <Link
+                    to={`/dashboard/surveys/${survey.id}/view`}
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-xs font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-900 hover:border-accent-300 dark:hover:border-accent-800 transition-all cursor-pointer"
+                >
+                    <Eye size={14} />
+                    View
+                </Link>
+                <Link
                     to={`/dashboard/responses`}
                     className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-xs font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-900 hover:border-accent-300 dark:hover:border-accent-800 transition-all cursor-pointer"
                 >
@@ -94,10 +101,10 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
                     to={`/dashboard/participant`}
                     className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-xs font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-900 hover:border-accent-300 dark:hover:border-accent-800 transition-all cursor-pointer"
                 >
-                    <Eye size={14} />
+                    <Users size={14} />
                     Participants
                 </Link>
-                        {survey.status?.toLowerCase() === 'draft' && (
+                {survey.status?.toLowerCase() === 'draft' && (
                     <Link
                         to={`/dashboard/create-survey?draftId=${survey.id}`}
                         className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-xs font-medium text-gray-600 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-900 hover:border-accent-300 dark:hover:border-accent-800 transition-all cursor-pointer"
