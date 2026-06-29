@@ -7,8 +7,17 @@ import { CreateSurveyProvider } from '@/contexts/CreateSurveyContext';
 import { useEffect, useState, useCallback } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { SurveyStepper } from '../components/CreateSurvey/SurveyStepper';
-import { Save, Clock, ArrowRight, Send } from 'lucide-react';
+import { Save, Clock, ArrowRight, Send, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { saveSurveyProgress, updateSurveyProgress } from '@/services/dashboard/surveys';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const surveyInformationSchema = yup.object().shape({
   title: yup
@@ -180,14 +189,32 @@ export default function CreateSurvey() {
     const saved = localStorage.getItem("createSurveyDraftTimestamp");
     return saved || null;
   });
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
-  const handleSaveDraft = useCallback(() => {
+  const handleSaveDraft = useCallback(async () => {
     const data = methods.getValues();
-    localStorage.setItem("createSurveyDraft", JSON.stringify(data));
     const now = new Date();
+
+    // Always save locally as backup
+    localStorage.setItem("createSurveyDraft", JSON.stringify(data));
     localStorage.setItem("createSurveyDraftTimestamp", now.toISOString());
     setLastSaved(now.toISOString());
-    toast.success("Progress saved! You can continue later.");
+
+    // Save to API
+    try {
+      const draftId = localStorage.getItem("activeDraftId");
+      if (draftId) {
+        await updateSurveyProgress(draftId, data);
+      } else {
+        const response = await saveSurveyProgress(data);
+        if (response?.id) {
+          localStorage.setItem("activeDraftId", response.id);
+        }
+      }
+      toast.success("Progress saved!");
+    } catch {
+      toast.error("Saved locally, but failed to sync to server.");
+    }
   }, [methods]);
 
   const navigate = useNavigate();
@@ -280,7 +307,7 @@ export default function CreateSurvey() {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={handleSaveDraft}
+              onClick={() => setShowSaveDialog(true)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer shadow-sm"
             >
               <Save className="w-4 h-4" />
@@ -313,6 +340,62 @@ export default function CreateSurvey() {
           </button>
         </div>
       </div>
+
+      {/* Save Progress Dialog */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-accent-600" />
+              Save Progress
+            </DialogTitle>
+            <DialogDescription className="pt-2">
+              Your survey will be saved as a <strong>draft</strong>. You can come back later to continue editing.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 text-sm text-gray-600 dark:text-slate-400">
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-accent-600">1</span>
+              </div>
+              <p>All your progress will be saved — you won't lose any data.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-accent-600">2</span>
+              </div>
+              <p>You can find and continue editing this draft from the <strong>Surveys</strong> page.</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-xs font-semibold text-accent-600">3</span>
+              </div>
+              <p>Only publish when you're ready to start collecting responses.</p>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <button
+              type="button"
+              onClick={() => setShowSaveDialog(false)}
+              className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowSaveDialog(false);
+                handleSaveDraft();
+              }}
+              className="px-5 py-2 rounded-lg bg-accent-600 text-white text-sm font-medium hover:bg-accent-700 transition-colors cursor-pointer"
+            >
+              Save Progress
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </CreateSurveyProvider>
   );
 };
