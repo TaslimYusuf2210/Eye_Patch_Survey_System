@@ -217,6 +217,7 @@ export default function CreateSurvey() {
   return () => {
     subscription.unsubscribe();
     sessionStorage.removeItem('createSurveyForm');
+    sessionStorage.removeItem('createSurveyMaxStep');
   };
 }, [methods]);
 
@@ -274,7 +275,7 @@ export default function CreateSurvey() {
         localStorage.removeItem('createSurveyDraft');
         localStorage.removeItem('createSurveyDraftTimestamp');
         localStorage.removeItem('activeDraftId');
-        localStorage.removeItem('createSurveyMaxStep');
+        sessionStorage.removeItem('createSurveyMaxStep');
         methods.reset({
           title: '', description: '', category: '', audience: '',
           goal: '', usage: '', startDate: '', endDate: '',
