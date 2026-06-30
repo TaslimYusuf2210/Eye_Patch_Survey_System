@@ -21,7 +21,7 @@ export async function getResponseById({ id, ...queryParams }: {
     order?: "asc" | "desc";
 }) {
     try {
-        const response = await api.get(`api/v1/${id}/responses`, { params: queryParams })
+        const response = await api.get(`api/v1/surveys/${id}/responses`, { params: queryParams })
         return response.data
     } catch (error) {
         console.error("get response by survey id error:", error)

@@ -37,10 +37,12 @@ const SurveyList = () => {
     const [statusFilter, setStatusFilter] = useState('All');
     const [sortBy, setSortBy] = useState('created_at|desc');
     const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(true);
     const itemsPerPage = 8;
 
     useEffect(() => {
         async function fetchSurveys() {
+            setLoading(true);
             try {
                 const response = await getSurveys({ page: 1, limit: 20 });
                 setSurveys(response.data.map((item: any) => ({
@@ -57,6 +59,8 @@ const SurveyList = () => {
             } catch (error) {
                 console.log(error);
                 toast.error("Failed to get surveys. Please try again later")
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -142,7 +146,24 @@ const SurveyList = () => {
             </div>
 
             {/* Survey Cards Grid */}
-            {paginated.length > 0 ? (
+            {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-6 animate-pulse"
+                        >
+                            <div className="h-4 bg-gray-200 dark:bg-slate-800 rounded w-3/4 mb-4" />
+                            <div className="h-3 bg-gray-200 dark:bg-slate-800 rounded w-full mb-3" />
+                            <div className="h-3 bg-gray-200 dark:bg-slate-800 rounded w-5/6 mb-4" />
+                            <div className="flex items-center gap-4">
+                                <div className="h-8 w-16 bg-gray-200 dark:bg-slate-800 rounded-full" />
+                                <div className="h-8 w-16 bg-gray-200 dark:bg-slate-800 rounded-full" />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : paginated.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {paginated.map((survey) => (
                         <SurveyCard key={survey.id} survey={survey} />

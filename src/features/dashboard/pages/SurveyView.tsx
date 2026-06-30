@@ -314,7 +314,8 @@ function SurveyView() {
                 <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Actions</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Link
-                        to={`/dashboard/responses`}
+                        to={`/dashboard/responses/${id}`}
+                        state={{ surveyTitle: survey?.title }}
                         className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm hover:shadow-md hover:border-accent-300 dark:hover:border-accent-700 transition-all group cursor-pointer"
                     >
                         <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
@@ -327,7 +328,8 @@ function SurveyView() {
                     </Link>
 
                     <Link
-                        to={`/dashboard/participant`}
+                        to={`/dashboard/participant/${id}`}
+                        state={{ participantName: survey?.title }}
                         className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm hover:shadow-md hover:border-accent-300 dark:hover:border-accent-700 transition-all group cursor-pointer"
                     >
                         <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/30 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">

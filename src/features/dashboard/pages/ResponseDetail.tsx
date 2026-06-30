@@ -60,6 +60,7 @@ const ResponseDetail = () => {
     ];
 
     useEffect(() => {
+        console.log('ResponseDetail reached — survey ID:', id);
         async function fetchResponses() {
             setLoading(true)
             try {
