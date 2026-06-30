@@ -5,9 +5,6 @@ import { useEffect, useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import themePictures, { preloadThemeImage } from '@/theme/themePictures';
 import { useAuth } from '@/contexts/AuthContext';
-import { LineSpinner } from "ldrs/react";
-import "ldrs/react/LineSpinner.css";
-
 const DashboardLayout = () => {
     const { picture } = useTheme();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -52,13 +49,50 @@ const DashboardLayout = () => {
 
     if (loading) {
         return (
-            <div className="w-screen h-screen flex justify-center items-center bg-slate-50 dark:bg-slate-900 text-gray-900 dark:text-slate-100 font-poppins transition-colors duration-300">
-                <LineSpinner 
-                size="40" 
-                stroke="3" 
-                speed="1" 
-                color="black"
-                />
+            <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-poppins transition-colors duration-300 animate-pulse">
+                {/* Sidebar skeleton */}
+                <div className="fixed left-0 top-0 h-screen w-16 lg:w-64 bg-white dark:bg-slate-950 border-r border-gray-200 dark:border-slate-900 hidden md:flex flex-col p-4 gap-6">
+                    <div className="h-6 bg-gray-200 dark:bg-slate-800 rounded w-20 lg:w-28" />
+                    <div className="space-y-3 mt-8">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <div key={i} className="flex items-center gap-3">
+                                <div className="h-5 w-5 bg-gray-200 dark:bg-slate-800 rounded shrink-0" />
+                                <div className="h-4 bg-gray-200 dark:bg-slate-800 rounded w-24 hidden lg:block" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Main area skeleton */}
+                <div className="ml-0 md:ml-16 lg:ml-64 min-h-screen p-8">
+                    <div className="flex items-center justify-between mb-8">
+                        {/* Header skeleton */}
+                        <div className="flex items-center gap-4">
+                            <div className="h-8 w-8 bg-gray-200 dark:bg-slate-800 rounded-full" />
+                            <div className="h-5 bg-gray-200 dark:bg-slate-800 rounded w-40" />
+                        </div>
+                        <div className="h-8 w-8 bg-gray-200 dark:bg-slate-800 rounded-full" />
+                    </div>
+
+                    {/* Content skeleton */}
+                    <div className="space-y-6">
+                        <div className="h-8 bg-gray-200 dark:bg-slate-800 rounded w-56" />
+                        <div className="h-4 bg-gray-200 dark:bg-slate-800 rounded w-96" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                            {Array.from({ length: 6 }).map((_, i) => (
+                                <div key={i} className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-6">
+                                    <div className="h-4 bg-gray-200 dark:bg-slate-800 rounded w-3/4 mb-4" />
+                                    <div className="h-3 bg-gray-200 dark:bg-slate-800 rounded w-full mb-3" />
+                                    <div className="h-3 bg-gray-200 dark:bg-slate-800 rounded w-5/6 mb-4" />
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-8 w-16 bg-gray-200 dark:bg-slate-800 rounded-full" />
+                                        <div className="h-8 w-16 bg-gray-200 dark:bg-slate-800 rounded-full" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
