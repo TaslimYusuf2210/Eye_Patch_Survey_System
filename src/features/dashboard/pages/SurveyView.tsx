@@ -309,36 +309,62 @@ function SurveyView() {
                 ))}
             </div>
 
-            {/* Action Buttons */}
-            <div className="mt-10 pt-6 border-t border-gray-200 dark:border-slate-800 flex flex-wrap items-center gap-3">
-                <Link
-                    to={`/dashboard/responses`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
-                >
-                    <MessageSquare size={16} />
-                    View Responses
-                </Link>
-                <Link
-                    to={`/dashboard/participant`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
-                >
-                    <UsersIcon size={16} />
-                    View Participants
-                </Link>
-                <button
-                    onClick={handleCopyLink}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
-                >
-                    <Copy size={16} />
-                    Copy Link
-                </button>
-                <button
-                    onClick={() => setDeleteOpen(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-red-200 dark:border-red-900/30 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
-                >
-                    <Trash2 size={16} />
-                    Delete
-                </button>
+            {/* Actions */}
+            <div className="mt-10">
+                <h2 className="font-semibold text-gray-900 dark:text-white mb-4">Actions</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <Link
+                        to={`/dashboard/responses`}
+                        className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm hover:shadow-md hover:border-accent-300 dark:hover:border-accent-700 transition-all group cursor-pointer"
+                    >
+                        <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
+                            <MessageSquare size={20} />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">View Responses</p>
+                            <p className="text-xs text-gray-500 dark:text-slate-400">See all responses collected for this survey</p>
+                        </div>
+                    </Link>
+
+                    <Link
+                        to={`/dashboard/participant`}
+                        className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm hover:shadow-md hover:border-accent-300 dark:hover:border-accent-700 transition-all group cursor-pointer"
+                    >
+                        <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/30 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
+                            <UsersIcon size={20} />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">View Participants</p>
+                            <p className="text-xs text-gray-500 dark:text-slate-400">Browse everyone who participated</p>
+                        </div>
+                    </Link>
+
+                    <button
+                        onClick={handleCopyLink}
+                        className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm hover:shadow-md hover:border-accent-300 dark:hover:border-accent-700 transition-all group cursor-pointer text-left"
+                    >
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-gray-600 dark:text-slate-300 group-hover:scale-110 transition-transform">
+                            <Copy size={20} />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">Copy Link</p>
+                            <p className="text-xs text-gray-500 dark:text-slate-400">Share this survey with respondents</p>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => setDeleteOpen(true)}
+                        className="flex items-center gap-4 p-4 rounded-xl border border-red-200 dark:border-red-900/30 bg-white dark:bg-slate-950 shadow-sm hover:shadow-md hover:border-red-300 dark:hover:border-red-700 transition-all group cursor-pointer text-left"
+                    >
+                        <div className="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-950/30 flex items-center justify-center text-red-600 dark:text-red-400 group-hover:scale-110 transition-transform">
+                            <Trash2 size={20} />
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold text-red-600 dark:text-red-400">Delete Survey</p>
+                            <p className="text-xs text-gray-500 dark:text-slate-400">Permanently remove this survey and all data</p>
+                        </div>
+                    </button>
+                </div>
             </div>
 
             {/* Delete Confirmation Dialog */}

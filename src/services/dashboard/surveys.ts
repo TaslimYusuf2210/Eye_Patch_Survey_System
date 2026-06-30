@@ -105,3 +105,18 @@ export async function updateSurveyStatus(id: string, status: string) {
         throw error;
     }
 }
+
+export async function globalSearch(params: {
+    q: string;
+    type?: 'surveys' | 'responses' | 'participants' | 'all';
+    page?: number;
+    limit?: number;
+}) {
+    try {
+        const response = await api.get('api/v1/search', { params });
+        return response.data;
+    } catch (error) {
+        console.error('Global Search error:', error);
+        throw error;
+    }
+}
