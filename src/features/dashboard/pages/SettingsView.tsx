@@ -46,7 +46,6 @@ const SettingsView = () => {
 
     const tabs = [
         { id: 'profile', label: 'Profile' },
-        { id: 'billing', label: 'Account & Billing' },
         { id: 'appearance', label: 'Global Appearance' },
         { id: 'theme', label: 'Theme Picture' },
     ];

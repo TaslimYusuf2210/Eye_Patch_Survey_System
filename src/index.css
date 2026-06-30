@@ -1,0 +1,4 @@
+/* All <button> elements get a pointer cursor by default */
+button:not(:disabled) {
+  cursor: pointer;
+}
