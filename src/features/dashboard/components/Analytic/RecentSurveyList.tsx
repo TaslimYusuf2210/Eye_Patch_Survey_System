@@ -38,7 +38,13 @@ const RecentSurveyList = ({ surveys }: { surveys: RecentSurvey[] }) => {
                         <div className="flex items-center justify-between flex-wrap gap-4">
                             <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-slate-400 font-medium">
                                 <div className="flex items-center gap-2">
-                                    <img src={survey.author_avatar} alt={survey.author_name} className="w-5 h-5 rounded-full" />
+                                    {survey.author_avatar ? (
+                                        <img src={survey.author_avatar} alt={survey.author_name} className="w-5 h-5 rounded-full" />
+                                    ) : (
+                                        <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-medium text-gray-500 dark:text-slate-400">
+                                            {survey.author_name?.charAt(0)?.toUpperCase() || '?'}
+                                        </div>
+                                    )}
                                     <span>{survey.author_name}</span>
                                 </div>
                                 <div className="flex items-center gap-1">

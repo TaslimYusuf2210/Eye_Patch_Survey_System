@@ -10,10 +10,13 @@ import { toast } from "sonner"
 interface AnswerItem {
     question_id: string;
     question_text: string;
+    required: boolean;
+    section_title?: string;
     answer_text?: string;
     likert_value?: number;
     yes_no_value?: boolean;
     selected_options?: string[];
+    options?: string[];
 }
 
 interface ResponseItem {

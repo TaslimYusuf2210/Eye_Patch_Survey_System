@@ -8,10 +8,13 @@ import { toast } from "sonner"
 interface Answer {
     question_id: string;
     question_text: string;
+    required: boolean;
+    section_title?: string;
     answer_text?: string;
     likert_value?: number;
     yes_no_value?: boolean;
     selected_options?: string[];
+    options?: string[];
 }
 
 interface ResponseData {
@@ -48,24 +51,29 @@ function formatDate(dateStr: string): string {
 }
 
 function renderAnswer(answer: Answer) {
-    // Likert scale
+    // Likert scale — show all options, highlight selected
     if (answer.likert_value !== null && answer.likert_value !== undefined) {
+        const labels = answer.options && answer.options.length > 0
+            ? answer.options
+            : ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
         return (
-            <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                        key={star}
-                        className={`text-lg ${star <= answer.likert_value!
-                            ? 'text-amber-400'
-                            : 'text-gray-200 dark:text-slate-700'
+            <div className="flex flex-wrap gap-2">
+                {labels.map((label, i) => {
+                    const idx = i + 1;
+                    const isSelected = idx === answer.likert_value;
+                    return (
+                        <span
+                            key={i}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                                isSelected
+                                    ? 'bg-amber-400 text-white shadow-sm'
+                                    : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 line-through decoration-1'
                             }`}
-                    >
-                        ★
-                    </span>
-                ))}
-                <span className="ml-2 text-sm text-gray-500 dark:text-slate-400">
-                    ({answer.likert_value}/5)
-                </span>
+                        >
+                            {isSelected ? label : label}
+                        </span>
+                    );
+                })}
             </div>
         );
     }
@@ -83,19 +91,30 @@ function renderAnswer(answer: Answer) {
         );
     }
 
-    // Multi-select
-    if (answer.selected_options && answer.selected_options.length > 0) {
+    // Multi-select / Single choice — show all options, highlight selected
+    if ((answer.options && answer.options.length > 0) || (answer.selected_options && answer.selected_options.length > 0)) {
+        const allOptions = answer.options && answer.options.length > 0 ? answer.options : (answer.selected_options || []);
+        const selected = answer.selected_options || [];
         return (
             <div className="flex flex-wrap gap-2">
-                {answer.selected_options.map((opt, i) => (
-                    <span
-                        key={i}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-                        {opt}
-                    </span>
-                ))}
+                {allOptions.map((opt, i) => {
+                    const isSelected = selected.includes(opt);
+                    return (
+                        <span
+                            key={i}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                                isSelected
+                                    ? 'bg-blue-600 text-white shadow-sm'
+                                    : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 line-through decoration-1'
+                            }`}
+                        >
+                            {isSelected && (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                            )}
+                            {opt}
+                        </span>
+                    );
+                })}
             </div>
         );
     }
@@ -112,12 +131,30 @@ function renderAnswer(answer: Answer) {
     return <span className="text-gray-400 dark:text-slate-500 italic">No answer</span>;
 }
 
+const mockResponse: ResponseData = {
+    id: 'mock-response-001',
+    respondent_email: 'john.doe@example.com',
+    completed_at: '2026-06-29T15:00:05.593Z',
+    time_taken_sec: 272,
+    answers: [
+        { question_id: 'q1', section_title: 'General Feedback', question_text: 'What improvements would you suggest for our product?', required: true, answer_text: 'The interface is great, but I\'d love to see better integration with third-party tools and more customizable reporting features.' },
+        { question_id: 'q2', section_title: 'General Feedback', question_text: 'How satisfied are you with the onboarding experience?', required: true, likert_value: 4, options: ['Very Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Very Satisfied'] },
+        { question_id: 'q3', section_title: 'Satisfaction', question_text: 'Would you recommend this product to a colleague?', required: true, yes_no_value: true },
+        { question_id: 'q4', section_title: 'Satisfaction', question_text: 'Have you encountered any technical issues?', required: true, yes_no_value: false },
+        { question_id: 'q5', section_title: 'Feature Usage', question_text: 'Which features do you use most often? (Select all that apply)', required: false, options: ['Dashboard', 'Survey Builder', 'Analytics', 'Reports', 'Settings'], selected_options: ['Dashboard', 'Survey Builder', 'Analytics'] },
+        { question_id: 'q6', section_title: 'Feature Usage', question_text: 'Any additional feedback?', required: false, answer_text: '' },
+    ],
+};
+
 const ResponseAnswers = () => {
     const { surveyId, responseId } = useParams();
     const location = useLocation();
     const { textTitle } = useTheme();
+    const searchParams = new URLSearchParams(location.search);
     const [responseData, setResponseData] = useState<ResponseData | null>(
-        (location.state as { response?: ResponseData })?.response ?? null
+        searchParams.get('mock') === 'true'
+            ? mockResponse
+            : (location.state as { response?: ResponseData })?.response ?? null
     );
     const [loading, setLoading] = useState(!responseData);
 
@@ -217,20 +254,51 @@ const ResponseAnswers = () => {
                 </div>
             </div>
 
-            {/* Answers */}
-            <div className="space-y-4">
-                {responseData.answers.map((answer, i) => (
-                    <div
-                        key={answer.question_id}
-                        className="bg-white dark:bg-slate-950 p-6 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm"
-                    >
-                        <p className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                            <span className="text-gray-400 dark:text-slate-500 mr-2">Q{i + 1}.</span>
-                            {answer.question_text}
-                        </p>
+            {/* Answers — grouped by section */}
+            <div className="space-y-6">
+                {(() => {
+                    const groups: Record<string, Answer[]> = {};
+                    responseData.answers.forEach((a) => {
+                        const key = a.section_title || 'Other';
+                        if (!groups[key]) groups[key] = [];
+                        groups[key].push(a);
+                    });
+                    let globalIdx = 0;
+                    return Object.entries(groups).map(([section, answers]) => (
+                        <div key={section}>
+                            <h3 className="text-sm font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                <span className="w-1 h-4 rounded-full bg-accent-600" />
+                                {section}
+                            </h3>
+                            <div className="space-y-3">
+                                {answers.map((answer) => {
+                                    const qNum = ++globalIdx;
+                                    return (
+                                        <div
+                                            key={answer.question_id}
+                                            className="bg-white dark:bg-slate-950 p-6 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm"
+                                        >
+                                            <div className="flex items-start justify-between gap-2 mb-3">
+                                                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                                    <span className="text-gray-400 dark:text-slate-500 mr-2">Q{qNum}.</span>
+                                                    {answer.question_text}
+                                                </p>
+                            <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                                answer.required
+                                    ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-500 dark:text-rose-400'
+                                    : 'bg-gray-50 dark:bg-slate-800 text-gray-400 dark:text-slate-500'
+                            }`}>
+                                {answer.required ? 'Required' : 'Optional'}
+                            </span>
+                        </div>
                         {renderAnswer(answer)}
                     </div>
-                ))}
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ));
+                })()}
             </div>
         </>
     );
