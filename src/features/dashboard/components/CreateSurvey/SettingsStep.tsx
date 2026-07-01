@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export function SettingsStep() {
   const {
@@ -14,6 +14,15 @@ export function SettingsStep() {
   const navigate = useNavigate();
   const [unlimited, setUnlimited] = useState(!watch('responseLimit'));
   const startDate = watch('startDate');
+
+  // Sync form value on mount: if "No limit" is ON, set responseLimit to -1
+  useEffect(() => {
+    if (unlimited) {
+      setValue('responseLimit', -1);
+    }
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const today = new Date().toISOString().split('T')[0];
 
   function onSubmit() {

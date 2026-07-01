@@ -59,9 +59,9 @@ const GlobalResponses = () => {
                 }))
                 setResponses(mapped)
                 setPagination(response.pagination)
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error)
-                toast.error("Failed to get global response")
+                toast.error(error?.userMessage || "Failed to get global response")
             } finally {
                 setLoading(false)
             }

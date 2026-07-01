@@ -56,9 +56,9 @@ const GlobalParticipants = () => {
                 }))
                 setParticipants(mapped)
                 setPagination(response.pagination)
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error)
-                toast.error("Failed to load participants")
+                toast.error(error?.userMessage || "Failed to load participants")
             } finally {
                 setLoading(false)
             }

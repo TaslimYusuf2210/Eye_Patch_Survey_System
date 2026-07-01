@@ -56,9 +56,9 @@ const SurveyList = () => {
                     date: item.created_at,
                 })));
                 setPagination(response.pagination);
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error);
-                toast.error("Failed to get surveys. Please try again later")
+                toast.error(error?.userMessage || "Failed to get surveys. Please try again later")
             } finally {
                 setLoading(false);
             }

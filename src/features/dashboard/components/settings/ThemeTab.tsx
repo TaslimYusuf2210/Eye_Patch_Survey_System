@@ -15,8 +15,8 @@ const ThemeTab = () => {
             // Call API to update theme picture
             await updateThemePicture(payload);
             toast.success("Theme picture updated successfully.");
-        } catch (error) {
-            toast.error("Failed to update theme picture.");
+        } catch (error: any) {
+            toast.error(error?.userMessage || "Failed to update theme picture.");
             console.log(error);
         }
     };

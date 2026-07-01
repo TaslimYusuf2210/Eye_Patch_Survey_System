@@ -199,8 +199,8 @@ export default function CreateSurvey() {
           sections: raw.sections || [],
         });
         setDraftLoaded(true);
-      } catch {
-        toast.error('Failed to load draft.');
+      } catch (error: any) {
+        toast.error(error?.userMessage || 'Failed to load draft.');
       }
     })();
   }, [draftId, methods, draftLoaded]);
@@ -249,8 +249,8 @@ export default function CreateSurvey() {
         }
       }
       toast.success("Progress saved!");
-    } catch {
-      toast.error("Saved locally, but failed to sync to server.");
+    } catch (error: any) {
+      toast.error(error?.userMessage || "Saved locally, but failed to sync to server.");
     }
   }, [methods]);
 
@@ -283,8 +283,8 @@ export default function CreateSurvey() {
         });
         toast.success('Survey created successfully!');
         navigate('/dashboard/surveys');
-      } catch {
-        toast.error('Failed to create survey. Please try again.');
+      } catch (error: any) {
+        toast.error(error?.userMessage || 'Failed to create survey. Please try again.');
       }
       return;
     }

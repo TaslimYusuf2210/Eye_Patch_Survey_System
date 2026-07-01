@@ -53,8 +53,8 @@ const AppearanceTab = () => {
         try {
             await updateAppearanceAndAccent(payload);
             toast.success("Appearance settings updated successfully.");
-        } catch (error) {
-            toast.error("Failed to update appearance settings.");
+        } catch (error: any) {
+            toast.error(error?.userMessage || "Failed to update appearance settings.");
             console.log(error)
         }
     };
@@ -130,17 +130,17 @@ const AppearanceTab = () => {
                 </div>
 
                 {/* ─── Accent Color Selector ─── */}
-                <div className={`space-y-4 transition-opacity duration-300 ${isDefaultAppearance || isDefaultTheme ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+                <div className={`space-y-4 transition-opacity duration-300 ${isDefaultAppearance ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
                     <div className="flex items-center justify-between">
                         <div>
                             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Accent Color</h3>
                             <p className="text-gray-500 dark:text-slate-400 text-xs">
-                                {isDefaultAppearance || isDefaultTheme
+                                {isDefaultAppearance
                                     ? 'Switch to Light or Dark base theme to pick an accent color.'
                                     : 'Choose the highlight palette for active actions, tags, and links.'}
                             </p>
                         </div>
-                        {(isDefaultAppearance || isDefaultTheme) && (
+                        {isDefaultAppearance && (
                             <Ban className="w-4 h-4 text-gray-400 dark:text-slate-500" />
                         )}
                     </div>
@@ -151,12 +151,12 @@ const AppearanceTab = () => {
                                 <button
                                     key={color.id}
                                     onClick={() => setAccent(color.id)}
-                                    disabled={isDefaultAppearance || isDefaultTheme}
+                                    disabled={isDefaultAppearance}
                                     className={`flex flex-col items-center justify-center rounded-xl border p-3.5 text-center cursor-pointer transition-all duration-200 focus:outline-none ${
                                         isSelected
                                             ? 'border-black dark:border-white ring-1 ring-black dark:ring-white bg-gray-50/50 dark:bg-slate-900/50'
                                             : 'border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700 hover:bg-gray-50/20'
-                                    } ${isDefaultAppearance || isDefaultTheme ? 'cursor-not-allowed' : ''}`}
+                                    } ${isDefaultAppearance ? 'cursor-not-allowed' : ''}`}
                                 >
                                     <div className={`w-6 h-6 rounded-full ${color.colorClass} mb-2 shadow-inner flex items-center justify-center text-white`}>
                                         {isSelected && <Check className="w-3.5 h-3.5" />}

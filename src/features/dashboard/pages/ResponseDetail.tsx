@@ -74,9 +74,9 @@ const ResponseDetail = () => {
                 }))
                 setResponses(mapped)
                 setPagination(response.pagination)
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error)
-                toast.error("Failed to load responses")
+                toast.error(error?.userMessage || "Failed to load responses")
             } finally {
                 setLoading(false)
             }

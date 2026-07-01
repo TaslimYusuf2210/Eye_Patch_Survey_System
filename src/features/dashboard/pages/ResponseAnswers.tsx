@@ -3,6 +3,7 @@ import { useParams, Link, useLocation } from 'react-router-dom';
 import { ChevronLeft, Clock, Mail, Calendar } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getResponseById } from '@/services/dashboard/responses';
+import { toast } from "sonner"
 
 interface Answer {
     question_id: string;
@@ -138,8 +139,9 @@ const ResponseAnswers = () => {
                         answers: found.answers,
                     });
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error(error);
+                toast.error(error?.userMessage || 'Failed to load response.');
             } finally {
                 setLoading(false);
             }
