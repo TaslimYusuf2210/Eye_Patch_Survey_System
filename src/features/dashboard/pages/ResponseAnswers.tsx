@@ -131,30 +131,12 @@ function renderAnswer(answer: Answer) {
     return <span className="text-gray-400 dark:text-slate-500 italic">No answer</span>;
 }
 
-const mockResponse: ResponseData = {
-    id: 'mock-response-001',
-    respondent_email: 'john.doe@example.com',
-    completed_at: '2026-06-29T15:00:05.593Z',
-    time_taken_sec: 272,
-    answers: [
-        { question_id: 'q1', section_title: 'General Feedback', question_text: 'What improvements would you suggest for our product?', required: true, answer_text: 'The interface is great, but I\'d love to see better integration with third-party tools and more customizable reporting features.' },
-        { question_id: 'q2', section_title: 'General Feedback', question_text: 'How satisfied are you with the onboarding experience?', required: true, likert_value: 4, options: ['Very Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Very Satisfied'] },
-        { question_id: 'q3', section_title: 'Satisfaction', question_text: 'Would you recommend this product to a colleague?', required: true, yes_no_value: true },
-        { question_id: 'q4', section_title: 'Satisfaction', question_text: 'Have you encountered any technical issues?', required: true, yes_no_value: false },
-        { question_id: 'q5', section_title: 'Feature Usage', question_text: 'Which features do you use most often? (Select all that apply)', required: false, options: ['Dashboard', 'Survey Builder', 'Analytics', 'Reports', 'Settings'], selected_options: ['Dashboard', 'Survey Builder', 'Analytics'] },
-        { question_id: 'q6', section_title: 'Feature Usage', question_text: 'Any additional feedback?', required: false, answer_text: '' },
-    ],
-};
-
 const ResponseAnswers = () => {
     const { surveyId, responseId } = useParams();
     const location = useLocation();
     const { textTitle } = useTheme();
-    const searchParams = new URLSearchParams(location.search);
     const [responseData, setResponseData] = useState<ResponseData | null>(
-        searchParams.get('mock') === 'true'
-            ? mockResponse
-            : (location.state as { response?: ResponseData })?.response ?? null
+        (location.state as { response?: ResponseData })?.response ?? null
     );
     const [loading, setLoading] = useState(!responseData);
 
