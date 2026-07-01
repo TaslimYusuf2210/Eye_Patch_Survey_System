@@ -3,6 +3,7 @@ import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import Table from '../../../components/table';
 import { useTheme } from '@/contexts/ThemeContext';
+import { formatDate } from '@/lib/utils';
 import { getResponseById } from '@/services/dashboard/responses';
 import { toast } from "sonner"
 
@@ -68,7 +69,7 @@ const ResponseDetail = () => {
                 const mapped = response.data.map((item: ResponseItem) => ({
                     id: item.id,
                     respondent_email: item.respondent_email,
-                    completed_at: item.completed_at,
+                    completed_at: formatDate(item.completed_at),
                     time_taken_sec: item.time_taken_sec,
                     answers: item.answers,
                 }))

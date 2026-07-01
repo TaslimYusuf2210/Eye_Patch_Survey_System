@@ -2,6 +2,15 @@
 import type { StatsCardProps } from '@/types/dashboard/analytic';
 
 const StatsCard = ({ title, value, change, chartColor = 'bg-accent-600' }: StatsCardProps) => {
+    const isPositive = change >= 0;
+    const isNeutral = change === 0;
+    const arrow = isNeutral ? '→' : isPositive ? '↗' : '↘';
+    const changeColor = isNeutral
+        ? 'text-gray-400 dark:text-slate-500'
+        : isPositive
+            ? 'text-emerald-500'
+            : 'text-red-500';
+
     return (
         <div className="bg-white dark:bg-slate-950 p-6 rounded-xl border border-gray-100 dark:border-slate-900 hover:border-accent-200 dark:hover:border-accent-800/30 shadow-sm hover:shadow-md flex flex-col justify-between h-auto transition-all duration-300">
             <div>
@@ -24,8 +33,8 @@ const StatsCard = ({ title, value, change, chartColor = 'bg-accent-600' }: Stats
                     ))}
                 </div>
                 <div className="flex items-center gap-1 mt-2 text-xs font-medium">
-                    <span className="text-emerald-500 flex items-center">
-                        {change}% ↗
+                    <span className={`${changeColor} flex items-center gap-0.5`}>
+                        {Math.abs(change)}% {arrow}
                     </span>
                     <span className="text-gray-400 dark:text-slate-500">from last week</span>
                 </div>

@@ -1,6 +1,14 @@
 import { MoreHorizontal, FileText } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { formatDate } from '@/lib/utils';
 import type {RecentSurvey} from '@/types/dashboard/analytic';
+
+const statusColors: Record<string, string> = {
+    active: 'bg-green-50 dark:bg-emerald-950/30 text-green-600 dark:text-emerald-400 border-green-100 dark:border-emerald-900/30',
+    draft: 'bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-slate-400 border-gray-200 dark:border-slate-700',
+    inactive: 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-100 dark:border-amber-900/30',
+    closed: 'bg-red-50 dark:bg-rose-950/30 text-red-500 dark:text-rose-400 border-red-100 dark:border-rose-900/30',
+};
 
 const RecentSurveyList = ({ surveys }: { surveys: RecentSurvey[] }) => {
     const { textTitle } = useTheme();
@@ -14,10 +22,7 @@ const RecentSurveyList = ({ surveys }: { surveys: RecentSurvey[] }) => {
                         <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-3">
                                 <h3 className="font-bold text-gray-900 dark:text-slate-100 text-lg">{survey.title}</h3>
-                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${survey.status === 'Active'
-                                        ? 'bg-green-50 dark:bg-emerald-950/30 text-green-600 dark:text-emerald-400 border border-green-100 dark:border-emerald-900/30'
-                                        : 'bg-gray-100 dark:bg-slate-900 text-gray-500 dark:text-slate-400'
-                                    }`}>
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${statusColors[survey.status?.toLowerCase()] || 'bg-gray-100 dark:bg-slate-900 text-gray-500 dark:text-slate-400'}`}>
                                     ● {survey.status}
                                 </span>
                             </div>
@@ -46,7 +51,7 @@ const RecentSurveyList = ({ surveys }: { surveys: RecentSurvey[] }) => {
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    {survey.created_at}
+                                    {formatDate(survey.created_at)}
                                 </div>
                             </div>
 

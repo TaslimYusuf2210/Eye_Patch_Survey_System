@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Table from '../../../components/table';
 import { useTheme } from '@/contexts/ThemeContext';
+import { formatDate } from '@/lib/utils';
 import { getGlobalResponse } from '@/services/dashboard/responses';
 import {toast} from "sonner"
 import { useNavigate } from 'react-router-dom';
@@ -53,7 +54,7 @@ const GlobalResponses = () => {
                 const mapped = response.data.map((item: GlobalResponseItem) => ({
                     survey_title: item.survey_title,
                     respondent_email: item.respondent_email,
-                    completed_at: item.completed_at,
+                    completed_at: formatDate(item.completed_at),
                     time_taken_sec: item.time_taken_sec,
                     survey_id: item.survey_id,
                 }))
