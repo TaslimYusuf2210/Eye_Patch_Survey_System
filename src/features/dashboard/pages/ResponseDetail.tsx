@@ -117,7 +117,6 @@ const ResponseDetail = () => {
                 loading={loading}
                 emptyMessage="No responses for this survey yet"
                 totalItems={pagination?.total}
-                currentPage={pagination?.page}
                 currentPage={page}
                 onPageChange={(p) => setPage(p)}
             />

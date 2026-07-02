@@ -87,7 +87,6 @@ const GlobalParticipants = () => {
                 loading={loading}
                 emptyMessage="No participants yet"
                 totalItems={pagination?.total}
-                currentPage={pagination?.page}
                 currentPage={page}
                 onPageChange={(p) => setPage(p)}
             />

@@ -93,7 +93,6 @@ const ParticipantDetail = () => {
                 loading={loading}
                 emptyMessage="No participants for this survey yet"
                 totalItems={pagination?.total}
-                currentPage={pagination?.page}
                 currentPage={page}
                 onPageChange={(p) => setPage(p)}
             />

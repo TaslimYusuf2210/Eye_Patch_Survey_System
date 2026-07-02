@@ -95,7 +95,6 @@ const GlobalResponses = () => {
                 loading={loading}
                 emptyMessage="No responses yet"
                 totalItems={pagination?.total}
-                currentPage={pagination?.page}
                 currentPage={page}
                 onPageChange={(p) => setPage(p)}
             />
