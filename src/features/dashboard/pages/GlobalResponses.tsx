@@ -46,11 +46,13 @@ const GlobalResponses = () => {
         { name: "Time Taken", key: "time_taken_sec" },
     ];
 
+    const [page, setPage] = useState(1);
+
     useEffect(() => {
         async function getResponses() {
             setLoading(true)
             try {
-                const response = await getGlobalResponse()
+                const response = await getGlobalResponse({ page, limit: 10 })
                 const mapped = response.data.map((item: GlobalResponseItem) => ({
                     survey_title: item.survey_title,
                     respondent_email: item.respondent_email,
@@ -69,7 +71,7 @@ const GlobalResponses = () => {
         }
 
         getResponses()
-    }, [])
+    }, [page])
 
     function onView (row:GlobalResponseDisplay) {
         navigate(`/dashboard/responses/${row.survey_id}`, {
@@ -94,7 +96,8 @@ const GlobalResponses = () => {
                 emptyMessage="No responses yet"
                 totalItems={pagination?.total}
                 currentPage={pagination?.page}
-                onPageChange={(page) => console.log("fetch page:", page)}
+                currentPage={page}
+                onPageChange={(p) => setPage(p)}
             />
         </>
     );

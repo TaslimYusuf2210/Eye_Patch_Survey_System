@@ -43,11 +43,13 @@ const GlobalParticipants = () => {
         { name: "Responses", key: "response_count" },
     ];
 
+    const [page, setPage] = useState(1);
+
     useEffect(() => {
         async function fetchParticipants() {
             setLoading(true)
             try {
-                const response = await getGlobalParticipants()
+                const response = await getGlobalParticipants({ page, limit: 10 })
                 const mapped = response.data.map((item: ParticipantItem) => ({
                     id: item.id,
                     name: item.name,
@@ -65,7 +67,7 @@ const GlobalParticipants = () => {
         }
 
         fetchParticipants()
-    }, [])
+    }, [page])
 
     return (
         <>
@@ -86,7 +88,8 @@ const GlobalParticipants = () => {
                 emptyMessage="No participants yet"
                 totalItems={pagination?.total}
                 currentPage={pagination?.page}
-                onPageChange={(page) => console.log("fetch page:", page)}
+                currentPage={page}
+                onPageChange={(p) => setPage(p)}
             />
         </>
     );

@@ -56,6 +56,7 @@ const ResponseDetail = () => {
     const [responses, setResponses] = useState<ResponseDisplay[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>()
     const [loading, setLoading] = useState(false)
+    const [page, setPage] = useState(1);
 
     const columns = [
         { name: "Email", key: "respondent_email" },
@@ -68,7 +69,7 @@ const ResponseDetail = () => {
         async function fetchResponses() {
             setLoading(true)
             try {
-                const response = await getResponseById({ id: id!, page: 1, limit: 20 })
+                const response = await getResponseById({ id: id!, page, limit: 10 })
                 const mapped = response.data.map((item: ResponseItem) => ({
                     id: item.id,
                     respondent_email: item.respondent_email,
@@ -87,7 +88,7 @@ const ResponseDetail = () => {
         }
 
         fetchResponses()
-    }, [id])
+    }, [id, page])
 
     return (
         <>
@@ -117,7 +118,8 @@ const ResponseDetail = () => {
                 emptyMessage="No responses for this survey yet"
                 totalItems={pagination?.total}
                 currentPage={pagination?.page}
-                onPageChange={(page) => console.log("fetch page:", page)}
+                currentPage={page}
+                onPageChange={(p) => setPage(p)}
             />
         </>
     );

@@ -44,11 +44,13 @@ const ParticipantDetail = () => {
         { name: "Responses", key: "response_count" },
     ];
 
+    const [page, setPage] = useState(1);
+
     useEffect(() => {
         async function fetchParticipants() {
             setLoading(true)
             try {
-                const response = await getParticipantsBySurveyId({ id: id!, page: 1, limit: 20 })
+                const response = await getParticipantsBySurveyId({ id: id!, page, limit: 10 })
                 const mapped = response.data.map((item: ParticipantItem) => ({
                     name: item.name,
                     email: item.email,
@@ -65,7 +67,7 @@ const ParticipantDetail = () => {
         }
 
         fetchParticipants()
-    }, [id])
+    }, [id, page])
 
     return (
         <>
@@ -92,7 +94,8 @@ const ParticipantDetail = () => {
                 emptyMessage="No participants for this survey yet"
                 totalItems={pagination?.total}
                 currentPage={pagination?.page}
-                onPageChange={(page) => console.log("fetch page:", page)}
+                currentPage={page}
+                onPageChange={(p) => setPage(p)}
             />
         </>
     );

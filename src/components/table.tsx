@@ -268,7 +268,7 @@ function Table<T extends Record<string, any>>({
     if (totalPages <= 1) return null;
 
     const startItem = (safePage - 1) * pageSize + 1;
-    const endItem = Math.min(safePage * pageSize, filteredData.length);
+    const endItem = Math.min(safePage * pageSize, itemCount);
     const pages = getPageNumbers(safePage, totalPages);
 
     const btnBase =
@@ -277,7 +277,7 @@ function Table<T extends Record<string, any>>({
     return (
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t border-gray-200 dark:border-slate-800">
         <span className="text-sm text-gray-500 dark:text-slate-400">
-          Showing {startItem}–{endItem} of {filteredData.length}
+          Showing {startItem}–{endItem} of {itemCount}
         </span>
 
         <div className="flex items-center gap-1">
