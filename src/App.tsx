@@ -8,7 +8,6 @@ import Dashboard from './features/dashboard/pages/dashboard';
 import CreateSurvey from './features/dashboard/pages/CreateSurvey';
 import DashboardLayout from './features/dashboard/layout/DashboardLayout';
 import SurveyList from './features/dashboard/pages/SurveyList';
-import SurveyResponses from './features/dashboard/pages/SurveyResponses';
 import SurveyView from './features/dashboard/pages/SurveyView';
 import GlobalParticipants from './features/dashboard/pages/GlobalParticipants';
 import SettingsView from './features/dashboard/pages/SettingsView';
@@ -27,6 +26,7 @@ import Responses from './features/dashboard/pages/Responses';
 import ResponseDetail from './features/dashboard/pages/ResponseDetail';
 import ResponseAnswers from './features/dashboard/pages/ResponseAnswers';
 import ParticipantDetail from './features/dashboard/pages/ParticipantDetail';
+import SurveyResponsePage from './features/surveyResponse/SurveyResponsePage';
 
 
 function App() {
@@ -41,6 +41,7 @@ function App() {
         } />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/survey/:surveyId" element={<SurveyResponsePage />} />
         <Route path="/dashboard/" element={
           <AuthProvider>
           <ThemeProvider>
