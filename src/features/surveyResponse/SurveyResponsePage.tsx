@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Send, ChevronDown, ChevronUp, User, Mail } from 'lucide-react';
+import { Send, ChevronDown, ChevronUp, User, Mail, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { getSurveyById } from '@/services/dashboard/surveys';
 
-/* ── Mock survey data ── */
+/* ── Mock survey data (used when ?mock=true) ── */
 const MOCK_SURVEY = {
   id: 'mock-survey-001',
   title: 'Customer Satisfaction Survey',
@@ -33,6 +34,21 @@ const MOCK_SURVEY = {
     },
   ],
 };
+
+interface SurveyData {
+  id: string;
+  title: string;
+  description: string;
+  sections: {
+    title: string;
+    questions: {
+      text: string;
+      type: string;
+      required: boolean;
+      options: { value: string }[];
+    }[];
+  }[];
+}
 
 /* ── Question type renderers ── */
 
@@ -155,19 +171,48 @@ function SingleChoiceQuestion({ options, value, onChange }: { options: { value: 
 
 const SurveyResponsePage = () => {
   const { surveyId } = useParams();
-  const survey = MOCK_SURVEY; // In production: fetch via API
+  const isMock = new URLSearchParams(window.location.search).get('mock') === 'true';
 
+  const [survey, setSurvey] = useState<SurveyData | null>(isMock ? MOCK_SURVEY : null);
+  const [loading, setLoading] = useState(!isMock);
   const [respondentName, setRespondentName] = useState('');
   const [respondentEmail, setRespondentEmail] = useState('');
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [submitted, setSubmitted] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({});
 
+  useEffect(() => {
+    if (isMock || !surveyId) return;
+    (async () => {
+      try {
+        setLoading(true);
+        const res = await getSurveyById(surveyId);
+        const raw = res.data || res;
+        setSurvey({
+          id: raw.id,
+          title: raw.title,
+          description: raw.description,
+          sections: (raw.sections || []).map((s: any) => ({
+            title: s.title,
+            questions: (s.questions || []).map((q: any) => ({
+              text: q.text,
+              type: q.type,
+              required: q.required,
+              options: (q.options || []).map((o: any) => ({ value: o.value })),
+            })),
+          })),
+        });
+      } catch (error: any) {
+        toast.error(error?.userMessage || 'Failed to load survey.');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [surveyId, isMock]);
+
   const toggleSection = (idx: number) => {
     setExpandedSections((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
-
-  const getAnswer = (qIdx: number): any => answers[qIdx] ?? (survey.sections.some(s => s.questions[qIdx]?.type === 'multiple_choice') ? [] : '');
 
   const setAnswer = (qIdx: number, val: any) => {
     setAnswers((prev) => ({ ...prev, [qIdx]: val }));
@@ -179,10 +224,12 @@ const SurveyResponsePage = () => {
       return;
     }
 
+    if (!survey) return;
+
     // Check required questions
     let allAnswered = true;
     survey.sections.forEach((section) => {
-      section.questions.forEach((q, qi) => {
+      section.questions.forEach((q) => {
         const globalIdx = survey.sections.flatMap(s => s.questions).indexOf(q);
         const ans = answers[globalIdx];
         if (q.required) {
@@ -202,6 +249,28 @@ const SurveyResponsePage = () => {
     toast.success('Your response has been submitted. Thank you!');
     setSubmitted(true);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3 text-gray-500 dark:text-slate-400">
+          <Loader2 size="32" className="animate-spin" />
+          <p className="text-sm">Loading survey...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!survey) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
+        <div className="max-w-md w-full text-center">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Survey not found</h2>
+          <p className="text-sm text-gray-500 dark:text-slate-400">This survey may have been removed or the link is invalid.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
