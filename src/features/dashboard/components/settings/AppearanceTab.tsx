@@ -52,6 +52,13 @@ const AppearanceTab = () => {
         }
         try {
             await updateAppearanceAndAccent(payload);
+            // Sync sessionStorage so refresh doesn't revert to old settings
+            const stored = sessionStorage.getItem('profileData');
+            if (stored) {
+                const profile = JSON.parse(stored);
+                profile.settings = { ...profile.settings, appearance, accent_color: accent };
+                sessionStorage.setItem('profileData', JSON.stringify(profile));
+            }
             toast.success("Appearance settings updated successfully.");
         } catch (error: any) {
             toast.error(error?.userMessage || "Failed to update appearance settings.");

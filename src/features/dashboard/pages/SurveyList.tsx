@@ -51,8 +51,8 @@ const SurveyList = () => {
                     status: item.status,
                     description: item.description,
                     responses: item.response_count,
-                    completionRate: item.completion_rate,
-                    avgResponseTime: item.avg_response_time,
+                    questionCount: item.question_count ?? 0,
+                    sectionCount: item.section_count ?? 0,
                     date: item.created_at,
                 })));
                 setPagination(response.pagination);

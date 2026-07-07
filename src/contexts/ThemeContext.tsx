@@ -100,6 +100,31 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('survey-theme-picture', picture);
   }, [picture]);
 
+  // Re-sync theme from localStorage when AuthContext writes profile settings
+  useEffect(() => {
+    const syncFromStorage = () => {
+      const storedAppearance = localStorage.getItem('survey-theme-appearance') as Appearance | null;
+      if (storedAppearance === 'default' || storedAppearance === 'light' || storedAppearance === 'dark') {
+        setAppearance(storedAppearance);
+      }
+      const storedAccent = localStorage.getItem('survey-theme-accent') as AccentColor | null;
+      if (storedAccent === 'default' || storedAccent === 'blue' || storedAccent === 'green' || storedAccent === 'red' || storedAccent === 'purple') {
+        setAccent(storedAccent);
+      }
+      const storedPicture = localStorage.getItem('survey-theme-picture') as ThemePicture | null;
+      if (storedPicture === 'city' || storedPicture === 'nature' || storedPicture === 'marble' || storedPicture === 'none') {
+        setPicture(storedPicture);
+      }
+    };
+
+    // Re-sync on mount (catches values already written by AuthContext)
+    syncFromStorage();
+
+    // Re-sync whenever AuthContext writes new theme settings
+    window.addEventListener('theme-synced', syncFromStorage);
+    return () => window.removeEventListener('theme-synced', syncFromStorage);
+  }, []);
+
   const hasPicture = picture !== 'none';
   const textTitle = hasPicture
     ? 'text-white'

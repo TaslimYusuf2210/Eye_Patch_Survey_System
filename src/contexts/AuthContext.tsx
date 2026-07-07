@@ -9,6 +9,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState<UserProfile | null>(null);
 
+  function syncThemeSettings(settings: { appearance?: string; accent_color?: string; theme_picture?: string }) {
+    if (settings?.appearance && settings?.accent_color && settings?.theme_picture) {
+      localStorage.setItem('survey-theme-appearance', settings.appearance);
+      localStorage.setItem('survey-theme-accent', settings.accent_color);
+      localStorage.setItem('survey-theme-picture', settings.theme_picture);
+      window.dispatchEvent(new CustomEvent('theme-synced'));
+    }
+  }
+
   async function getUserDataAndProfile() {
         setLoading(true);
         // Get current user
@@ -16,7 +25,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const userProfileDataExists = sessionStorage.getItem('profileData') !== null;
           if (userProfileDataExists) {
             console.log("User profile data found in session storage.", userProfileDataExists);
-            setProfileData(JSON.parse(sessionStorage.getItem('profileData')!));
+            const existing = JSON.parse(sessionStorage.getItem('profileData')!);
+            setProfileData(existing);
+            syncThemeSettings(existing.settings);
           }
           if(!userProfileDataExists) {
             const profileResponse = await getProfile();
@@ -24,20 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             sessionStorage.setItem('profileData', JSON.stringify(profileResponse.data));
             setProfileData(profileResponse.data);
             console.log("User profile data fetched successfully:", profileResponse.data, profileResponse.data.settings);
-            const themeAndAppearanceExists = profileResponse.data.settings.appearance && profileResponse.data.settings.accent_color && profileResponse.data.settings.theme_picture;
-            if(themeAndAppearanceExists) {
-              console.log("User theme and appearance settings found in profile data:", profileResponse.data.settings);
-              sessionStorage.setItem('survey_theme_appearance', JSON.stringify({
-                appearance: profileResponse.data.settings.appearance,
-              }));
-              sessionStorage.setItem('survey_theme_picture', JSON.stringify({
-                appearance: profileResponse.data.settings.appearance,
-              }));
-              sessionStorage.setItem('survey_theme_accent', JSON.stringify({
-                appearance: profileResponse.data.settings.appearance,
-              }));
-              
-            }
+            syncThemeSettings(profileResponse.data.settings);
           }
         } catch (error: any) {
             console.error("Error fetching user data:", error);

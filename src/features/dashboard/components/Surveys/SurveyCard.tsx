@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Copy, Trash2, Clock, BarChart3, Users, AlertTriangle, Eye, Edit3 } from 'lucide-react';
+import { Copy, Trash2, HelpCircle, LayoutGrid, Users, AlertTriangle, Eye, Edit3 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -17,8 +17,8 @@ export interface SurveyCardData {
     status: string;
     description: string;
     responses: number;
-    completionRate: number;
-    avgResponseTime: string;
+    questionCount: number;
+    sectionCount: number;
     date: string;
 }
 
@@ -70,14 +70,14 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
                     <span className="text-[10px] text-gray-500 dark:text-slate-400">Responses</span>
                 </div>
                 <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50 dark:bg-slate-900/50">
-                    <BarChart3 size={16} className="text-gray-400 dark:text-slate-500 mb-1" />
-                    <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">{survey.completionRate}%</span>
-                    <span className="text-[10px] text-gray-500 dark:text-slate-400">Completion</span>
+                    <HelpCircle size={16} className="text-gray-400 dark:text-slate-500 mb-1" />
+                    <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">{survey.questionCount}</span>
+                    <span className="text-[10px] text-gray-500 dark:text-slate-400">Questions</span>
                 </div>
                 <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50 dark:bg-slate-900/50">
-                    <Clock size={16} className="text-gray-400 dark:text-slate-500 mb-1" />
-                    <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">{survey.avgResponseTime}</span>
-                    <span className="text-[10px] text-gray-500 dark:text-slate-400">Avg Time</span>
+                    <LayoutGrid size={16} className="text-gray-400 dark:text-slate-500 mb-1" />
+                    <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">{survey.sectionCount}</span>
+                    <span className="text-[10px] text-gray-500 dark:text-slate-400">Sections</span>
                 </div>
             </div>
 

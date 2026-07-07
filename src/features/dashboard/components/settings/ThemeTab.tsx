@@ -14,6 +14,13 @@ const ThemeTab = () => {
         try {
             // Call API to update theme picture
             await updateThemePicture(payload);
+            // Sync sessionStorage so refresh doesn't revert to old settings
+            const stored = sessionStorage.getItem('profileData');
+            if (stored) {
+                const profile = JSON.parse(stored);
+                profile.settings = { ...profile.settings, theme_picture: picture };
+                sessionStorage.setItem('profileData', JSON.stringify(profile));
+            }
             toast.success("Theme picture updated successfully.");
         } catch (error: any) {
             toast.error(error?.userMessage || "Failed to update theme picture.");
