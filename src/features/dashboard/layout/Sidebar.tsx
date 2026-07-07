@@ -28,10 +28,12 @@ const Sidebar = ({
     const sidebarRef = useRef<HTMLDivElement>(null);
 
     const isActive = (path: string) => {
-        if (path === '/dashboard') {
-            return location.pathname === '/dashboard';
+        const currentPath = location.pathname.replace(/\/+$/, '');
+        const normalizedPath = path.replace(/\/+$/, '');
+        if (normalizedPath === '/dashboard') {
+            return currentPath === '/dashboard';
         }
-        return location.pathname.startsWith(path);
+        return currentPath.startsWith(normalizedPath);
     };
 
     const navItems = [
