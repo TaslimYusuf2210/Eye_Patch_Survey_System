@@ -1,0 +1,237 @@
+# 🏆 Brag Document
+A daily log of things I've learned while building **Survey System**.
+
+---
+
+## 2026-01-20 — 2026-01-24
+
+### Landing Page — Foundation
+
+- Initialized the project with Vite + React + TypeScript, establishing the feature-based directory structure (`src/features/auth/`, `src/features/landingPage/`, `src/features/dashboard/`).
+- Built the complete **Landing Page** with multiple sections: Hero, Impact stats, Info cards, News & Updates, FAQ, and Demo CTA.
+- Created the `LandingPageLayout` to wrap the public-facing pages.
+- Added `InfoCard` component for displaying feature highlights in the Info section.
+- Implemented smooth, responsive layout using Tailwind CSS utility classes.
+
+---
+
+## 2026-04-06 — 2026-04-22
+
+### Authentication — Structure & Auth Pages
+
+- Restructured the project and scaffolded the authentication feature.
+- Built **Sign Up** page with form validation — email, username, password fields with error handling.
+- Built **Login** page with email/password fields, password visibility toggle, and "Forgot Password" flow.
+- Created `AuthContext` to manage global auth state (profile data, loading, sign-out).
+- Set up initial routing in `App.tsx` with React Router v7 — landing page, auth pages, and dashboard shell.
+
+---
+
+## 2026-04-25 — 2026-05-31
+
+### Create Survey — Multi-Step Wizard & Survey Builder
+
+- Broke down the monolithic create-survey form into a **5-step wizard** with navigation stepper.
+- **Step 1 — Survey Information**: Title, description, category, and target audience inputs with Yup validation.
+- **Step 2 — Survey Goal**: Primary goal selection and usage-of-results picker.
+- **Step 3 — Sections & Questions**: Dynamic section/question builder supporting **5 question types** — text, multiple_choice, single_choice, likert_scale, yes_no.
+- **Step 4 — Settings**: Start/end date pickers, response limit, and visibility controls with date-range validation.
+- **Step 5 — Review & Summary**: Read-only preview of the entire survey before publishing.
+- Created `CreateSurveyProvider` context for tracking the current step/route within the wizard.
+- Built `SurveyStepper` component — interactive step indicator showing progress through the wizard.
+- Implemented dynamic Yup schema generation — each step validates only its own fields, with conditional validation for dates and response limits.
+- Added error display for sections and questions at the form level.
+
+### Theming System — Global Appearance & Accent Colors
+
+- Built the entire **Theme system** via `ThemeContext` — supports three appearances: `default` (neutral gray), `light`, and `dark`.
+- Implemented **4 accent color palettes**: Ocean Blue, Forest Green, Crimson Red, Royal Purple.
+- Accent colors are applied via CSS custom properties (`--accent-50` through `--accent-900`) on the document root.
+- Added **Theme Pictures** feature — users can set city, nature, or marble background images with dark overlays.
+- Created `themePictures.ts` with a preload utility to eagerly load selected background images.
+- All theme preferences persisted to `localStorage` and synced with the backend user settings.
+- Implemented smooth color transitions with `transition-colors duration-300` on theme changes.
+
+---
+
+## 2026-06-06 — 2026-06-17
+
+### Dashboard Layout & API Layer
+
+- Built **Dashboard Layout** with responsive sidebar (mobile drawer, tablet hover/toggle, desktop expanded).
+- Created **Header** component with search bar, notification bell, and user avatar.
+- Added skeleton loading states for the dashboard layout while auth/profile data loads.
+- Sidebar has responsive breakpoints: mobile (full-screen overlay drawer), tablet (collapsible icon bar), desktop (full labels).
+- Implemented click-outside detection for tablet sidebar auto-close.
+- Set up **Axios** instance with configurable `baseURL` from environment variables, request interceptor (Bearer token injection), and response interceptor (user-friendly error messages mapped by HTTP status code).
+- Created `authService.ts` with signup, login, logout, getMe, and updatePassword API calls.
+- Integrated signup endpoint with toast notifications for success/failure.
+- Added `Toaster` component (sonner) for global toast notifications with rich colors.
+
+---
+
+## 2026-06-18 — 2026-06-19
+
+### Auth Integration & Dashboard Analytics
+
+- Completed **AuthContext** refactor — switched from Supabase to custom backend auth with session storage.
+- Login flow now saves JWT token to `sessionStorage`, redirects to dashboard, and fetches user profile.
+- Implemented **dashboard statistics** integration — fetches `GET /api/v1/dashboard/stats` for survey quantity, total responses, questions responded, new questions with week-over-week change percentages.
+- Created `StatsCard` component with animated bar charts and positive/negative trend indicators.
+- Integrated **recent surveys** endpoint — fetches `GET /api/v1/dashboard/recent-surveys` and displays them in a card list.
+- Replaced static text with animated loading spinners (`ldrs` library) while data fetches.
+- Sign-out flow clears session storage and redirects to login page.
+- Added **avatar upload** functionality — users can select from 11 SVG avatar options.
+- Fixed avatar display in the sidebar to show the selected avatar from the backend.
+
+---
+
+## 2026-06-20 — 2026-06-22
+
+### Settings Page — Full Integration
+
+- Built three-tab **Settings page**: Profile, Global Appearance, Theme Picture.
+- **Profile Tab**: Change username, update email, reset password (with current/new password fields), avatar selector grid.
+- **Global Appearance Tab**: Three appearance modes (Default/Light/Dark) with visual cards, four accent color pickers with live preview.
+- **Theme Picture Tab**: City/Nature/Marble background image selection with preview thumbnails.
+- Integrated **all settings endpoints**: `PUT /api/v1/users/me/profile`, `PUT /api/v1/users/me/password`, `PUT /api/v1/users/me/settings`.
+- Added "Save Changes" button pattern for settings — user edits are tracked in local state and bulk-saved.
+- Theme settings sync bidirectionally between `AuthContext` and `ThemeContext` via a custom `theme-synced` event.
+- Error message priority changed to prefer backend error messages over generic ones in toast notifications.
+
+---
+
+## 2026-06-23 — 2026-06-25
+
+### Surveys List, View & Table Component
+
+- Revamped the **Surveys list page** (`/dashboard/surveys`) with search, status filter, and sort controls.
+- Built **SurveyView page** (`/dashboard/surveys/:id/view`) — full survey detail with sections and questions rendered.
+- Added survey **status management** — toggle between draft, active, inactive, closed with `PATCH /api/v1/surveys/:id/status`.
+- Implemented **delete survey** flow with confirmation dialog.
+- Added **duplicate survey** functionality.
+- Built generic **Table component** with sortable columns, pagination, and row actions.
+- Added **response answers** UI — renders each question type's answer with proper formatting.
+- Created **participant detail** and **response detail** route shells with data fetching.
+- Fixed sidebar routing — active states now correctly reflect the current URL path.
+
+---
+
+## 2026-06-26 — 2026-06-28
+
+### Create Survey — 5-Step Wizard Refinement
+
+- Completely refactored the **Create Survey multi-step wizard** — improved UX and validation logic.
+- **Step 1** improvements: Better category selector, description character counter (max 200).
+- **Step 2** improvements: Goal and usage radio button groups with descriptions.
+- **Step 3** improvements: Dynamic section reordering, question type switching, option management for choice questions.
+- **Step 4** improvements: Date picker validation (start date ≥ today, end date > start date), response limit with "Unlimited" option.
+- Fixed step navigation — users can move forward/backward without losing form state.
+- Interactive **stepper UI** — visual progress indicator showing completed, current, and upcoming steps.
+- Added auto-save draft functionality — saves progress via `POST /api/v1/surveys/draft`.
+
+---
+
+## 2026-06-29
+
+### Survey Actions & Save Progress
+
+- **Save as Draft** now fully works — survey data is persisted to backend before publishing.
+- Added more **survey card actions**: edit, duplicate, change status, delete, view responses.
+- **Survey status manipulation** — dropdown/buttons to switch between states with API integration.
+- View survey base implementation renders read-only survey structure.
+- UI improvements to the survey cards — better visual hierarchy and action button placement.
+- Fixed routing issues between `/create-survey` sub-routes and `/surveys` list page.
+
+---
+
+## 2026-06-30 — 2026-07-01
+
+### Global Search & Loading Skeletons
+
+- Implemented **Global Search** — search bar in the header that queries across surveys, responses, and participants.
+- Integrated global search with the backend API and added local filtering fallback.
+- Added **skeleton loaders** for the dashboard layout — animated placeholders for sidebar, header, and main content while data loads.
+- Added **loading skeleton for surveys list** — shimmer effect while survey data is being fetched.
+- Added `cursor-pointer` utility class to interactive elements for better UX.
+- Removed the unused "Account & Billing" tab from Settings.
+- **Mock data removed** — all survey views now use real API data.
+- **Response answers UI improved** — better layout for viewing individual question answers per response.
+- **Date formatter utility** created for consistent date display across the app.
+- **Axios error message priority fixed** — `userMessage` from interceptor is now used first before falling back to generic messages.
+
+---
+
+## 2026-07-02 — 2026-07-07
+
+### Public Survey Response & Bug Fixes
+
+- Built the **public Survey Response page** (`/survey/:surveyId`) — participants can view and submit responses without authentication.
+- Renders all 5 question types with proper interactive controls:
+  - **text**: Textarea input
+  - **multiple_choice**: Toggle buttons with check marks
+  - **single_choice**: Radio button list
+  - **likert_scale**: 5-point scale buttons
+  - **yes_no**: Yes/No toggle buttons
+- Added **respondent info collection** — name and email fields at the top of the form.
+- **Required question validation** — checks all required questions before submission.
+- **Collapsible sections** — users can expand/collapse survey sections for easier navigation.
+- Mock survey data available via `?mock=true` for testing.
+- **Success screen** after submission with green checkmark animation.
+- **Dynamic data integration** — fetches live survey data from `GET /api/v1/surveys/:id`.
+- Fixed **pagination bug** across all pages — surveys, responses, and participants now paginate correctly.
+- Fixed **table component prop naming conflict** — two props had the same name causing rendering issues.
+- Fixed **sidebar active route highlighting** — active state now correctly persists after navigation.
+- Fixed **theme appearance bug on refresh** — dark/default/light mode now persists correctly after page reload.
+
+---
+
+## Project Architecture Summary
+
+### Tech Stack
+| Technology | Purpose |
+|---|---|
+| **React 19** | UI framework |
+| **TypeScript** | Type safety |
+| **Vite 7** | Build tool & dev server |
+| **Tailwind CSS v4** | Utility-first styling |
+| **React Router v7** | Client-side routing |
+| **Axios** | HTTP client |
+| **Yup + React Hook Form** | Form validation |
+| **shadcn/ui** | UI primitives (Button, Dialog, Pagination, Sonner) |
+| **Lucide React** | Icon library |
+| **ldrs** | Loading spinners |
+| **Sonner** | Toast notifications |
+
+### Feature-Based Architecture
+- **`src/features/auth/`** — Login/Signup pages, auth forms
+- **`src/features/landingPage/`** — Public-facing landing with 7 sections
+- **`src/features/dashboard/`** — Main app with Analytics, Surveys, Create Survey, Responses, Participants, Settings
+- **`src/features/surveyResponse/`** — Public survey submission page
+
+### State Management
+- **AuthContext** — User profile, auth state, sign-out
+- **ThemeContext** — Appearance mode, accent color, theme picture
+- **CreateSurveyContext** — Multi-step wizard step tracking
+
+### API Integration
+- Axios instance with token-based auth and centralized error handling
+- All endpoints follow `/api/v1/` prefix pattern
+- Error interceptor maps HTTP status codes to user-friendly messages
+- Session storage for JWT tokens
+
+### Theming System
+- 3 appearance modes (Default/Light/Dark)
+- 4 accent color palettes with CSS custom properties
+- 3 background theme pictures (City/Nature/Marble)
+- Bidirectional sync between user settings (backend) and local preferences
+
+---
+
+## 2026-07-28
+
+### SS_Brag.md — Project Retrospective
+
+- Created this comprehensive brag document summarizing the entire Survey System development journey from January to July 2026.
+- Document covers: Landing page, Authentication, Survey CRUD, Multi-step wizard, 5 question types, Theming system, Dashboard analytics, Response management, Participant management, Global search, Public survey response page, and all bug fixes.
+- Committed and pushed to both the project repo and Learning-Journal.
