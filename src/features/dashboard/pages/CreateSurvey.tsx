@@ -9,7 +9,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { SurveyStepper } from '../components/CreateSurvey/SurveyStepper';
 import { Save, Clock, ArrowRight, Send, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import { saveSurveyProgress, updateSurveyProgress, createSurvey, getSurveyById } from '@/services/dashboard/surveys';
+import { useSurveyById } from '@/hooks/useQuery';
+import { useSaveSurveyDraft, useUpdateSurvey, useCreateSurvey } from '@/hooks/useMutation';
 import {
   Dialog,
   DialogContent,
@@ -157,7 +158,6 @@ export default function CreateSurvey() {
 
   // Load draft from query param, then fall back to localStorage
   const draftId = searchParams.get('draftId');
-  const [draftLoaded, setDraftLoaded] = useState(false);
 
   const savedFormData = null;
 
@@ -180,30 +180,23 @@ export default function CreateSurvey() {
   });
 
   // Fetch draft data if draftId is present
+  const { data: draftData } = useSurveyById(draftId || undefined);
+
   useEffect(() => {
-    if (!draftId || draftLoaded) return;
-    (async () => {
-      try {
-        const res = await getSurveyById(draftId);
-        const raw = res.data || res;
-        methods.reset({
-          title: raw.title || '',
-          description: raw.description || '',
-          category: raw.category || '',
-          audience: raw.targetAudience || '',
-          goal: raw.goal || '',
-          usage: raw.usage || '',
-          startDate: raw.startDate || '',
-          endDate: raw.endDate || '',
-          responseLimit: raw.responseLimit ?? undefined,
-          sections: raw.sections || [],
-        });
-        setDraftLoaded(true);
-      } catch (error: any) {
-        toast.error(error?.userMessage || 'Failed to load draft.');
-      }
-    })();
-  }, [draftId, methods, draftLoaded]);
+    if (!draftData) return;
+    methods.reset({
+      title: draftData.title || '',
+      description: draftData.description || '',
+      category: draftData.category || '',
+      audience: draftData.targetAudience || '',
+      goal: draftData.goal || '',
+      usage: draftData.usage || '',
+      startDate: draftData.startDate || '',
+      endDate: draftData.endDate || '',
+      responseLimit: draftData.responseLimit ?? undefined,
+      sections: draftData.sections || [],
+    });
+  }, [draftData, methods]);
 
   // Auto-save to sessionStorage, but clear it when leaving the page
   useEffect(() => {
@@ -228,6 +221,10 @@ export default function CreateSurvey() {
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
+  const saveDraftMutation = useSaveSurveyDraft();
+  const updateSurveyMutation = useUpdateSurvey();
+  const createSurveyMutation = useCreateSurvey();
+
   const handleSaveDraft = useCallback(async () => {
     const data = methods.getValues();
     const now = new Date();
@@ -238,21 +235,20 @@ export default function CreateSurvey() {
     setLastSaved(now.toISOString());
 
     // Save to API
+    const draftId = localStorage.getItem("activeDraftId");
     try {
-      const draftId = localStorage.getItem("activeDraftId");
       if (draftId) {
-        await updateSurveyProgress(draftId, data);
+        await updateSurveyMutation.mutateAsync({ id: draftId, payload: data });
       } else {
-        const response = await saveSurveyProgress(data);
+        const response = await saveDraftMutation.mutateAsync(data);
         if (response?.id) {
           localStorage.setItem("activeDraftId", response.id);
         }
       }
-      toast.success("Progress saved!");
     } catch (error: any) {
       toast.error(error?.userMessage || "Saved locally, but failed to sync to server.");
     }
-  }, [methods]);
+  }, [methods, saveDraftMutation, updateSurveyMutation]);
 
   const navigate = useNavigate();
 
@@ -269,7 +265,7 @@ export default function CreateSurvey() {
     if (pathname.includes('/survey-review')) {
       const data = methods.getValues();
       try {
-        await createSurvey(data);
+        await createSurveyMutation.mutateAsync(data);
         // Clear all saved form data
         sessionStorage.removeItem('createSurveyForm');
         localStorage.removeItem('createSurveyDraft');
@@ -281,7 +277,6 @@ export default function CreateSurvey() {
           goal: '', usage: '', startDate: '', endDate: '',
           responseLimit: undefined, sections: [],
         });
-        toast.success('Survey created successfully!');
         navigate('/dashboard/surveys');
       } catch (error: any) {
         toast.error(error?.userMessage || 'Failed to create survey. Please try again.');

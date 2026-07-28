@@ -1,13 +1,10 @@
 import StatsCard from '../components/Analytic/StatsCard';
 import RecentSurveyList from '../components/Analytic/RecentSurveyList';
-import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Spiral } from 'ldrs/react'
 import 'ldrs/react/Spiral.css'
-import {getDashboardStats, getRecentSurveys} from '@/services/dashboard/analytics';
-import type { DashboardStats, RecentSurvey } from '@/types';
-import {toast} from 'sonner';
+import { useDashboardStats, useRecentSurveys } from '@/hooks/useQuery';
 import { Bouncy } from 'ldrs/react'
 import 'ldrs/react/Bouncy.css'
 
@@ -16,37 +13,15 @@ const Analytic = () => {
     const { profileData } = useAuth();
     const { textTitle } = useTheme();
 
-    const [recentSurveys, setRecentSurveys] = useState<RecentSurvey[]>([]);
-    const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null);
+    const {
+        data: dashboardStats,
+    } = useDashboardStats();
 
-    useEffect(() => {
-        const fetchDashboardStats = async () => {
-            try {
-                const response = await getDashboardStats();
-                console.log('Dashboard Stats:', response.data);
-                setDashboardStats(response.data);
-            } catch (error: any) {
-                console.error('Error fetching dashboard stats:', error);
-                toast.error(error.userMessage || 'Error fetching dashboard stats. Please refresh page or try again later.');
-            }
-        };
+    const {
+        data: recentSurveys,
+    } = useRecentSurveys();
 
-        const fetchRecentSurveys = async () => {
-            try {
-                const response = await getRecentSurveys();
-                console.log('Recent Surveys:', response.data.data);
-                setRecentSurveys(response.data.data);
-            } catch (error: any) {
-                console.error('Error fetching recent surveys:', error);
-                toast.error(error.userMessage || 'Error fetching recent surveys. Please refresh page or try again later.');
-            }
-        };
-
-        fetchDashboardStats();
-        fetchRecentSurveys();
-    }, []);
-
-    // Statistics derived from the dashboardStats state, with fallbacks to "..." while loading
+    // Statistics derived from the dashboardStats state, with fallbacks to loading spinners
     const surveyQuantity = dashboardStats ? dashboardStats.survey_quantity.toString() : <Bouncy size="25" speed="1.5" color="black" />;
     const totalResponses = dashboardStats ? dashboardStats.total_responses.toString() : <Bouncy size="25" speed="1.5" color="black" />;
     const questionsResponded = dashboardStats ? dashboardStats.questions_responded.toString() : <Bouncy size="25" speed="1.5" color="black" />;
@@ -102,13 +77,8 @@ const Analytic = () => {
             <div className="grid grid-cols-1  gap-8">
                 {/* Recent Surveys */}
                 <div className="w-full lg:w-3/4">
-                    <RecentSurveyList surveys={recentSurveys} />
+                    <RecentSurveyList surveys={recentSurveys || []} />
                 </div>
-
-                {/* Right Column (Placeholder for future widgets or just empty space as requested to remove "AI Power") */}
-                {/* <div className="hidden xl:block"> */}
-                    {/* Intentionally left empty or could be used for other widgets */}
-                {/* </div> */}
             </div>
         </>
     );

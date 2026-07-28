@@ -1,31 +1,26 @@
 import { Check, Sparkles, Save } from 'lucide-react';
 import themePictures, { type ThemePictureKey } from '@/theme/themePictures';
 import { useTheme } from '@/contexts/ThemeContext';
-import {toast} from 'sonner';
-import {updateThemePicture} from '@/services/dashboard/settings'
+import { useUpdateThemePicture } from '@/hooks/useMutation';
 
 const ThemeTab = () => {
     const { picture, setPicture, accent } = useTheme();
     const isDefaultTheme = accent === 'default';
+    const updateThemeMutation = useUpdateThemePicture();
 
     async function handleSaveChanges () {
         const payload = { theme_picture: picture };
-        console.log('Theme payload:', { theme_picture: picture });
-        try {
-            // Call API to update theme picture
-            await updateThemePicture(payload);
-            // Sync sessionStorage so refresh doesn't revert to old settings
-            const stored = sessionStorage.getItem('profileData');
-            if (stored) {
-                const profile = JSON.parse(stored);
-                profile.settings = { ...profile.settings, theme_picture: picture };
-                sessionStorage.setItem('profileData', JSON.stringify(profile));
-            }
-            toast.success("Theme picture updated successfully.");
-        } catch (error: any) {
-            toast.error(error?.userMessage || "Failed to update theme picture.");
-            console.log(error);
-        }
+        updateThemeMutation.mutate(payload, {
+            onSuccess: () => {
+                // Sync sessionStorage so refresh doesn't revert to old settings
+                const stored = sessionStorage.getItem('profileData');
+                if (stored) {
+                    const profile = JSON.parse(stored);
+                    profile.settings = { ...profile.settings, theme_picture: picture };
+                    sessionStorage.setItem('profileData', JSON.stringify(profile));
+                }
+            },
+        });
     };
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

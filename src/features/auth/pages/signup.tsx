@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle, Eye, EyeOff } from "lucide-react";
 import type { SignUpFormData } from "@/types/auth";
-import { signUp } from "@/services/authService";
+import { useSignUp } from "@/hooks/useMutation";
 import { toast } from "sonner"
 
 const signUpSchema = yup.object().shape({
@@ -50,7 +50,6 @@ function SignUp() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [minimumCharacter, setMinimumCharacter] = useState(false);
   const [uppercase, setUpperCase] = useState(false);
   const [number, setNumber] = useState(false);
@@ -60,6 +59,7 @@ function SignUp() {
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const passwordValue = watch("password", "");
+  const signUpMutation = useSignUp();
 
   useEffect(() => {
     function passwordChecklist(input: string) {
@@ -73,23 +73,15 @@ function SignUp() {
   }, [passwordValue]);
 
   const onSubmit = async (data: SignUpFormData) => {
-    console.log("SignUp Form Data:", data);
     setLoading(true);
     try {
-      const payload = {
-        email: data.email,
-        password: data.password,
-        userName: data.userName,
-      }
-      await signUp(payload)
-      toast.success("Registration successful! Please log in to view your dashboard.")
-      console.log("Registration successful:", data);
+      await signUpMutation.mutateAsync(data);
+      toast.success("Registration successful! Please log in to view your dashboard.");
     } catch (error: any) {
-      const message = error.userMessage || error.response?.data?.message || error.message
-      toast.error(message)
-      console.error('Registration failed:', message);
+      const message = error.userMessage || error.response?.data?.message || error.message;
+      toast.error(message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 

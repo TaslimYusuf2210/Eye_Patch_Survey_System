@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import type { LoginFormData } from '@/types/auth';
-import {login} from '@/services/authService'
+import { useLogin } from '@/hooks/useMutation';
 import { toast } from "sonner"
 
 const loginSchema = yup.object().shape({
@@ -14,8 +14,6 @@ const loginSchema = yup.object().shape({
 });
 
 function Login() {
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const {
         register,
@@ -26,18 +24,11 @@ function Login() {
     });
 
     const navigate = useNavigate()
+    const loginMutation = useLogin();
 
     const onSubmit = async (data: LoginFormData) => {
-        setLoading(true);
-        console.log('Login Form Data:', data);
         try {
-            const response = await login(data)
-            // console.log("Login successful:", response.data);
-            // const userData = {
-            //     userName: response.data.data.user.userName,
-            //     email: response.data.data.user.email,
-            // }
-            // console.log("User data:", user);
+            const response = await loginMutation.mutateAsync(data);
             const token = response.data.data.token;
             sessionStorage.setItem('token', token);
             toast.success("Login successful! Redirecting to dashboard...");
@@ -45,8 +36,6 @@ function Login() {
         } catch (error: any) {
             const message = error.userMessage || error.response?.data?.message || error.message
             toast.error(message);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -94,16 +83,11 @@ function Login() {
 
                     <button
                         disabled={loading}
-                        type="submit"
-                        className={`w-full bg-black text-white px-4 py-2 rounded-full text-sm font-medium border border-gray-200 shadow-sm hover:bg-gray-950 transition-all duration-400 mt-2 cursor-pointer ${loading ? "cursor-not-allowed opacity-40" : ""}`}
+                        disabled={loginMutation.isPending}
+                        className={`w-full bg-black text-white px-4 py-2 rounded-full text-sm font-medium border border-gray-200 shadow-sm hover:bg-gray-950 transition-all duration-400 mt-2 cursor-pointer ${loginMutation.isPending ? "cursor-not-allowed opacity-40" : ""}`}
                     >
-                        {loading ? "Loading..." : "Login"}
+                        {loginMutation.isPending ? "Loading..." : "Login"}
                     </button>
-                    {error && (
-                        <p className="text-red-500 text-xs mt-1">
-                            {error}
-                        </p>
-                    )}
                 </form>
 
                 <div className="relative my-6">

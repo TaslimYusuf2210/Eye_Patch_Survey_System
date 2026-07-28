@@ -1,7 +1,6 @@
 import { Trash2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import type { UserProfile } from '@/types/common';
-import { updateUserName, updateAvatar, deleteAccount } from '@/services/dashboard/settings';
-import {updatePassword} from '@/services/authService';
+import { useUpdateUserName, useUpdateAvatar, useDeleteAccount, useUpdatePassword } from '@/hooks/useMutation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,9 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { toast } from 'sonner';
 import { DotSpinner } from 'ldrs/react'
 import 'ldrs/react/DotSpinner.css'
+import { toast } from 'sonner'
 
 
 const usernameSchema = yup.object().shape({
@@ -71,6 +70,11 @@ const ProfileTab = ({
         resolver: yupResolver(passwordSchema),
     });
 
+    const updateUserNameMutation = useUpdateUserName();
+    const updateAvatarMutation = useUpdateAvatar();
+    const deleteAccountMutation = useDeleteAccount();
+    const updatePasswordMutation = useUpdatePassword();
+
     const [avatarLoading, setAvatarLoading] = useState(false);
     const [usernameLoading, setUsernameLoading] = useState(false);
     const [showCurrentPwd, setShowCurrentPwd] = useState(false);
@@ -93,33 +97,22 @@ const ProfileTab = ({
             return;
         }
         setUsernameLoading(true);
-        try {
-            await updateUserName({ userName: data.userName });
-            toast.success('Username updated successfully!');
-        } catch (error: any) {
-            console.error('Error updating username:', error);
-            toast.error(error.userMessage || 'Failed to update username.');
-        } finally {
-            setUsernameLoading(false);
-        }
+        updateUserNameMutation.mutate(
+            { userName: data.userName },
+            { onSettled: () => setUsernameLoading(false) }
+        );
     }
 
     async function handleAvatarChange(newAvatar: string | null) {
-        console.log('Selected avatar:', newAvatar);
         if(!newAvatar) {
             toast.error('Please select an avatar before confirming the change.');
             return;
         }
         setAvatarLoading(true);
-        try {
-            await updateAvatar({ avatarUrl: newAvatar });
-            toast.success('Avatar updated successfully!');
-        } catch (error: any) {
-            console.error('Error updating avatar:', error);
-            toast.error(error.userMessage || 'Failed to update Avatar');
-        } finally {
-            setAvatarLoading(false);
-        }
+        updateAvatarMutation.mutate(
+            { avatarUrl: newAvatar },
+            { onSettled: () => setAvatarLoading(false) }
+        );
     }
 
     async function handlePasswordChange(data: { currentPassword: string; newPassword: string; confirmPassword: string }) {
@@ -127,27 +120,15 @@ const ProfileTab = ({
             currentPassword: data.currentPassword,
             newPassword: data.newPassword,
         }
-        try {
-            await updatePassword(payload);
-            resetPassword();
-            console.log('Password data:', data);
-            toast.success('Password updated successfully!');
-        } catch (error: any) {
-            console.error('Error updating password:', error);
-            toast.error(error.userMessage || 'Failed to update password.');
-        }
+        updatePasswordMutation.mutate(payload, {
+            onSuccess: () => resetPassword(),
+        });
     }
 
     async function handleAccountDeletion() {
-        try {
-            await deleteAccount();
-            toast.success('Account deleted successfully!');
-            setDeleteDialogOpen(false);
-            window.location.href = '/signup';
-        } catch (error: any) {
-            console.error('Error deleting account:', error);
-            toast.error(error.userMessage || 'Failed to delete account.');
-        }
+        deleteAccountMutation.mutate(undefined, {
+            onSuccess: () => setDeleteDialogOpen(false),
+        });
     }
 
     return (

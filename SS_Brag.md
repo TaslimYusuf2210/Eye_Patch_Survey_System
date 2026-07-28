@@ -1,4 +1,5 @@
 # 🏆 Brag Document
+
 A daily log of things I've learned while building **Survey System**.
 
 ---
@@ -189,38 +190,43 @@ A daily log of things I've learned while building **Survey System**.
 ## Project Architecture Summary
 
 ### Tech Stack
-| Technology | Purpose |
-|---|---|
-| **React 19** | UI framework |
-| **TypeScript** | Type safety |
-| **Vite 7** | Build tool & dev server |
-| **Tailwind CSS v4** | Utility-first styling |
-| **React Router v7** | Client-side routing |
-| **Axios** | HTTP client |
-| **Yup + React Hook Form** | Form validation |
-| **shadcn/ui** | UI primitives (Button, Dialog, Pagination, Sonner) |
-| **Lucide React** | Icon library |
-| **ldrs** | Loading spinners |
-| **Sonner** | Toast notifications |
+
+| Technology                | Purpose                                            |
+| ------------------------- | -------------------------------------------------- |
+| **React 19**              | UI framework                                       |
+| **TypeScript**            | Type safety                                        |
+| **Vite 7**                | Build tool & dev server                            |
+| **Tailwind CSS v4**       | Utility-first styling                              |
+| **React Router v7**       | Client-side routing                                |
+| **Axios**                 | HTTP client                                        |
+| **Yup + React Hook Form** | Form validation                                    |
+| **shadcn/ui**             | UI primitives (Button, Dialog, Pagination, Sonner) |
+| **Lucide React**          | Icon library                                       |
+| **ldrs**                  | Loading spinners                                   |
+| **Sonner**                | Toast notifications                                |
 
 ### Feature-Based Architecture
+
 - **`src/features/auth/`** — Login/Signup pages, auth forms
 - **`src/features/landingPage/`** — Public-facing landing with 7 sections
 - **`src/features/dashboard/`** — Main app with Analytics, Surveys, Create Survey, Responses, Participants, Settings
 - **`src/features/surveyResponse/`** — Public survey submission page
 
 ### State Management
+
 - **AuthContext** — User profile, auth state, sign-out
 - **ThemeContext** — Appearance mode, accent color, theme picture
 - **CreateSurveyContext** — Multi-step wizard step tracking
 
 ### API Integration
+
 - Axios instance with token-based auth and centralized error handling
 - All endpoints follow `/api/v1/` prefix pattern
 - Error interceptor maps HTTP status codes to user-friendly messages
 - Session storage for JWT tokens
 
 ### Theming System
+
 - 3 appearance modes (Default/Light/Dark)
 - 4 accent color palettes with CSS custom properties
 - 3 background theme pictures (City/Nature/Marble)
@@ -235,3 +241,32 @@ A daily log of things I've learned while building **Survey System**.
 - Created this comprehensive brag document summarizing the entire Survey System development journey from January to July 2026.
 - Document covers: Landing page, Authentication, Survey CRUD, Multi-step wizard, 5 question types, Theming system, Dashboard analytics, Response management, Participant management, Global search, Public survey response page, and all bug fixes.
 - Committed and pushed to both the project repo and Learning-Journal.
+
+### TanStack Query Migration — Full Data Layer Overhaul
+
+- Installed `@tanstack/react-query` and configured `QueryClientProvider` with sensible defaults:
+  - `staleTime: 5 * 60 * 1000` (5 min) for most queries
+  - `retry: 1` for all queries
+  - `refetchOnWindowFocus: false`
+- Created `src/hooks/useQuery/` with **10 custom query hooks**: `useProfile`, `useDashboardStats`, `useRecentSurveys`, `useSurveys`, `useSurveyById`, `useGlobalResponses`, `useSurveyResponses`, `useGlobalParticipants`, `useSurveyParticipants`, `useGlobalSearch`.
+- Created `src/hooks/useMutation/` with **15 custom mutation hooks**: `useLogin`, `useSignUp`, `useLogout`, `useUpdatePassword`, `useUpdateUserName`, `useUpdateAvatar`, `useDeleteAccount`, `useUpdateAppearanceAndAccent`, `useUpdateThemePicture`, `useCreateSurvey`, `useSaveSurveyDraft`, `useUpdateSurvey`, `useDeleteSurvey`, `useUpdateSurveyStatus`, `useSubmitSurveyResponse`.
+- All mutations include `onSuccess` with `queryClient.invalidateQueries()` for stale cache invalidation and `onError` with `toast.error()` for user feedback.
+- **Migrated 16 components** from `useEffect + useState + raw Axios` to `useQuery/useMutation`:
+  - `Analytic.tsx` — dashboard stats + recent surveys
+  - `SurveyList.tsx` — surveys list with loading/empty/error states
+  - `SurveyView.tsx` — survey detail + delete/status mutations
+  - `GlobalResponses.tsx` — global responses table with pagination
+  - `GlobalParticipants.tsx` — global participants table with pagination
+  - `ResponseDetail.tsx` — survey-specific responses table
+  - `ParticipantDetail.tsx` — survey-specific participants table
+  - `Login.tsx` — login mutation with `isPending` loading state
+  - `SignUp.tsx` — signup mutation with form validation
+  - `ProfileTab.tsx` — username, avatar, password, account deletion mutations
+  - `AppearanceTab.tsx` — appearance/accent update mutation with sessionStorage sync
+  - `ThemeTab.tsx` — theme picture update mutation with sessionStorage sync
+  - `SurveyCard.tsx` — delete survey mutation with confirmation dialog
+  - `CreateSurvey.tsx` — draft save/update, create survey, draft loading
+  - `SurveyResponsePage.tsx` — survey loading + response submission
+- **Refactored `AuthContext.tsx`** — replaced raw `getProfile()` call with `useProfile` query hook, simplified the data flow (sessionStorage hydration → TanStack Query background fetch).
+- **Kept**: `ThemeContext` (pure UI state), `CreateSurveyContext` (wizard step tracking).
+- **Pattern**: Every component now handles `isLoading` (skeleton/spinner), `isError` (toast from hook), and `data` (normal render).

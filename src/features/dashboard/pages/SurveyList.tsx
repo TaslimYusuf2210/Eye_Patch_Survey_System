@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Plus } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -11,8 +11,7 @@ import {
   PaginationNext,
 } from '@/components/ui/pagination';
 import SurveyCard, { type SurveyCardData } from '../components/Surveys/SurveyCard';
-import {getSurveys} from "@/services/dashboard/surveys";
-import {toast} from 'sonner'
+import { useSurveys } from '@/hooks/useQuery';
 
 interface PaginationData {
     page: number;
@@ -31,41 +30,26 @@ const SORT_OPTIONS = [
 
 const SurveyList = () => {
     const { textTitle } = useTheme();
-    const [surveys, setSurveys] = useState<SurveyCardData[]>([]);
-    const [pagination, setPagination] = useState<PaginationData>({ page: 1, limit: 20, total: 0, total_pages: 0 });
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
     const [sortBy, setSortBy] = useState('created_at|desc');
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
     const itemsPerPage = 8;
 
-    useEffect(() => {
-        async function fetchSurveys() {
-            setLoading(true);
-            try {
-                const response = await getSurveys({ page: 1, limit: 20 });
-                setSurveys(response.data.map((item: any) => ({
-                    id: item.id,
-                    title: item.title,
-                    status: item.status,
-                    description: item.description,
-                    responses: item.response_count,
-                    questionCount: item.question_count ?? 0,
-                    sectionCount: item.section_count ?? 0,
-                    date: item.created_at,
-                })));
-                setPagination(response.pagination);
-            } catch (error: any) {
-                console.log(error);
-                toast.error(error?.userMessage || "Failed to get surveys. Please try again later")
-            } finally {
-                setLoading(false);
-            }
-        }
+    const { data: responseData, isLoading } = useSurveys({ page: 1, limit: 20 });
 
-        fetchSurveys();
-    }, []);
+    const surveys: SurveyCardData[] = responseData?.data?.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        status: item.status,
+        description: item.description,
+        responses: item.response_count,
+        questionCount: item.question_count ?? 0,
+        sectionCount: item.section_count ?? 0,
+        date: item.created_at,
+    })) || [];
+
+    const pagination: PaginationData = responseData?.pagination || { page: 1, limit: 20, total: 0, total_pages: 0 };
 
     // Filter & sort surveys (client-side until backend filtering is wired up)
     let filtered = surveys.filter((s) => {
@@ -88,8 +72,6 @@ const SurveyList = () => {
         setStatusFilter(newStatus);
         setPage(1);
     };
-
-    
 
     return (
         <>
@@ -146,7 +128,7 @@ const SurveyList = () => {
             </div>
 
             {/* Survey Cards Grid */}
-            {loading ? (
+            {isLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array.from({ length: 6 }).map((_, i) => (
                         <div

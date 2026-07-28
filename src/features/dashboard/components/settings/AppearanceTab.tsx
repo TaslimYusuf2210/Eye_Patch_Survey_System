@@ -1,8 +1,7 @@
-import { Sun, Moon, Check, Sparkles, RotateCcw, Ban, Save } from 'lucide-react';
+import { Sun, Moon, Check, Sparkles, Ban, Save } from 'lucide-react';
 import { type AccentColor } from '@/types';
 import { type Appearance, useTheme } from '@/contexts/ThemeContext';
-import { updateAppearanceAndAccent } from '@/services/dashboard/settings';
-import {toast} from 'sonner';
+import { useUpdateAppearanceAndAccent } from '@/hooks/useMutation';
 
 const baseModes = [
     { id: 'light' as Appearance, name: 'Light Mode', icon: Sun, description: 'Neutral light — clean, no accent.' },
@@ -46,24 +45,23 @@ const AppearanceTab = () => {
         setAppearance(mode);
     };
 
+    const updateAppearanceMutation = useUpdateAppearanceAndAccent();
+
     const handleSaveChanges = async () => {
         const payload = {
             appearance, accent_color: accent 
         }
-        try {
-            await updateAppearanceAndAccent(payload);
-            // Sync sessionStorage so refresh doesn't revert to old settings
-            const stored = sessionStorage.getItem('profileData');
-            if (stored) {
-                const profile = JSON.parse(stored);
-                profile.settings = { ...profile.settings, appearance, accent_color: accent };
-                sessionStorage.setItem('profileData', JSON.stringify(profile));
-            }
-            toast.success("Appearance settings updated successfully.");
-        } catch (error: any) {
-            toast.error(error?.userMessage || "Failed to update appearance settings.");
-            console.log(error)
-        }
+        updateAppearanceMutation.mutate(payload, {
+            onSuccess: () => {
+                // Sync sessionStorage so refresh doesn't revert to old settings
+                const stored = sessionStorage.getItem('profileData');
+                if (stored) {
+                    const profile = JSON.parse(stored);
+                    profile.settings = { ...profile.settings, appearance, accent_color: accent };
+                    sessionStorage.setItem('profileData', JSON.stringify(profile));
+                }
+            },
+        });
     };
 
     return (

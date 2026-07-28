@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Table from '../../../components/table';
 import { useTheme } from '@/contexts/ThemeContext';
-import { getGlobalParticipants } from '@/services/dashboard/participants';
-import { toast } from "sonner"
+import { useGlobalParticipants } from '@/hooks/useQuery';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -22,52 +21,26 @@ interface ParticipantDisplay {
     response_count: number;
 }
 
-interface PaginationInfo {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-}
-
 const GlobalParticipants = () => {
     const { textTitle } = useTheme();
-    const [participants, setParticipants] = useState<ParticipantDisplay[]>([]);
-    const [pagination, setPagination] = useState<PaginationInfo>()
-    const [loading, setLoading] = useState(false)
+    const [page, setPage] = useState(1);
+    const navigate = useNavigate();
 
-    const navigate = useNavigate()
+    const { data: responseData, isLoading } = useGlobalParticipants({ page, limit: 10 });
+
+    const participants: ParticipantDisplay[] = (responseData?.data || []).map((item: ParticipantItem) => ({
+        id: item.id,
+        name: item.name,
+        email: item.email,
+        response_count: item.response_count,
+    }));
+    const pagination = responseData?.pagination;
 
     const columns = [
         { name: "Name", key: "name" },
         { name: "Email", key: "email" },
         { name: "Responses", key: "response_count" },
     ];
-
-    const [page, setPage] = useState(1);
-
-    useEffect(() => {
-        async function fetchParticipants() {
-            setLoading(true)
-            try {
-                const response = await getGlobalParticipants({ page, limit: 10 })
-                const mapped = response.data.map((item: ParticipantItem) => ({
-                    id: item.id,
-                    name: item.name,
-                    email: item.email,
-                    response_count: item.response_count,
-                }))
-                setParticipants(mapped)
-                setPagination(response.pagination)
-            } catch (error: any) {
-                console.log(error)
-                toast.error(error?.userMessage || "Failed to load participants")
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        fetchParticipants()
-    }, [page])
 
     return (
         <>
@@ -84,7 +57,7 @@ const GlobalParticipants = () => {
                 })}
                 searchable
                 sortable
-                loading={loading}
+                loading={isLoading}
                 emptyMessage="No participants yet"
                 totalItems={pagination?.total}
                 currentPage={page}

@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { deleteSurvey } from '@/services/dashboard/surveys';
+import { useDeleteSurvey } from '@/hooks/useMutation';
 
 export interface SurveyCardData {
     id: number;
@@ -24,10 +24,20 @@ export interface SurveyCardData {
 
 const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const deleteSurveyMutation = useDeleteSurvey();
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(`${window.location.origin}/survey/${survey.id}`);
         toast.success('Survey link copied to clipboard!');
+    };
+
+    const handleDelete = () => {
+        deleteSurveyMutation.mutate(String(survey.id), {
+            onSuccess: () => {
+                setDeleteDialogOpen(false);
+                window.location.reload();
+            },
+        });
     };
 
     return (
@@ -142,16 +152,7 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
                             Cancel
                         </button>
                         <button
-                            onClick={async () => {
-                                try {
-                                    await deleteSurvey(String(survey.id));
-                                    toast.success('Survey deleted successfully.');
-                                    setDeleteDialogOpen(false);
-                                    window.location.reload();
-                                } catch {
-                                    toast.error('Failed to delete survey. Please try again.');
-                                }
-                            }}
+                            onClick={handleDelete}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white`}
                         >
                             <Trash2 size={16} />

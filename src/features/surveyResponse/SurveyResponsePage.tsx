@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Send, ChevronDown, ChevronUp, User, Mail, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { getSurveyById } from '@/services/dashboard/surveys';
+import { useSurveyById } from '@/hooks/useQuery';
+import { useSubmitSurveyResponse } from '@/hooks/useMutation';
 
 /* ── Mock survey data (used when ?mock=true) ── */
 const MOCK_SURVEY = {
@@ -173,42 +174,29 @@ const SurveyResponsePage = () => {
   const { surveyId } = useParams();
   const isMock = new URLSearchParams(window.location.search).get('mock') === 'true';
 
-  const [survey, setSurvey] = useState<SurveyData | null>(isMock ? MOCK_SURVEY : null);
-  const [loading, setLoading] = useState(!isMock);
   const [respondentName, setRespondentName] = useState('');
   const [respondentEmail, setRespondentEmail] = useState('');
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [submitted, setSubmitted] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<number, boolean>>({});
 
-  useEffect(() => {
-    if (isMock || !surveyId) return;
-    (async () => {
-      try {
-        setLoading(true);
-        const res = await getSurveyById(surveyId);
-        const raw = res.data || res;
-        setSurvey({
-          id: raw.id,
-          title: raw.title,
-          description: raw.description,
-          sections: (raw.sections || []).map((s: any) => ({
-            title: s.title,
-            questions: (s.questions || []).map((q: any) => ({
-              text: q.text,
-              type: q.type,
-              required: q.required,
-              options: (q.options || []).map((o: any) => ({ value: o.value })),
-            })),
-          })),
-        });
-      } catch (error: any) {
-        toast.error(error?.userMessage || 'Failed to load survey.');
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [surveyId, isMock]);
+  const { data: raw, isLoading, isError } = useSurveyById(isMock ? undefined : surveyId);
+  const submitMutation = useSubmitSurveyResponse();
+
+  const survey: SurveyData | null = isMock ? MOCK_SURVEY as SurveyData : (raw ? {
+    id: raw.id,
+    title: raw.title,
+    description: raw.description,
+    sections: (raw.sections || []).map((s: any) => ({
+      title: s.title,
+      questions: (s.questions || []).map((q: any) => ({
+        text: q.text,
+        type: q.type,
+        required: q.required,
+        options: (q.options || []).map((o: any) => ({ value: o.value })),
+      })),
+    })),
+  } : null);
 
   const toggleSection = (idx: number) => {
     setExpandedSections((prev) => ({ ...prev, [idx]: !prev[idx] }));
@@ -250,7 +238,7 @@ const SurveyResponsePage = () => {
     setSubmitted(true);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3 text-gray-500 dark:text-slate-400">

@@ -1,0 +1,15 @@
+import { useQuery } from '@tanstack/react-query';
+import { getProfile } from '@/services/dashboard/settings';
+import type { UserProfile } from '@/types/common';
+
+export function useProfile() {
+  return useQuery<UserProfile>({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const response = await getProfile();
+      return response as UserProfile;
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+}

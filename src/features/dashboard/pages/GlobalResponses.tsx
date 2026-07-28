@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Table from '../../../components/table';
 import { useTheme } from '@/contexts/ThemeContext';
 import { formatDate } from '@/lib/utils';
-import { getGlobalResponse } from '@/services/dashboard/responses';
-import {toast} from "sonner"
+import { useGlobalResponses } from '@/hooks/useQuery';
 import { useNavigate } from 'react-router-dom';
 
 interface GlobalResponseItem {
@@ -24,20 +23,21 @@ interface GlobalResponseDisplay {
     survey_id: string;
 }
 
-interface PaginationInfo {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-}
-
 const GlobalResponses = () => {
     const { textTitle } = useTheme();
-    const [responses, setResponses] = useState<GlobalResponseDisplay[]>([]);
-    const [pagination, setPagination] = useState<PaginationInfo>()
-    const [loading, setLoading] = useState(false)
+    const [page, setPage] = useState(1);
+    const navigate = useNavigate();
 
-    const navigate = useNavigate()
+    const { data: responseData, isLoading } = useGlobalResponses({ page, limit: 10 });
+
+    const responses: GlobalResponseDisplay[] = (responseData?.data || []).map((item: GlobalResponseItem) => ({
+        survey_title: item.survey_title,
+        respondent_email: item.respondent_email,
+        completed_at: formatDate(item.completed_at),
+        time_taken_sec: item.time_taken_sec,
+        survey_id: item.survey_id,
+    }));
+    const pagination = responseData?.pagination;
 
     const columns = [
         { name: "Survey", key: "survey_title" },
@@ -46,37 +46,10 @@ const GlobalResponses = () => {
         { name: "Time Taken", key: "time_taken_sec" },
     ];
 
-    const [page, setPage] = useState(1);
-
-    useEffect(() => {
-        async function getResponses() {
-            setLoading(true)
-            try {
-                const response = await getGlobalResponse({ page, limit: 10 })
-                const mapped = response.data.map((item: GlobalResponseItem) => ({
-                    survey_title: item.survey_title,
-                    respondent_email: item.respondent_email,
-                    completed_at: formatDate(item.completed_at),
-                    time_taken_sec: item.time_taken_sec,
-                    survey_id: item.survey_id,
-                }))
-                setResponses(mapped)
-                setPagination(response.pagination)
-            } catch (error: any) {
-                console.log(error)
-                toast.error(error?.userMessage || "Failed to get global response")
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        getResponses()
-    }, [page])
-
-    function onView (row:GlobalResponseDisplay) {
+    function onView(row: GlobalResponseDisplay) {
         navigate(`/dashboard/responses/${row.survey_id}`, {
             state: { surveyTitle: row.survey_title }
-        })
+        });
     }
 
     return (
@@ -92,7 +65,7 @@ const GlobalResponses = () => {
                 onView={onView}
                 searchable
                 sortable
-                loading={loading}
+                loading={isLoading}
                 emptyMessage="No responses yet"
                 totalItems={pagination?.total}
                 currentPage={page}

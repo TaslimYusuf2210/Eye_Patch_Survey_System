@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Edit3, Play, Pause, XCircle, Copy, MessageSquare, Users as UsersIcon, Trash2, AlertTriangle } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-import { getSurveyById, updateSurveyStatus, deleteSurvey } from '@/services/dashboard/surveys';
+import { useSurveyById } from '@/hooks/useQuery';
+import { useDeleteSurvey, useUpdateSurveyStatus } from '@/hooks/useMutation';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -67,9 +68,13 @@ function SurveyView() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { textTitle } = useTheme();
-    const [survey, setSurvey] = useState<SurveyData | null>(null);
-    const [loading, setLoading] = useState(true);
     const [deleteOpen, setDeleteOpen] = useState(false);
+
+    const { data: raw, isLoading } = useSurveyById(id);
+    const deleteSurveyMutation = useDeleteSurvey();
+    const updateStatusMutation = useUpdateSurveyStatus();
+
+    const survey = raw as SurveyData | null;
 
     const handleCopyLink = () => {
         if (!id) return;
@@ -79,43 +84,19 @@ function SurveyView() {
 
     const handleDelete = async () => {
         if (!id) return;
-        try {
-            await deleteSurvey(id);
-            toast.success('Survey deleted successfully.');
-            navigate('/dashboard/surveys');
-        } catch {
-            toast.error('Failed to delete survey.');
-        }
+        deleteSurveyMutation.mutate(id, {
+            onSuccess: () => {
+                navigate('/dashboard/surveys');
+            },
+        });
     };
 
     const handleStatusChange = async (newStatus: string) => {
         if (!id) return;
-        try {
-            await updateSurveyStatus(id, newStatus);
-            setSurvey((prev) => prev ? { ...prev, status: newStatus } : prev);
-            toast.success(`Survey status changed to ${newStatus}.`);
-        } catch {
-            toast.error('Failed to update survey status.');
-        }
+        updateStatusMutation.mutate({ id, status: newStatus });
     };
 
-    useEffect(() => {
-        if (!id) return;
-        (async () => {
-            try {
-                const res = await getSurveyById(id);
-                const raw = res.data || res;
-                console.log('Survey data from API:', raw);
-                setSurvey(raw);
-            } catch {
-                console.error('Failed to load survey');
-            } finally {
-                setLoading(false);
-            }
-        })();
-    }, [id]);
-
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="flex items-center justify-center py-20">
                 <div className="animate-pulse text-gray-500 dark:text-slate-400">Loading survey...</div>
