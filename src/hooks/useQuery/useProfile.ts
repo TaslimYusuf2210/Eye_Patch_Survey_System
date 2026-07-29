@@ -7,9 +7,9 @@ export function useProfile() {
     queryKey: ['profile'],
     queryFn: async () => {
       const response = await getProfile();
-      return response as UserProfile;
+      return response.data as UserProfile;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: Infinity,
     retry: 1,
   });
 }

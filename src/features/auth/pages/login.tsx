@@ -82,7 +82,6 @@ function Login() {
                     </div>
 
                     <button
-                        disabled={loading}
                         disabled={loginMutation.isPending}
                         className={`w-full bg-black text-white px-4 py-2 rounded-full text-sm font-medium border border-gray-200 shadow-sm hover:bg-gray-950 transition-all duration-400 mt-2 cursor-pointer ${loginMutation.isPending ? "cursor-not-allowed opacity-40" : ""}`}
                     >

@@ -1,6 +1,6 @@
 import StatsCard from '../components/Analytic/StatsCard';
 import RecentSurveyList from '../components/Analytic/RecentSurveyList';
-import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/hooks/useQuery/useProfile';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Spiral } from 'ldrs/react'
 import 'ldrs/react/Spiral.css'
@@ -10,7 +10,7 @@ import 'ldrs/react/Bouncy.css'
 
 
 const Analytic = () => {
-    const { profileData } = useAuth();
+    const { data: profileData } = useProfile();
     const { textTitle } = useTheme();
 
     const {

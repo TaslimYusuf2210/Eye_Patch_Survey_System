@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTheme, type Appearance } from '../../../contexts/ThemeContext';
 import { type AccentColor } from '../../../types';
 import { Sun, Moon, Palette } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/hooks/useQuery/useProfile';
 import avatar1 from '@/assets/avatars/avatar1.svg';
 import avatar2 from '@/assets/avatars/avatar2.svg';
 import avatar3 from '@/assets/avatars/avatar3.svg';
@@ -40,7 +40,7 @@ const SettingsView = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
     const { appearance, accent, setAppearance, setAccent, picture, setPicture, textTitle, textSubtitle } = useTheme();
-    const { profileData } = useAuth();
+    const { data: profileData } = useProfile();
 
     const isDefaultTheme = accent === 'default';
 

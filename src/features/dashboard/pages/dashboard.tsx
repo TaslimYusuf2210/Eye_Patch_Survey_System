@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/hooks/useQuery/useProfile';
 import Analytic from './Analytic';
 
 const Dashboard = () => {
-    const { profileData } = useAuth();
+    const { data: profileData } = useProfile();
 
     useEffect(() => {
         console.log('Dashboard profileData:', profileData);

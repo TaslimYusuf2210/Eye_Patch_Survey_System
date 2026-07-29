@@ -4,13 +4,13 @@ import { Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import themePictures, { preloadThemeImage } from '@/theme/themePictures';
-import { useAuth } from '@/contexts/AuthContext';
+import { useProfile } from '@/hooks/useQuery/useProfile';
 const DashboardLayout = () => {
     const { picture } = useTheme();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isTabletToggled, setIsTabletToggled] = useState(false);
     const [isTabletHovered, setIsTabletHovered] = useState(false);
-    const { loading } = useAuth();
+    const { isLoading: loading } = useProfile();
 
     useEffect(() => {
         if (picture && picture !== 'none') preloadThemeImage(picture as any);

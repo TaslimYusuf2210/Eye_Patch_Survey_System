@@ -27,13 +27,13 @@ const info3 =
 function Info() {
     return (
         <div id="features" className="flex justify-center items-center py-10 md:py-20 px-4 md:px-8">
-            <p className="font-poppins text-base md:text-lg lg:text-xl max-w-xl text-left leading-relaxed">
+            <div className="font-poppins text-base md:text-lg lg:text-xl max-w-xl text-left leading-relaxed">
                 Our survey management platform provides
                 <span className="mx-1"><InfoCard mainText={info1.mainText} image={info1.image} note={info1.note} /></span> and reporting,
                 along with tools that ensure <span className="mx-1"><InfoCard mainText={info2.mainText} note={info2.note} image={info2.image} /></span> and respondent reliability.
                 We streamline research workflows through automated distribution, <span className="mx-1"><InfoCard mainText={info3.mainText} image={info3.image} note={info3.note} /></span>,
                 and analysis, while supporting compliance with data protection and regulatory standards. In addition, the system enables scalable survey deployment, supports multiple question types and integrations, and helps organizations reduce costs through efficient survey administration and actionable insights.
-            </p>
+            </div>
         </div>
     );
 }

@@ -270,3 +270,17 @@ A daily log of things I've learned while building **Survey System**.
 - **Refactored `AuthContext.tsx`** — replaced raw `getProfile()` call with `useProfile` query hook, simplified the data flow (sessionStorage hydration → TanStack Query background fetch).
 - **Kept**: `ThemeContext` (pure UI state), `CreateSurveyContext` (wizard step tracking).
 - **Pattern**: Every component now handles `isLoading` (skeleton/spinner), `isError` (toast from hook), and `data` (normal render).
+
+---
+
+## 2026-07-29
+
+### React Query — staleTime & retry Deep Dive
+
+- **`staleTime`**: Controls how long cached data is considered _fresh_. While fresh, React Query skips automatic refetches on remount/refocus. Once stale, the next trigger event causes a background refetch to update the cache.
+
+- **`retry`**: Number of automatic retry attempts when a `queryFn` fails. Default is 3; setting `retry: 1` means 2 total attempts (original + 1 retry). Used across this project for faster failure feedback.
+
+- **Key insight — `staleTime: Infinity` for rarely-changing data**: For data like user profiles that only change via explicit user action (update name, avatar, password), `staleTime: Infinity` is the correct choice — not an arbitrary 5-minute window. The profile only needs to refetch when a mutation explicitly calls `invalidateQueries({ queryKey: ['profile'] })`, which all profile mutations already do. Using a finite `staleTime` causes wasteful background refetches for unchanged data. Updated `useProfile` to use `staleTime: Infinity`.
+
+- **The pattern**: _read-often, write-rarely_ data → `staleTime: Infinity` + manual `invalidateQueries` in mutations. _Frequently-changing_ data → shorter `staleTime` or the default (0).
