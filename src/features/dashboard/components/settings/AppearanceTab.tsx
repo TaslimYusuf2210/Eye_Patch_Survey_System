@@ -1,4 +1,4 @@
-import { Sun, Moon, Check, Sparkles, Ban, Save } from 'lucide-react';
+import { Sun, Moon, Check, Sparkles, Ban, Save, RotateCcw } from 'lucide-react';
 import { type AccentColor } from '@/types';
 import { type Appearance, useTheme } from '@/contexts/ThemeContext';
 import { useUpdateAppearanceAndAccent } from '@/hooks/useMutation';
