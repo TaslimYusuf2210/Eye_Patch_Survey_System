@@ -18,7 +18,6 @@ import { SettingsStep } from './features/dashboard/components/CreateSurvey/Setti
 import { ReviewSummaryStep } from './features/dashboard/components/CreateSurvey/ReviewSummaryStep';
 import { CreateSurveyProvider } from './contexts/CreateSurveyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { AuthProvider } from './contexts/AuthContext';
 import { Toaster } from './components/ui/sonner';
 import Participants from './features/dashboard/pages/Participants';
 import GlobalResponses from './features/dashboard/pages/GlobalResponses';
@@ -43,11 +42,9 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/survey/:surveyId" element={<SurveyResponsePage />} />
         <Route path="/dashboard/" element={
-          <AuthProvider>
           <ThemeProvider>
             <DashboardLayout />
           </ThemeProvider>
-          </AuthProvider>
         } >
           <Route index element={<Dashboard />} />
           <Route path="/dashboard/create-survey" element={

@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, FileText, MessageSquare, Users, Settings, PencilRuler, X, LogOut } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useSignOut } from '@/hooks/useSignOut';
 import { resolveAvatarUrl } from '@/lib/avatarMap';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useRef, useEffect } from 'react';
@@ -25,7 +25,7 @@ const Sidebar = ({
 }: SidebarProps) => {
     const { data: profileData, isLoading } = useProfile();
     const location = useLocation();
-    const { signOut } = useAuth();
+    const signOut = useSignOut();
     const { accent } = useTheme();
     const sidebarRef = useRef<HTMLDivElement>(null);
 

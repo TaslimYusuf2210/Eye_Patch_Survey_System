@@ -100,7 +100,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('survey-theme-picture', picture);
   }, [picture]);
 
-  // Re-sync theme from localStorage when AuthContext writes profile settings
+  // Re-sync theme from localStorage on mount and when theme-synced event fires
   useEffect(() => {
     const syncFromStorage = () => {
       const storedAppearance = localStorage.getItem('survey-theme-appearance') as Appearance | null;
@@ -117,10 +117,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    // Re-sync on mount (catches values already written by AuthContext)
+    // Re-sync on mount (catches values already in localStorage)
     syncFromStorage();
 
-    // Re-sync whenever AuthContext writes new theme settings
+    // Re-sync whenever mutation hooks save new theme settings
     window.addEventListener('theme-synced', syncFromStorage);
     return () => window.removeEventListener('theme-synced', syncFromStorage);
   }, []);

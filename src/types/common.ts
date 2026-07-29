@@ -10,9 +10,3 @@ export interface UserProfile {
     theme_picture: string;
   };
 }
-
-export type AuthContextType = {
-  profileData: UserProfile | null;
-  signOut: () => Promise<void>;
-  loading: boolean;
-};
