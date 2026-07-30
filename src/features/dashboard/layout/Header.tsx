@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, Bell, Menu, Loader2, ExternalLink, Settings } from 'lucide-react';
 import { globalSearch } from '@/services/dashboard/surveys';
 
@@ -24,12 +24,20 @@ interface HeaderProps {
 
 const Header = ({ onOpenMobile }: HeaderProps) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<SearchResults | null>(null);
     const [loading, setLoading] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    // Clear search when navigating to a different route
+    useEffect(() => {
+        setQuery('');
+        setResults(null);
+        setShowDropdown(false);
+    }, [location.pathname]);
 
     // Close dropdown on click outside
     useEffect(() => {

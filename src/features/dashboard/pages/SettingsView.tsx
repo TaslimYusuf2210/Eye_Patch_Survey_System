@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTheme, type Appearance } from '../../../contexts/ThemeContext';
 import { type AccentColor } from '../../../types';
 import { Sun, Moon, Palette } from 'lucide-react';
@@ -37,7 +38,9 @@ const avatarOptions = [
 ];
 
 const SettingsView = () => {
-    const [activeTab, setActiveTab] = useState('profile');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const tabFromUrl = searchParams.get('tab');
+    const [activeTab, setActiveTab] = useState(tabFromUrl && ['profile', 'appearance', 'theme'].includes(tabFromUrl) ? tabFromUrl : 'profile');
     const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
     const { appearance, accent, setAppearance, setAccent, picture, setPicture, textTitle, textSubtitle } = useTheme();
     const { data: profileData } = useProfile();
@@ -79,6 +82,11 @@ const SettingsView = () => {
             setSelectedAvatar(profileData.avatar_url);
         }
     }, [profileData]);
+
+    // Sync active tab to URL whenever it changes
+    useEffect(() => {
+        setSearchParams({ tab: activeTab }, { replace: true });
+    }, [activeTab]);
 
     return (
         <div className="">
