@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Edit3, Play, Pause, XCircle, Copy, MessageSquare, Users as UsersIcon, Trash2, AlertTriangle } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -70,12 +70,34 @@ function SurveyView() {
     const navigate = useNavigate();
     const { textTitle } = useTheme();
     const [deleteOpen, setDeleteOpen] = useState(false);
+    const [pendingStatus, setPendingStatus] = useState<string | null>(null);
 
     const { data: raw, isLoading } = useSurveyById(id);
     const deleteSurveyMutation = useDeleteSurvey();
     const updateStatusMutation = useUpdateSurveyStatus();
 
     const survey = raw as SurveyData | null;
+
+    const statusActionConfig: Record<string, { title: string; description: string; icon: ReactNode; buttonClass: string }> = {
+        active: {
+            title: 'Activate Survey',
+            description: `Are you sure you want to activate "${survey?.title}"? Once active, respondents will be able to access and fill out this survey.`,
+            icon: <Play size={16} />,
+            buttonClass: 'bg-green-600 hover:bg-green-700',
+        },
+        inactive: {
+            title: 'Deactivate Survey',
+            description: `Are you sure you want to deactivate "${survey?.title}"? Respondents will no longer be able to access this survey.`,
+            icon: <Pause size={16} />,
+            buttonClass: 'bg-amber-500 hover:bg-amber-600',
+        },
+        closed: {
+            title: 'Close Survey',
+            description: `Are you sure you want to close "${survey?.title}"? This is a permanent action and the survey will no longer accept responses.`,
+            icon: <XCircle size={16} />,
+            buttonClass: 'bg-red-600 hover:bg-red-700',
+        },
+    };
 
     const handleCopyLink = () => {
         if (!id) return;
@@ -125,24 +147,25 @@ function SurveyView() {
             </div>
 
             {/* Title & Status */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 className={`text-2xl font-bold ${textTitle}`}>{survey.title}</h1>
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
+                <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <h1 className={`text-2xl font-bold ${textTitle}`}>{survey.title}</h1>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[survey.status?.toLowerCase()] || ''}`}>
+                            {survey.status}
+                        </span>
+                    </div>
                     {survey.description && (
                         <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">{survey.description}</p>
                     )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0 flex-wrap">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[survey.status?.toLowerCase()] || ''}`}>
-                        {survey.status}
-                    </span>
-
                     {/* Status action buttons (not for drafts) */}
                     {survey.status?.toLowerCase() !== 'draft' && (
                         <>
                             {survey.status?.toLowerCase() !== 'active' && (
                                 <button
-                                    onClick={() => handleStatusChange('active')}
+                                    onClick={() => setPendingStatus('active')}
                                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 transition-colors cursor-pointer"
                                 >
                                     <Play size={12} />
@@ -151,7 +174,7 @@ function SurveyView() {
                             )}
                             {survey.status?.toLowerCase() !== 'inactive' && survey.status?.toLowerCase() !== 'draft' && (
                                 <button
-                                    onClick={() => handleStatusChange('inactive')}
+                                    onClick={() => setPendingStatus('inactive')}
                                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-500 text-white text-xs font-medium hover:bg-amber-600 transition-colors cursor-pointer"
                                 >
                                     <Pause size={12} />
@@ -160,7 +183,7 @@ function SurveyView() {
                             )}
                             {survey.status?.toLowerCase() !== 'closed' && (
                                 <button
-                                    onClick={() => handleStatusChange('closed')}
+                                    onClick={() => setPendingStatus('closed')}
                                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-medium hover:bg-red-700 transition-colors cursor-pointer"
                                 >
                                     <XCircle size={12} />
@@ -350,6 +373,47 @@ function SurveyView() {
                     </button>
                 </div>
             </div>
+
+            {/* Status Change Confirmation Dialog */}
+            <Dialog open={pendingStatus !== null} onOpenChange={(open) => !open && setPendingStatus(null)}>
+                <DialogContent className="sm:max-w-md">
+                    {pendingStatus && statusActionConfig[pendingStatus] && (
+                        <>
+                            <DialogHeader>
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className={`p-2 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300`}>
+                                        {statusActionConfig[pendingStatus].icon}
+                                    </div>
+                                    <DialogTitle className="text-lg font-bold text-gray-900 dark:text-white">
+                                        {statusActionConfig[pendingStatus].title}
+                                    </DialogTitle>
+                                </div>
+                                <DialogDescription className="text-sm text-gray-500 dark:text-slate-400 leading-relaxed">
+                                    {statusActionConfig[pendingStatus].description}
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="flex items-center gap-3 justify-end">
+                                <button
+                                    onClick={() => setPendingStatus(null)}
+                                    className="px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-800 text-sm font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        handleStatusChange(pendingStatus);
+                                        setPendingStatus(null);
+                                    }}
+                                    className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors cursor-pointer flex items-center gap-2 ${statusActionConfig[pendingStatus].buttonClass}`}
+                                >
+                                    {statusActionConfig[pendingStatus].icon}
+                                    {statusActionConfig[pendingStatus].title}
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </DialogContent>
+            </Dialog>
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
