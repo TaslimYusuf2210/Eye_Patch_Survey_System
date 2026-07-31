@@ -15,6 +15,7 @@ import {
 import { DotSpinner } from 'ldrs/react'
 import 'ldrs/react/DotSpinner.css'
 import { toast } from 'sonner'
+import { MutationOverlay } from '@/components/ui/mutation-overlay'
 
 
 const usernameSchema = yup.object().shape({
@@ -401,6 +402,15 @@ const ProfileTab = ({
                     </div>
                 </DialogContent>
             </Dialog>
+            <MutationOverlay
+                isPending={updateUserNameMutation.isPending || updateAvatarMutation.isPending || deleteAccountMutation.isPending || updatePasswordMutation.isPending}
+                message={
+                    updateUserNameMutation.isPending ? 'Updating username...' :
+                    updateAvatarMutation.isPending ? 'Updating avatar...' :
+                    deleteAccountMutation.isPending ? 'Deleting account...' :
+                    'Updating password...'
+                }
+            />
         </div>
     );
 };

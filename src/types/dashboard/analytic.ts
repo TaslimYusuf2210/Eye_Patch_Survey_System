@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 export interface StatsCardProps {
   title: string;
   value: string | number | ReactNode;
   change: number;
+  icon: LucideIcon;
+  weeklyTrend: number[];
   chartColor?: string;
 }
 
@@ -17,6 +20,12 @@ export interface DashboardStats {
     total_responses: number;
     questions_responded: number;
     new_questions: number;
+  };
+  weekly_trend: {
+    survey_quantity: number[];
+    total_responses: number[];
+    questions_responded: number[];
+    new_questions: number[];
   };
 }
 

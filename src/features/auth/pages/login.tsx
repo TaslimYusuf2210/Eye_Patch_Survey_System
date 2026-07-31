@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import type { LoginFormData } from '@/types/auth';
 import { useLogin } from '@/hooks/useMutation';
 import { toast } from "sonner"
+import { MutationOverlay } from '@/components/ui/mutation-overlay'
 
 const loginSchema = yup.object().shape({
     email: yup.string().email('Invalid email format').required('Email is required'),
@@ -118,6 +119,7 @@ function Login() {
                     </Link>
                 </div>
             </div>
+            <MutationOverlay isPending={loginMutation.isPending} message="Signing in..." />
         </div>
     );
 }

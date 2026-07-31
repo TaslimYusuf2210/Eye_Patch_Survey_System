@@ -1,3 +1,4 @@
+import { FileText, MessageSquare, HelpCircle, PlusCircle } from 'lucide-react';
 import StatsCard from '../components/Analytic/StatsCard';
 import RecentSurveyList from '../components/Analytic/RecentSurveyList';
 import { useProfile } from '@/hooks/useQuery/useProfile';
@@ -30,6 +31,10 @@ const Analytic = () => {
     const totalResponsesChange = dashboardStats ? dashboardStats.change_percentages.total_responses : 0;
     const questionsRespondedChange = dashboardStats ? dashboardStats.change_percentages.questions_responded : 0;
     const newQuestionsChange = dashboardStats ? dashboardStats.change_percentages.new_questions : 0;
+    const surveyQuantityTrend = dashboardStats?.weekly_trend?.survey_quantity ?? [];
+    const totalResponsesTrend = dashboardStats?.weekly_trend?.total_responses ?? [];
+    const questionsRespondedTrend = dashboardStats?.weekly_trend?.questions_responded ?? [];
+    const newQuestionsTrend = dashboardStats?.weekly_trend?.new_questions ?? [];
 
     return (
         <>
@@ -50,25 +55,29 @@ const Analytic = () => {
                         title="Survey Quantity"
                         value={surveyQuantity}
                         change={surveyQuantityChange}
-                        chartColor="bg-accent-600"
+                        icon={FileText}
+                        weeklyTrend={surveyQuantityTrend}
                     />
                     <StatsCard
                         title="Responses"
                         value={totalResponses}
                         change={totalResponsesChange}
-                        chartColor="bg-accent-600"
+                        icon={MessageSquare}
+                        weeklyTrend={totalResponsesTrend}
                     />
                     <StatsCard
                         title="Question Responded"
                         value={questionsResponded}
                         change={questionsRespondedChange}
-                        chartColor="bg-accent-600"
+                        icon={HelpCircle}
+                        weeklyTrend={questionsRespondedTrend}
                     />
                     <StatsCard
                         title="New Questions"
                         value={newQuestions}
                         change={newQuestionsChange}
-                        chartColor="bg-accent-600"
+                        icon={PlusCircle}
+                        weeklyTrend={newQuestionsTrend}
                     />
                 </div>
             </div>

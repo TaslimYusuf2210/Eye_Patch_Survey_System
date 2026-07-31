@@ -15,6 +15,7 @@ import { ArrowLeft, CheckCircle, Eye, EyeOff } from "lucide-react";
 import type { SignUpFormData } from "@/types/auth";
 import { useSignUp } from "@/hooks/useMutation";
 import { toast } from "sonner"
+import { MutationOverlay } from '@/components/ui/mutation-overlay'
 
 const signUpSchema = yup.object().shape({
   userName: yup.string().required("Username is required"),
@@ -483,6 +484,7 @@ function SignUp() {
           </div>
         </DialogContent>
       </Dialog>
+      <MutationOverlay isPending={signUpMutation.isPending} message="Creating account..." />
     </div>
   );
 }

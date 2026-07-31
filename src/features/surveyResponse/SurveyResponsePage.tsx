@@ -4,6 +4,7 @@ import { Send, ChevronDown, ChevronUp, User, Mail, Loader2 } from 'lucide-react'
 import { toast } from 'sonner';
 import { useSurveyById } from '@/hooks/useQuery';
 import { useSubmitSurveyResponse } from '@/hooks/useMutation';
+import { MutationOverlay } from '@/components/ui/mutation-overlay';
 
 /* ── Mock survey data (used when ?mock=true) ── */
 const MOCK_SURVEY = {
@@ -405,6 +406,7 @@ const SurveyResponsePage = () => {
           <p className="text-xs text-gray-400 dark:text-slate-500 mt-3">Your responses are anonymous and will be kept confidential.</p>
         </div>
       </div>
+            <MutationOverlay isPending={submitMutation.isPending} message="Submitting response..." />
     </div>
   );
 };

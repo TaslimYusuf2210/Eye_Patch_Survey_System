@@ -2,6 +2,7 @@ import { Check, Sparkles, Save } from 'lucide-react';
 import themePictures, { type ThemePictureKey } from '@/theme/themePictures';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateThemePicture } from '@/hooks/useMutation';
+import { MutationOverlay } from '@/components/ui/mutation-overlay';
 
 const ThemeTab = () => {
     const { picture, setPicture, accent } = useTheme();
@@ -107,6 +108,7 @@ const ThemeTab = () => {
                     )}
                 </div>
             </div>
+            <MutationOverlay isPending={updateThemeMutation.isPending} message="Saving theme..." />
         </div>
     );
 };

@@ -5,6 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useSurveyById } from '@/hooks/useQuery';
 import { useDeleteSurvey, useUpdateSurveyStatus } from '@/hooks/useMutation';
 import { toast } from 'sonner';
+import { MutationOverlay } from '@/components/ui/mutation-overlay';
 import {
   Dialog,
   DialogContent,
@@ -57,7 +58,7 @@ const typeLabels: Record<string, string> = {
     true_false: 'True/False',
 };
 
-function formatDate(dateStr?: string) {
+function formatDate(dateStr?: string | null) {
     if (!dateStr) return 'Not set';
     return new Date(dateStr).toLocaleDateString('en-US', {
         year: 'numeric', month: 'long', day: 'numeric',
@@ -382,6 +383,11 @@ function SurveyView() {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <MutationOverlay
+                isPending={deleteSurveyMutation.isPending || updateStatusMutation.isPending}
+                message={deleteSurveyMutation.isPending ? 'Deleting survey...' : 'Updating status...'}
+            />
         </>
     );
 }
