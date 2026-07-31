@@ -40,7 +40,11 @@ function App() {
         } />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/survey/:surveyId" element={<SurveyResponsePage />} />
+        <Route path="/survey/:surveyId/answer" element={
+          <ThemeProvider>
+            <SurveyResponsePage />
+          </ThemeProvider>
+        } />
         <Route path="/dashboard/" element={
           <ThemeProvider>
             <DashboardLayout />

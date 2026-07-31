@@ -13,3 +13,4 @@ export * from './dashboard/settingsView';
 export * from './dashboard/surveyDetail';
 export * from './dashboard/surveyList';
 export * from './dashboard/surveyResponses';
+export * from './surveyResponsePage';

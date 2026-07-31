@@ -27,6 +27,7 @@ const GlobalParticipants = () => {
     const navigate = useNavigate();
 
     const { data: responseData, isLoading } = useGlobalParticipants({ page, limit: 10 });
+    console.log('getGlobalParticipants response:', responseData);
 
     const participants: ParticipantDisplay[] = (responseData?.data || []).map((item: ParticipantItem) => ({
         id: item.id,

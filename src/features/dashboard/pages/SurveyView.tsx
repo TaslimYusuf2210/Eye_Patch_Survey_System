@@ -101,7 +101,7 @@ function SurveyView() {
 
     const handleCopyLink = () => {
         if (!id) return;
-        navigator.clipboard.writeText(`${window.location.origin}/survey/${id}`);
+        navigator.clipboard.writeText(`${window.location.origin}/survey/${id}/answer`);
         toast.success('Survey link copied to clipboard!');
     };
 

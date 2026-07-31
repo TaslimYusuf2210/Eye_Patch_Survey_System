@@ -27,7 +27,7 @@ const SurveyCard = ({ survey }: { survey: SurveyCardData }) => {
     const deleteSurveyMutation = useDeleteSurvey();
 
     const handleCopyLink = () => {
-        navigator.clipboard.writeText(`${window.location.origin}/survey/${survey.id}`);
+        navigator.clipboard.writeText(`${window.location.origin}/survey/${survey.id}/answer`);
         toast.success('Survey link copied to clipboard!');
     };
 

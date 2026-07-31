@@ -5,7 +5,8 @@ import type { SubmitResponsePayload } from '@/services/surveyResponse';
 
 export function useSubmitSurveyResponse() {
   return useMutation({
-    mutationFn: (payload: SubmitResponsePayload) => submitSurveyResponse(payload),
+    mutationFn: ({ surveyId, payload }: { surveyId: string; payload: SubmitResponsePayload }) =>
+      submitSurveyResponse(surveyId, payload),
     onSuccess: () => {
       toast.success('Your response has been submitted. Thank you!');
     },
