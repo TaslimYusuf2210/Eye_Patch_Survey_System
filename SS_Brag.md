@@ -284,3 +284,39 @@ A daily log of things I've learned while building **Survey System**.
 - **Key insight — `staleTime: Infinity` for rarely-changing data**: For data like user profiles that only change via explicit user action (update name, avatar, password), `staleTime: Infinity` is the correct choice — not an arbitrary 5-minute window. The profile only needs to refetch when a mutation explicitly calls `invalidateQueries({ queryKey: ['profile'] })`, which all profile mutations already do. Using a finite `staleTime` causes wasteful background refetches for unchanged data. Updated `useProfile` to use `staleTime: Infinity`.
 
 - **The pattern**: _read-often, write-rarely_ data → `staleTime: Infinity` + manual `invalidateQueries` in mutations. _Frequently-changing_ data → shorter `staleTime` or the default (0).
+
+---
+
+## 2026-07-30
+
+### Global Search → Settings Tab Routing
+
+- Fixed global search so clicking a settings result lands on the **correct tab** instead of always defaulting to Profile.
+- `Header.tsx` navigates with a `?tab=` query param (`appearance`, `theme`, `profile`).
+- `SettingsView.tsx` now reads `tab` from the URL on mount **and** syncs `activeTab` back to the URL when tabs are clicked manually.
+- Global search input now **clears on route change** — navigating away no longer leaves stale search text/results in the header.
+
+### Dashboard StatsCard — Full Revamp
+
+- Coordinated with the backend to add `weekly_trend` (7-day daily counts) to `GET /api/v1/dashboard/stats`.
+- Extended `DashboardStats` type with `weekly_trend.survey_quantity`, `.total_responses`, `.questions_responded`, `.new_questions`.
+- Replaced the hardcoded/static bars with a **real mini bar chart** — each bar scaled proportionally to the week's max value, today's bar highlighted with the accent color, day labels (M–S) underneath, skeleton bars while loading.
+- Added a **per-card icon** (FileText, MessageSquare, HelpCircle, PlusCircle) in an accent-tinted chip.
+- Replaced the flat change text with a **colored pill badge** (green/red/gray) showing `X% ↗/↘`.
+- Added a subtle **accent top border** to each card.
+
+### MutationOverlay — Global Mutation Loading State
+
+- Created reusable `MutationOverlay` component — full-screen blurred backdrop with `Pinwheel` spinner + contextual message.
+- Design rule: the Pinwheel overlay is **only** for mutation `isPending` states (form submits, saves, deletes) — query loading states keep their skeleton UIs.
+- Integrated across the app with action-specific messages:
+  - Login → "Signing in..." | Sign Up → "Creating account..."
+  - Survey View → "Deleting survey..." / "Updating status..."
+  - Profile Tab → "Updating username/avatar/password..." / "Deleting account..."
+  - Appearance Tab → "Saving appearance..." | Theme Tab → "Saving theme..."
+  - Survey Response → "Submitting response..."
+
+### Bug Fixes
+
+- Fixed missing `RotateCcw` lucide import in `AppearanceTab.tsx`.
+- Fixed `formatDate` type error — accepts `string | null | undefined` to match `endDate`.
