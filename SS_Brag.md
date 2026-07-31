@@ -320,3 +320,38 @@ A daily log of things I've learned while building **Survey System**.
 
 - Fixed missing `RotateCcw` lucide import in `AppearanceTab.tsx`.
 - Fixed `formatDate` type error — accepts `string | null | undefined` to match `endDate`.
+
+---
+
+## 2026-07-31
+
+### Survey View — Layout & Confirmation UX
+
+- Moved the survey **status badge** next to the title (left side) and kept the top-right purely for action buttons — clear visual separation between identity and actions.
+- Added a **confirmation modal** before Activate / Deactivate / Close status changes — status only changes after the user confirms. Each action shows its own title, description, icon, and colored confirm button.
+
+### Survey Response Page — Refactor & Full Integration
+
+- Added `/answer` to the public route: `/survey/:surveyId/answer`. Updated the copy-link buttons in `SurveyView` and `SurveyCard`.
+- **Split the 430-line `SurveyResponsePage` into smaller components**:
+  - `SurveyResponsePage.tsx` (main — state + orchestration)
+  - `components/QuestionInput.tsx` (renders all 5 question types)
+  - `components/SurveySection.tsx` (collapsible section)
+  - `components/RespondentInfo.tsx` (name/email form)
+  - `components/SuccessScreen.tsx` (submitted confirmation)
+  - `components/AppearanceToggle.tsx` (light/dark toggle for respondents)
+- Moved shared types to `src/types/surveyResponsePage.ts` (following the types folder pattern).
+- **Removed the mock survey entirely** — the page now always fetches from the real API.
+
+### Bug Fixes & Debugging
+
+- **"Survey not found" on pasted links** — traced through a stale Vite cache + duplicate dev server on port 5173, then found the real cause: the backend's `GET /api/v1/surveys/:id` returned **401 for anonymous users**. The endpoint needs to be public. Improved the error screen to show status-specific messages (401 vs 404 vs generic).
+- **Invisible submit button** — the public page wasn't wrapped in `ThemeProvider`, so `--accent-*` CSS vars weren't set and `bg-accent-600 text-white` rendered invisible. Fixed by wrapping the route in `ThemeProvider`.
+
+### Survey Response Submission
+
+- Wired up the **real submission** (previously a placeholder that faked success).
+- Aligned the payload to the backend's accepted shape: `respondent_email`, `answers[].question_id`, `answer_text`, `answer_option_ids`, `likert_value`, `yes_no_value`.
+- Added option IDs to the survey normalization so `answer_option_ids` sends the option's UUID.
+- Added a **submit confirmation modal** — validation runs first, then the user confirms before the request is sent.
+- Fixed the submit endpoint path to **`POST /api/v1/surveys/{surveyId}/responses`** (it was hitting a non-existent `POST /api/v1/responses` → 404).
