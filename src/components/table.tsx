@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import ActionMenu, { type ActionMenuItem } from "./ui/action-menu";
 
 export interface TableColumn {
   name: string;
@@ -71,8 +72,6 @@ function Table<T extends Record<string, any>>({
   onPageChange,
 }: tableProps<T>) {
   // ── State ──
-  const [actionOpen, setActionOpen] = useState(false);
-  const [activeRow, setActiveRow] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -172,11 +171,6 @@ function Table<T extends Record<string, any>>({
       setSortKey(key);
       setSortDirection("asc");
     }
-  };
-
-  const handleAction = (rowIndex: number) => {
-    setActionOpen(true);
-    setActiveRow(rowIndex);
   };
 
   // ── Render: empty state ──
@@ -330,60 +324,6 @@ function Table<T extends Record<string, any>>({
       </div>
     );
   };
-
-  // ── Render: action dropdown ──
-  const renderActionDropdown = (row: T, rowIndex: number) => (
-    <div className="relative inline-block">
-      <button
-        onClick={() => handleAction(rowIndex)}
-        className="text-gray-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer font-medium"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-          <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.92A.96.96 0 1 0 12 4a.96.96 0 0 0 0 1.92m0 7.04a.96.96 0 1 0 0-1.92a.96.96 0 0 0 0 1.92M12 20a.96.96 0 1 0 0-1.92a.96.96 0 0 0 0 1.92" />
-        </svg>
-      </button>
-
-      {actionOpen && activeRow === rowIndex && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setActionOpen(false)} />
-          <div className="absolute right-0 top-full mt-1 z-50 w-40 rounded-lg border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-lg py-1">
-            {actions.includes("view") && onView && (
-              <button
-                onClick={() => { onView(row); setActionOpen(false); }}
-                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
-                View
-              </button>
-            )}
-            {actions.includes("edit") && onEdit && (
-              <button
-                onClick={() => { onEdit(row); setActionOpen(false); }}
-                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
-                Edit
-              </button>
-            )}
-
-            {actions.includes("delete") && onDelete && (actions.includes("view") || actions.includes("edit")) && (onView || onEdit) && (
-              <div className="my-1 border-t border-gray-100 dark:border-slate-800" />
-            )}
-
-            {actions.includes("delete") && onDelete && (
-              <button
-                onClick={() => { onDelete(rowIndex); setActionOpen(false); }}
-                className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>
-                Delete
-              </button>
-            )}
-          </div>
-        </>
-      )}
-    </div>
-  );
 
   // ── Render: inline action buttons (for card view) ──
   const renderCardActions = (row: T, rowIndex: number) => (
@@ -543,7 +483,44 @@ function Table<T extends Record<string, any>>({
                       ))}
                       {hasActions && (
                         <td className="px-6 py-4 text-sm text-gray-600">
-                          {renderActionDropdown(row, pageIdx)}
+                          <ActionMenu
+                            items={[
+                              ...(actions.includes("view") && onView
+                                ? [
+                                    {
+                                      label: "View",
+                                      icon: (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                                      ),
+                                      onClick: () => onView(row),
+                                    } as ActionMenuItem,
+                                  ]
+                                : []),
+                              ...(actions.includes("edit") && onEdit
+                                ? [
+                                    {
+                                      label: "Edit",
+                                      icon: (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                                      ),
+                                      onClick: () => onEdit(row),
+                                    } as ActionMenuItem,
+                                  ]
+                                : []),
+                              ...(actions.includes("delete") && onDelete
+                                ? [
+                                    {
+                                      label: "Delete",
+                                      icon: (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>
+                                      ),
+                                      onClick: () => onDelete(pageIdx),
+                                      danger: true,
+                                    } as ActionMenuItem,
+                                  ]
+                                : []),
+                            ]}
+                          />
                         </td>
                       )}
                     </tr>
