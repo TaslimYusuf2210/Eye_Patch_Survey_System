@@ -16,11 +16,10 @@
    - [Surveys](#33-surveys)
    - [Survey Sections & Questions](#34-survey-sections--questions)
    - [Survey Responses](#35-survey-responses)
-   - [Participants](#36-participants)
-   - [Analytics & Dashboard](#37-analytics--dashboard)
-   - [Settings & Theme](#38-settings--theme)
-   - [Search](#39-search)
-   - [Landing Page (CMS / Static)](#310-landing-page-cms--static)
+   - [Analytics & Dashboard](#36-analytics--dashboard)
+   - [Settings & Theme](#37-settings--theme)
+   - [Search](#38-search)
+   - [Landing Page (CMS / Static)](#39-landing-page-cms--static)
 4. [Question Types Reference](#4-question-types-reference)
 5. [Error Handling](#5-error-handling)
 
@@ -39,10 +38,8 @@
 | **Survey Builder** | Sections with questions (5 types: text, multiple_choice, single_choice, likert_scale, yes_no) |
 | **Survey Sharing** | Copy link, QR Code, Embed code |
 | **Survey Responses** | Per-survey responses table, Global responses view |
-| **Participant Management** | Participant list, Participant detail (contact info, history, attributes) |
-| **Participant Communication** | Send email to participants |
 | **Settings** | Profile settings, Account & Billing, Global Appearance (light/dark, accent colors), Theme Picture |
-| **Search** | Global search across surveys, responses, participants |
+| **Search** | Global search across surveys, responses |
 | **Notifications** | Bell icon (notification system) |
 
 ---
@@ -130,27 +127,11 @@ CREATE TABLE question_options (
 CREATE INDEX idx_options_question ON question_options(question_id);
 ```
 
-### 2.6 `participants`
-```sql
-CREATE TABLE participants (
-  id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  survey_id     UUID NOT NULL REFERENCES surveys(id) ON DELETE CASCADE,
-  email         VARCHAR(255),
-  name          VARCHAR(255),
-  status        VARCHAR(50) DEFAULT 'active',   -- 'active', 'inactive'
-  created_at    TIMESTAMPTZ DEFAULT NOW(),
-  UNIQUE(survey_id, email)
-);
-
-CREATE INDEX idx_participants_survey ON participants(survey_id);
-```
-
-### 2.7 `survey_responses`
+### 2.6 `survey_responses`
 ```sql
 CREATE TABLE survey_responses (
   id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   survey_id       UUID NOT NULL REFERENCES surveys(id) ON DELETE CASCADE,
-  participant_id  UUID REFERENCES participants(id) ON DELETE SET NULL,
   respondent_email VARCHAR(255),
   started_at      TIMESTAMPTZ DEFAULT NOW(),
   completed_at    TIMESTAMPTZ,
@@ -161,7 +142,7 @@ CREATE TABLE survey_responses (
 CREATE INDEX idx_responses_survey ON survey_responses(survey_id);
 ```
 
-### 2.8 `response_answers`
+### 2.7 `response_answers`
 ```sql
 CREATE TABLE response_answers (
   id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -178,7 +159,7 @@ CREATE INDEX idx_answers_response ON response_answers(response_id);
 CREATE INDEX idx_answers_question ON response_answers(question_id);
 ```
 
-### 2.9 `notifications`
+### 2.8 `notifications`
 ```sql
 CREATE TABLE notifications (
   id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -193,7 +174,7 @@ CREATE TABLE notifications (
 CREATE INDEX idx_notifications_user ON notifications(user_id);
 ```
 
-### 2.10 `user_settings`
+### 2.9 `user_settings`
 ```sql
 CREATE TABLE user_settings (
   id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -504,56 +485,7 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ---
 
-### 3.6 Participants
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/api/surveys/:id/participants` | List participants for a survey | ✅ |
-| `POST` | `/api/surveys/:id/participants` | Add participant(s) to a survey | ✅ |
-| `GET` | `/api/participants/:id` | Get participant detail | ✅ |
-| `PUT` | `/api/participants/:id` | Update participant | ✅ |
-| `DELETE` | `/api/participants/:id` | Remove participant | ✅ |
-| `GET` | `/api/participants` | List all participants (global) | ✅ |
-| `POST` | `/api/participants/:id/send-email` | Send survey email to participant | ✅ |
-| `POST` | `/api/participants/bulk-import` | Bulk import participants (CSV) | ✅ |
-
-#### `POST /api/surveys/:id/participants`
-```json
-{
-  "participants": [
-    { "email": "user1@example.com", "name": "User One" },
-    { "email": "user2@example.com", "name": "User Two" }
-  ]
-}
-```
-**Response (201):** Array of created participants.
-
-#### `GET /api/participants/:id`
-**Response (200):**
-```json
-{
-  "id": "uuid",
-  "name": "User One",
-  "email": "user1@example.com",
-  "status": "active",
-  "survey_id": "uuid",
-  "survey_title": "Customer Satisfaction Survey",
-  "created_at": "2026-06-10T08:00:00Z",
-  "responses": [
-    {
-      "response_id": "uuid",
-      "survey_id": "uuid",
-      "completed_at": "2026-06-15T10:30:00Z",
-      "time_taken_sec": 252
-    }
-  ],
-  "response_count": 1
-}
-```
-
----
-
-### 3.7 Analytics & Dashboard
+### 3.6 Analytics & Dashboard
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|:---:|
@@ -627,7 +559,7 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ---
 
-### 3.8 Settings & Theme
+### 3.7 Settings & Theme
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|:---:|
@@ -651,16 +583,16 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ---
 
-### 3.9 Search
+### 3.8 Search
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|:---:|
-| `GET` | `/api/search` | Global search across surveys, responses, participants | ✅ |
+| `GET` | `/api/search` | Global search across surveys, responses | ✅ |
 
 #### `GET /api/search?q=keyword`
 **Query Parameters:**
 - `q` — Search query (required)
-- `type` — Filter by type: `surveys`, `responses`, `participants`, `all` (default)
+- `type` — Filter by type: `surveys`, `responses`, `all` (default)
 - `page`, `limit` — Pagination
 
 **Response (200):**
@@ -668,9 +600,6 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 {
   "surveys": [
     { "id": "uuid", "title": "Survey title matching query", "status": "active" }
-  ],
-  "participants": [
-    { "id": "uuid", "name": "Matching name", "email": "email@example.com" }
   ],
   "responses": [
     { "id": "uuid", "respondent_email": "matching@example.com", "survey_id": "uuid" }
@@ -680,7 +609,7 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ---
 
-### 3.10 Landing Page (CMS / Static)
+### 3.9 Landing Page (CMS / Static)
 
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|:---:|

@@ -9,7 +9,6 @@ import CreateSurvey from './features/dashboard/pages/CreateSurvey';
 import DashboardLayout from './features/dashboard/layout/DashboardLayout';
 import SurveyList from './features/dashboard/pages/SurveyList';
 import SurveyView from './features/dashboard/pages/SurveyView';
-import GlobalParticipants from './features/dashboard/pages/GlobalParticipants';
 import SettingsView from './features/dashboard/pages/SettingsView';
 import { SurveyInformationStep } from './features/dashboard/components/CreateSurvey/SurveyInformationStep';
 import { SectionsAndQuestionsStep } from './features/dashboard/components/CreateSurvey/SectionsAndQuestionsStep';
@@ -19,12 +18,10 @@ import { ReviewSummaryStep } from './features/dashboard/components/CreateSurvey/
 import { CreateSurveyProvider } from './contexts/CreateSurveyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { Toaster } from './components/ui/sonner';
-import Participants from './features/dashboard/pages/Participants';
 import GlobalResponses from './features/dashboard/pages/GlobalResponses';
 import Responses from './features/dashboard/pages/Responses';
 import ResponseDetail from './features/dashboard/pages/ResponseDetail';
 import ResponseAnswers from './features/dashboard/pages/ResponseAnswers';
-import ParticipantDetail from './features/dashboard/pages/ParticipantDetail';
 import SurveyResponsePage from './features/surveyResponse/SurveyResponsePage';
 
 
@@ -69,10 +66,6 @@ function App() {
             <Route index element={<GlobalResponses/>}></Route>
             <Route path="/dashboard/responses/:id" element={<ResponseDetail />}></Route>
             <Route path="/dashboard/responses/:surveyId/:responseId" element={<ResponseAnswers />}></Route>
-          </Route>
-          <Route path="/dashboard/participant" element={<Participants />}>
-            <Route index element={<GlobalParticipants/>}></Route>
-            <Route path="/dashboard/participant/:id" element={<ParticipantDetail />}></Route>
           </Route>
           <Route path="/dashboard/settings" element={<SettingsView />} />
         </Route>

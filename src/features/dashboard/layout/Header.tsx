@@ -5,7 +5,6 @@ import { globalSearch } from '@/services/dashboard/surveys';
 
 interface SearchResults {
     surveys: { id: string; title: string; status: string }[];
-    participants: { id: string; name: string; email: string }[];
     responses: { id: string; respondent_email: string; survey_id: string }[];
 }
 
@@ -81,7 +80,6 @@ const Header = ({ onOpenMobile }: HeaderProps) => {
     ) : [];
 
     const totalCount = (results?.surveys?.length || 0) +
-        (results?.participants?.length || 0) +
         (results?.responses?.length || 0) +
         matchedSettings.length;
 
@@ -101,7 +99,7 @@ const Header = ({ onOpenMobile }: HeaderProps) => {
                     <input
                         ref={inputRef}
                         type="text"
-                        placeholder="Search surveys, participants..."
+                        placeholder="Search surveys, responses..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onFocus={() => query.trim() && setShowDropdown(true)}
@@ -145,31 +143,6 @@ const Header = ({ onOpenMobile }: HeaderProps) => {
                                                     }`}>
                                                         {item.status}
                                                     </span>
-                                                    <ExternalLink size={12} className="text-gray-300 dark:text-slate-600 shrink-0" />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {/* Participants */}
-                                    {results?.participants && results.participants.length > 0 && (
-                                        <div className="mt-1">
-                                            <p className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-slate-500">
-                                                Participants
-                                            </p>
-                                            {results.participants.map((item) => (
-                                                <button
-                                                    key={item.id}
-                                                    onClick={() => { navigate(`/dashboard/participant/${item.id}`); setShowDropdown(false); setQuery(''); }}
-                                                    className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors text-left cursor-pointer"
-                                                >
-                                                    <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-medium text-gray-600 dark:text-slate-300 shrink-0">
-                                                        {item.name?.charAt(0) || '?'}
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="text-xs font-medium text-gray-900 dark:text-white truncate">{item.name}</p>
-                                                        <p className="text-[10px] text-gray-400 dark:text-slate-500 truncate">{item.email}</p>
-                                                    </div>
                                                     <ExternalLink size={12} className="text-gray-300 dark:text-slate-600 shrink-0" />
                                                 </button>
                                             ))}

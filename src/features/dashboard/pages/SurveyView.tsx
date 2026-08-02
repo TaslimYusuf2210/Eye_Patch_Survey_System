@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Edit3, Play, Pause, XCircle, Copy, MessageSquare, Users as UsersIcon, Trash2, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, Edit3, Play, Pause, XCircle, Copy, MessageSquare, Trash2, AlertTriangle } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSurveyById } from '@/hooks/useQuery';
 import { useDeleteSurvey, useUpdateSurveyStatus } from '@/hooks/useMutation';
@@ -329,20 +329,6 @@ function SurveyView() {
                         <div>
                             <p className="text-sm font-semibold text-gray-900 dark:text-white">View Responses</p>
                             <p className="text-xs text-gray-500 dark:text-slate-400">See all responses collected for this survey</p>
-                        </div>
-                    </Link>
-
-                    <Link
-                        to={`/dashboard/participant/${id}`}
-                        state={{ participantName: survey?.title }}
-                        className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm hover:shadow-md hover:border-accent-300 dark:hover:border-accent-700 transition-all group cursor-pointer"
-                    >
-                        <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/30 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
-                            <UsersIcon size={20} />
-                        </div>
-                        <div>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-white">View Participants</p>
-                            <p className="text-xs text-gray-500 dark:text-slate-400">Browse everyone who participated</p>
                         </div>
                     </Link>
 

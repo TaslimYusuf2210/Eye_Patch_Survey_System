@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, MessageSquare, Users, Settings, PencilRuler, X, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, MessageSquare, Settings, PencilRuler, X, LogOut } from 'lucide-react';
 import { useSignOut } from '@/hooks/useSignOut';
 import { resolveAvatarUrl } from '@/lib/avatarMap';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -43,7 +43,6 @@ const Sidebar = ({
         { icon: FileText, label: 'Surveys', path: '/dashboard/surveys' },
         { icon: PencilRuler, label: 'Create Survey', path: '/dashboard/create-survey' },
         { icon: MessageSquare, label: 'Responses', path: '/dashboard/responses' },
-        { icon: Users, label: 'Participant', path: '/dashboard/participant' },
         { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
     ];
 

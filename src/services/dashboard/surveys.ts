@@ -108,7 +108,7 @@ export async function updateSurveyStatus(id: string, status: string) {
 
 export async function globalSearch(params: {
     q: string;
-    type?: 'surveys' | 'responses' | 'participants' | 'all';
+    type?: 'surveys' | 'responses' | 'all';
     page?: number;
     limit?: number;
 }) {

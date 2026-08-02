@@ -7,8 +7,6 @@ export * from './dashboard/createSurvey';
 export * from './dashboard/analytic';
 export * from './dashboard/dashboard';
 export * from './dashboard/globalResponses';
-export * from './dashboard/participantDetail';
-export * from './dashboard/participantList';
 export * from './dashboard/settingsView';
 export * from './dashboard/surveyDetail';
 export * from './dashboard/surveyList';

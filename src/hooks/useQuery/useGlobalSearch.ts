@@ -3,7 +3,7 @@ import { globalSearch } from '@/services/dashboard/surveys';
 
 interface SearchParams {
   q: string;
-  type?: 'surveys' | 'responses' | 'participants' | 'all';
+  type?: 'surveys' | 'responses' | 'all';
   page?: number;
   limit?: number;
 }
