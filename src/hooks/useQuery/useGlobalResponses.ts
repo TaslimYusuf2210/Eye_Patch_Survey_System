@@ -4,6 +4,7 @@ import { getGlobalResponse } from '@/services/dashboard/responses';
 interface GlobalResponseParams {
   page?: number;
   limit?: number;
+  survey_id?: string;
 }
 
 export function useGlobalResponses(params?: GlobalResponseParams) {

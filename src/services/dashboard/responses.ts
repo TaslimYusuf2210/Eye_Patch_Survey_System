@@ -3,6 +3,7 @@ import api from "../axios"
 export async function getGlobalResponse(params?: {
     page?: number,
     limit?: number,
+    survey_id?: string,
 }) {
     try {
         const response = await api.get('api/v1/responses', {params})

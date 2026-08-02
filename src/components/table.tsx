@@ -28,6 +28,7 @@ interface tableProps<T extends Record<string, any>> {
   totalItems?: number;
   currentPage?: number;
   onPageChange?: (page: number) => void;
+  toolbar?: React.ReactNode;
 }
 
 // ─────────────────────────────────────────────────────────
@@ -70,6 +71,7 @@ function Table<T extends Record<string, any>>({
   totalItems,
   currentPage: controlledPage,
   onPageChange,
+  toolbar,
 }: tableProps<T>) {
   // ── State ──
   const [searchQuery, setSearchQuery] = useState("");
@@ -370,15 +372,18 @@ function Table<T extends Record<string, any>>({
   return (
     <div className="w-full rounded-lg border border-gray-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-950 overflow-hidden">
       {/* ── Search Bar ── */}
-      {searchable && (
-        <div className="p-4 border-b border-gray-200 dark:border-slate-800">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-gray-700 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+      {(searchable || toolbar) && (
+        <div className="p-4 border-b border-gray-200 dark:border-slate-800 flex flex-col sm:flex-row gap-3 sm:items-center">
+          {searchable && (
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full sm:flex-1 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-gray-700 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          )}
+          {toolbar && <div className="shrink-0">{toolbar}</div>}
         </div>
       )}
 

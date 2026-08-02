@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
-import { ChevronLeft, Clock, Mail, Calendar } from 'lucide-react';
+import { ChevronLeft, Mail, Calendar } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getResponseById } from '@/services/dashboard/responses';
 import { toast } from "sonner"
@@ -8,7 +8,7 @@ import { toast } from "sonner"
 interface Answer {
     question_id: string;
     question_text: string;
-    required: boolean;
+    question_required: boolean;
     section_title?: string;
     answer_text?: string;
     likert_value?: number;
@@ -33,11 +33,9 @@ interface RawResponse {
     answers: Answer[];
 }
 
-function formatTime(seconds: number): string {
-    if (seconds < 60) return `${seconds}s`;
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return s > 0 ? `${m}m ${s}s` : `${m}m`;
+// Normalize the backend `required` flag (handles boolean, 0|1, and string variants)
+function isRequired(value: boolean | number | string | undefined | null): boolean {
+    return value === true || value === 1 || value === '1' || value === 'true' || value === 'yes';
 }
 
 function formatDate(dateStr: string): string {
@@ -135,6 +133,7 @@ const ResponseAnswers = () => {
     const { surveyId, responseId } = useParams();
     const location = useLocation();
     const { textTitle } = useTheme();
+    const surveyTitle = (location.state as { surveyTitle?: string })?.surveyTitle;
     const [responseData, setResponseData] = useState<ResponseData | null>(
         (location.state as { response?: ResponseData })?.response ?? null
     );
@@ -148,8 +147,13 @@ const ResponseAnswers = () => {
             setLoading(true);
             try {
                 const res = await getResponseById({ id: surveyId!, page: 1, limit: 100 });
+                console.log('ResponseAnswers raw response:', res);
                 const found = res.data.find((item: RawResponse) => item.id === responseId);
                 if (found) {
+                    console.log('ResponseAnswers found response:', found);
+                    (found.answers || []).forEach((a: Answer, i: number) => {
+                        console.log(`ResponseAnswers answer[${i}]:`, a);
+                    });
                     setResponseData({
                         id: found.id,
                         respondent_email: found.respondent_email,
@@ -201,10 +205,12 @@ const ResponseAnswers = () => {
 
             {/* Respondent Info */}
             <div className="mb-8">
-                <h1 className={`text-2xl font-bold ${textTitle}`}>Response Details</h1>
+                <h1 className={`text-2xl font-bold ${textTitle}`}>
+                    {surveyTitle ? `${surveyTitle} — Response` : "Response Details"}
+                </h1>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div className="bg-white dark:bg-slate-950 p-4 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-950 flex items-center justify-center text-blue-600 dark:text-blue-400">
                         <Mail size={18} />
@@ -222,16 +228,6 @@ const ResponseAnswers = () => {
                     <div>
                         <p className="text-xs text-gray-500 dark:text-slate-400">Completed</p>
                         <p className="font-medium text-gray-900 dark:text-slate-100 text-sm">{formatDate(responseData.completed_at)}</p>
-                    </div>
-                </div>
-
-                <div className="bg-white dark:bg-slate-950 p-4 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-purple-50 dark:bg-purple-950 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                        <Clock size={18} />
-                    </div>
-                    <div>
-                        <p className="text-xs text-gray-500 dark:text-slate-400">Time Taken</p>
-                        <p className="font-medium text-gray-900 dark:text-slate-100 text-sm">{formatTime(responseData.time_taken_sec)}</p>
                     </div>
                 </div>
             </div>
@@ -266,11 +262,11 @@ const ResponseAnswers = () => {
                                                     {answer.question_text}
                                                 </p>
                             <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                                answer.required
+                                isRequired(answer.question_required)
                                     ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-500 dark:text-rose-400'
                                     : 'bg-gray-50 dark:bg-slate-800 text-gray-400 dark:text-slate-500'
                             }`}>
-                                {answer.required ? 'Required' : 'Optional'}
+                                {isRequired(answer.question_required) ? 'Required' : 'Optional'}
                             </span>
                         </div>
                         {renderAnswer(answer)}

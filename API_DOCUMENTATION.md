@@ -29,24 +29,25 @@
 
 ### Core Features (from Frontend Analysis)
 
-| Feature Area | Details |
-|---|---|
-| **Landing Page** | Hero, Impact stats, Info cards, Compatible integrations, News/Updates, FAQ, Demo CTA, Footer |
-| **Authentication** | Sign up, Login, Google OAuth, Session management |
-| **Dashboard Analytics** | Stats cards (Survey Quantity, Responses, Question Responded, New Questions), Recent Surveys |
-| **Survey CRUD** | Create (5-step wizard), Read, Update, Delete, Duplicate, Change Status |
-| **Survey Builder** | Sections with questions (5 types: text, multiple_choice, single_choice, likert_scale, yes_no) |
-| **Survey Sharing** | Copy link, QR Code, Embed code |
-| **Survey Responses** | Per-survey responses table, Global responses view |
-| **Settings** | Profile settings, Account & Billing, Global Appearance (light/dark, accent colors), Theme Picture |
-| **Search** | Global search across surveys, responses |
-| **Notifications** | Bell icon (notification system) |
+| Feature Area            | Details                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------- |
+| **Landing Page**        | Hero, Impact stats, Info cards, Compatible integrations, News/Updates, FAQ, Demo CTA, Footer      |
+| **Authentication**      | Sign up, Login, Google OAuth, Session management                                                  |
+| **Dashboard Analytics** | Stats cards (Survey Quantity, Responses, Question Responded, New Questions), Recent Surveys       |
+| **Survey CRUD**         | Create (5-step wizard), Read, Update, Delete, Duplicate, Change Status                            |
+| **Survey Builder**      | Sections with questions (5 types: text, multiple_choice, single_choice, likert_scale, yes_no)     |
+| **Survey Sharing**      | Copy link, QR Code, Embed code                                                                    |
+| **Survey Responses**    | Per-survey responses table, Global responses view                                                 |
+| **Settings**            | Profile settings, Account & Billing, Global Appearance (light/dark, accent colors), Theme Picture |
+| **Search**              | Global search across surveys, responses                                                           |
+| **Notifications**       | Bell icon (notification system)                                                                   |
 
 ---
 
 ## 2. Database Schema
 
 ### 2.1 `users` / `profiles`
+
 ```sql
 CREATE TABLE profiles (
   id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -59,6 +60,7 @@ CREATE TABLE profiles (
 ```
 
 ### 2.2 `surveys`
+
 ```sql
 CREATE TYPE survey_status AS ENUM ('draft', 'active', 'inactive', 'closed');
 
@@ -84,6 +86,7 @@ CREATE INDEX idx_surveys_status ON surveys(status);
 ```
 
 ### 2.3 `survey_sections`
+
 ```sql
 CREATE TABLE survey_sections (
   id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -97,6 +100,7 @@ CREATE INDEX idx_sections_survey ON survey_sections(survey_id);
 ```
 
 ### 2.4 `survey_questions`
+
 ```sql
 CREATE TYPE question_type AS ENUM (
   'text', 'multiple_choice', 'single_choice', 'likert_scale', 'yes_no'
@@ -116,6 +120,7 @@ CREATE INDEX idx_questions_section ON survey_questions(section_id);
 ```
 
 ### 2.5 `question_options`
+
 ```sql
 CREATE TABLE question_options (
   id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -128,6 +133,7 @@ CREATE INDEX idx_options_question ON question_options(question_id);
 ```
 
 ### 2.6 `survey_responses`
+
 ```sql
 CREATE TABLE survey_responses (
   id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -143,6 +149,7 @@ CREATE INDEX idx_responses_survey ON survey_responses(survey_id);
 ```
 
 ### 2.7 `response_answers`
+
 ```sql
 CREATE TABLE response_answers (
   id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -160,6 +167,7 @@ CREATE INDEX idx_answers_question ON response_answers(question_id);
 ```
 
 ### 2.8 `notifications`
+
 ```sql
 CREATE TABLE notifications (
   id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -175,6 +183,7 @@ CREATE INDEX idx_notifications_user ON notifications(user_id);
 ```
 
 ### 2.9 `user_settings`
+
 ```sql
 CREATE TABLE user_settings (
   id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -192,16 +201,17 @@ CREATE TABLE user_settings (
 
 ### 3.1 Authentication
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `POST` | `/api/auth/signup` | Register a new user | ❌ |
-| `POST` | `/api/auth/login` | Login with email/password | ❌ |
-| `POST` | `/api/auth/google` | Google OAuth login | ❌ |
-| `POST` | `/api/auth/logout` | Logout current session | ✅ |
-| `POST` | `/api/auth/refresh` | Refresh access token | ✅ |
-| `GET`  | `/api/auth/me` | Get current authenticated user | ✅ |
+| Method | Endpoint            | Description                    | Auth Required |
+| ------ | ------------------- | ------------------------------ | :-----------: |
+| `POST` | `/api/auth/signup`  | Register a new user            |      ❌       |
+| `POST` | `/api/auth/login`   | Login with email/password      |      ❌       |
+| `POST` | `/api/auth/google`  | Google OAuth login             |      ❌       |
+| `POST` | `/api/auth/logout`  | Logout current session         |      ✅       |
+| `POST` | `/api/auth/refresh` | Refresh access token           |      ✅       |
+| `GET`  | `/api/auth/me`      | Get current authenticated user |      ✅       |
 
 #### `POST /api/auth/signup`
+
 ```json
 {
   "email": "user@example.com",
@@ -209,7 +219,9 @@ CREATE TABLE user_settings (
   "user_name": "johndoe"
 }
 ```
+
 **Response (201):**
+
 ```json
 {
   "id": "uuid",
@@ -221,13 +233,16 @@ CREATE TABLE user_settings (
 ```
 
 #### `POST /api/auth/login`
+
 ```json
 {
   "email": "user@example.com",
   "password": "Str0ng!Pass"
 }
 ```
+
 **Response (200):**
+
 ```json
 {
   "access_token": "jwt...",
@@ -237,49 +252,55 @@ CREATE TABLE user_settings (
 ```
 
 #### `POST /api/auth/google`
+
 ```json
 {
   "id_token": "google-id-token"
 }
 ```
+
 **Response (200):** Same as login.
 
 ---
 
 ### 3.2 User / Profile
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/api/users/me` | Get my profile | ✅ |
-| `PUT` | `/api/users/me` | Update my profile | ✅ |
-| `DELETE` | `/api/users/me` | Delete my account | ✅ |
-| `GET` | `/api/users/:id` | Get user by ID (admin) | ✅ |
+| Method   | Endpoint         | Description            | Auth Required |
+| -------- | ---------------- | ---------------------- | :-----------: |
+| `GET`    | `/api/users/me`  | Get my profile         |      ✅       |
+| `PUT`    | `/api/users/me`  | Update my profile      |      ✅       |
+| `DELETE` | `/api/users/me`  | Delete my account      |      ✅       |
+| `GET`    | `/api/users/:id` | Get user by ID (admin) |      ✅       |
 
 #### `PUT /api/users/me`
+
 ```json
 {
   "user_name": "new_username",
   "avatar_url": "https://example.com/avatar.png"
 }
 ```
+
 **Response (200):** Updated profile object.
 
 ---
 
 ### 3.3 Surveys
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/api/surveys` | List my surveys (with filters) | ✅ |
-| `POST` | `/api/surveys` | Create a new survey | ✅ |
-| `GET` | `/api/surveys/:id` | Get survey detail (full structure) | ✅ |
-| `PUT` | `/api/surveys/:id` | Update survey metadata | ✅ |
-| `DELETE` | `/api/surveys/:id` | Delete a survey | ✅ |
-| `PATCH` | `/api/surveys/:id/status` | Change survey status | ✅ |
-| `POST` | `/api/surveys/:id/duplicate` | Duplicate a survey | ✅ |
+| Method   | Endpoint                     | Description                        | Auth Required |
+| -------- | ---------------------------- | ---------------------------------- | :-----------: |
+| `GET`    | `/api/surveys`               | List my surveys (with filters)     |      ✅       |
+| `POST`   | `/api/surveys`               | Create a new survey                |      ✅       |
+| `GET`    | `/api/surveys/:id`           | Get survey detail (full structure) |      ✅       |
+| `PUT`    | `/api/surveys/:id`           | Update survey metadata             |      ✅       |
+| `DELETE` | `/api/surveys/:id`           | Delete a survey                    |      ✅       |
+| `PATCH`  | `/api/surveys/:id/status`    | Change survey status               |      ✅       |
+| `POST`   | `/api/surveys/:id/duplicate` | Duplicate a survey                 |      ✅       |
 
 #### `GET /api/surveys`
+
 **Query Parameters:**
+
 - `status` — Filter by status: `draft`, `active`, `inactive`, `closed`
 - `category` — Filter by category
 - `search` — Search by title
@@ -288,6 +309,7 @@ CREATE TABLE user_settings (
 - `order` — `asc`, `desc` (default: `desc`)
 
 **Response (200):**
+
 ```json
 {
   "data": [
@@ -306,6 +328,7 @@ CREATE TABLE user_settings (
 ```
 
 #### `POST /api/surveys`
+
 Creates a survey **without** sections/questions (those are added via separate endpoints or a bulk creation endpoint).
 
 ```json
@@ -322,36 +345,40 @@ Creates a survey **without** sections/questions (those are added via separate en
   "end_date": "2026-07-31"
 }
 ```
+
 **Response (201):** Full survey object.
 
 #### `PATCH /api/surveys/:id/status`
+
 ```json
 {
   "status": "active"
 }
 ```
+
 **Response (200):** Updated survey.
 
 ---
 
 ### 3.4 Survey Sections & Questions
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `POST` | `/api/surveys/:id/sections` | Add a section (with questions) | ✅ |
-| `PUT` | `/api/sections/:id` | Update a section | ✅ |
-| `DELETE` | `/api/sections/:id` | Delete a section | ✅ |
-| `PUT` | `/api/sections/reorder` | Reorder sections | ✅ |
-| `POST` | `/api/sections/:id/questions` | Add a question to a section | ✅ |
-| `PUT` | `/api/questions/:id` | Update a question | ✅ |
-| `DELETE` | `/api/questions/:id` | Delete a question | ✅ |
-| `PUT` | `/api/questions/reorder` | Reorder questions | ✅ |
-| `POST` | `/api/questions/:id/options` | Add option to question | ✅ |
-| `PUT` | `/api/options/:id` | Update an option | ✅ |
-| `DELETE` | `/api/options/:id` | Delete an option | ✅ |
-| `POST` | `/api/surveys/:id/publish` | Publish full survey (all at once) | ✅ |
+| Method   | Endpoint                      | Description                       | Auth Required |
+| -------- | ----------------------------- | --------------------------------- | :-----------: |
+| `POST`   | `/api/surveys/:id/sections`   | Add a section (with questions)    |      ✅       |
+| `PUT`    | `/api/sections/:id`           | Update a section                  |      ✅       |
+| `DELETE` | `/api/sections/:id`           | Delete a section                  |      ✅       |
+| `PUT`    | `/api/sections/reorder`       | Reorder sections                  |      ✅       |
+| `POST`   | `/api/sections/:id/questions` | Add a question to a section       |      ✅       |
+| `PUT`    | `/api/questions/:id`          | Update a question                 |      ✅       |
+| `DELETE` | `/api/questions/:id`          | Delete a question                 |      ✅       |
+| `PUT`    | `/api/questions/reorder`      | Reorder questions                 |      ✅       |
+| `POST`   | `/api/questions/:id/options`  | Add option to question            |      ✅       |
+| `PUT`    | `/api/options/:id`            | Update an option                  |      ✅       |
+| `DELETE` | `/api/options/:id`            | Delete an option                  |      ✅       |
+| `POST`   | `/api/surveys/:id/publish`    | Publish full survey (all at once) |      ✅       |
 
 #### `POST /api/surveys/:id/sections`
+
 ```json
 {
   "title": "Section 1",
@@ -383,14 +410,18 @@ Creates a survey **without** sections/questions (those are added via separate en
   ]
 }
 ```
+
 **Response (201):** Full section with nested questions and options.
 
 #### `POST /api/surveys/:id/publish`
+
 Publishes the complete survey structure (sections, questions, and options) in a single request. Useful for the Create Survey multi-step wizard.
 
 ```json
 {
-  "survey": { /* survey metadata */ },
+  "survey": {
+    /* survey metadata */
+  },
   "sections": [
     {
       "title": "Section 1",
@@ -399,16 +430,14 @@ Publishes the complete survey structure (sections, questions, and options) in a 
           "text": "Question?",
           "type": "multiple_choice",
           "required": true,
-          "options": [
-            { "value": "Option A" },
-            { "value": "Option B" }
-          ]
+          "options": [{ "value": "Option A" }, { "value": "Option B" }]
         }
       ]
     }
   ]
 }
 ```
+
 **Response (201):** Complete published survey object.
 
 > **Note:** Question types and their validation rules are documented in [Section 4](#4-question-types-reference).
@@ -417,22 +446,25 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ### 3.5 Survey Responses
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/api/surveys/:id/responses` | List responses for a survey | ✅ |
-| `GET` | `/api/responses` | Global responses (all surveys) | ✅ |
-| `GET` | `/api/responses/:id` | Get a single response with answers | ✅ |
-| `POST` | `/api/surveys/:id/responses` | Submit a response (public) | ❌ |
-| `DELETE` | `/api/responses/:id` | Delete a response | ✅ |
-| `GET` | `/api/surveys/:id/responses/export` | Export responses (CSV/JSON) | ✅ |
+| Method   | Endpoint                            | Description                        | Auth Required |
+| -------- | ----------------------------------- | ---------------------------------- | :-----------: |
+| `GET`    | `/api/surveys/:id/responses`        | List responses for a survey        |      ✅       |
+| `GET`    | `/api/responses`                    | Global responses (all surveys)     |      ✅       |
+| `GET`    | `/api/responses/:id`                | Get a single response with answers |      ✅       |
+| `POST`   | `/api/surveys/:id/responses`        | Submit a response (public)         |      ❌       |
+| `DELETE` | `/api/responses/:id`                | Delete a response                  |      ✅       |
+| `GET`    | `/api/surveys/:id/responses/export` | Export responses (CSV/JSON)        |      ✅       |
 
 #### `GET /api/surveys/:id/responses`
+
 **Query Parameters:**
+
 - `page`, `limit` — Pagination
 - `sort_by` — `completed_at`, `time_taken_sec`
 - `order` — `asc`, `desc`
 
 **Response (200):**
+
 ```json
 {
   "data": [
@@ -458,23 +490,26 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 ```
 
 #### `POST /api/surveys/:id/responses` (Public Submission)
+
 ```json
 {
   "respondent_email": "user@example.com",
   "answers": [
     {
       "question_id": "uuid",
-      "answer_text": "Great platform!",           // text type
-      "answer_option_ids": [],                     // choice types
-      "likert_value": null,                        // likert_scale (1-5)
-      "yes_no_value": null                         // yes_no (true/false)
+      "answer_text": "Great platform!", // text type
+      "answer_option_ids": [], // choice types
+      "likert_value": null, // likert_scale (1-5)
+      "yes_no_value": null // yes_no (true/false)
     }
   ]
 }
 ```
+
 **Response (201):** Created response object.
 
 > **Validation Rules:**
+>
 > - Required questions must have a non-null answer.
 > - `multiple_choice` — expects `answer_option_ids` (array, 1+ selections).
 > - `single_choice` — expects `answer_option_ids` (array, exactly 1 selection).
@@ -487,14 +522,16 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ### 3.6 Analytics & Dashboard
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/api/dashboard/stats` | Get dashboard statistics | ✅ |
-| `GET` | `/api/dashboard/recent-surveys` | Get recent surveys | ✅ |
-| `GET` | `/api/surveys/:id/analytics` | Get analytics for a specific survey | ✅ |
+| Method | Endpoint                        | Description                         | Auth Required |
+| ------ | ------------------------------- | ----------------------------------- | :-----------: |
+| `GET`  | `/api/dashboard/stats`          | Get dashboard statistics            |      ✅       |
+| `GET`  | `/api/dashboard/recent-surveys` | Get recent surveys                  |      ✅       |
+| `GET`  | `/api/surveys/:id/analytics`    | Get analytics for a specific survey |      ✅       |
 
 #### `GET /api/dashboard/stats`
+
 **Response (200):**
+
 ```json
 {
   "survey_quantity": 13,
@@ -511,9 +548,11 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 ```
 
 #### `GET /api/dashboard/recent-surveys`
+
 **Query Parameters:** `limit` (default: 5)
 
 **Response (200):**
+
 ```json
 {
   "data": [
@@ -533,7 +572,9 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 ```
 
 #### `GET /api/surveys/:id/analytics`
+
 **Response (200):**
+
 ```json
 {
   "total_responses": 83,
@@ -549,7 +590,11 @@ Publishes the complete survey structure (sections, questions, and options) in a 
       "question_text": "How satisfied are you?",
       "type": "likert_scale",
       "responses": {
-        "1": 2, "2": 5, "3": 15, "4": 40, "5": 21
+        "1": 2,
+        "2": 5,
+        "3": 15,
+        "4": 40,
+        "5": 21
       },
       "average": 3.88
     }
@@ -561,15 +606,16 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ### 3.7 Settings & Theme
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/api/settings` | Get user settings | ✅ |
-| `PUT` | `/api/settings` | Update user settings | ✅ |
-| `PUT` | `/api/settings/appearance` | Update appearance (light/dark) | ✅ |
-| `PUT` | `/api/settings/accent` | Update accent color | ✅ |
-| `PUT` | `/api/settings/theme-picture` | Update theme picture | ✅ |
+| Method | Endpoint                      | Description                    | Auth Required |
+| ------ | ----------------------------- | ------------------------------ | :-----------: |
+| `GET`  | `/api/settings`               | Get user settings              |      ✅       |
+| `PUT`  | `/api/settings`               | Update user settings           |      ✅       |
+| `PUT`  | `/api/settings/appearance`    | Update appearance (light/dark) |      ✅       |
+| `PUT`  | `/api/settings/accent`        | Update accent color            |      ✅       |
+| `PUT`  | `/api/settings/theme-picture` | Update theme picture           |      ✅       |
 
 #### `PUT /api/settings`
+
 ```json
 {
   "appearance": "dark",
@@ -577,6 +623,7 @@ Publishes the complete survey structure (sections, questions, and options) in a 
   "theme_picture": "nature"
 }
 ```
+
 **Response (200):** Updated settings object.
 
 > Settings are also stored client-side in localStorage, but the backend serves as the source of truth for cross-device sync.
@@ -585,24 +632,31 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ### 3.8 Search
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/api/search` | Global search across surveys, responses | ✅ |
+| Method | Endpoint      | Description                             | Auth Required |
+| ------ | ------------- | --------------------------------------- | :-----------: |
+| `GET`  | `/api/search` | Global search across surveys, responses |      ✅       |
 
 #### `GET /api/search?q=keyword`
+
 **Query Parameters:**
+
 - `q` — Search query (required)
 - `type` — Filter by type: `surveys`, `responses`, `all` (default)
 - `page`, `limit` — Pagination
 
 **Response (200):**
+
 ```json
 {
   "surveys": [
     { "id": "uuid", "title": "Survey title matching query", "status": "active" }
   ],
   "responses": [
-    { "id": "uuid", "respondent_email": "matching@example.com", "survey_id": "uuid" }
+    {
+      "id": "uuid",
+      "respondent_email": "matching@example.com",
+      "survey_id": "uuid"
+    }
   ]
 }
 ```
@@ -611,25 +665,42 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ### 3.9 Landing Page (CMS / Static)
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|:---:|
-| `GET` | `/api/landing/stats` | Get impact stats for landing page | ❌ |
-| `GET` | `/api/landing/faq` | Get FAQ data | ❌ |
-| `GET` | `/api/landing/news` | Get news & updates | ❌ |
-| `POST` | `/api/contact` | Submit contact/demo inquiry | ❌ |
+| Method | Endpoint             | Description                       | Auth Required |
+| ------ | -------------------- | --------------------------------- | :-----------: |
+| `GET`  | `/api/landing/stats` | Get impact stats for landing page |      ❌       |
+| `GET`  | `/api/landing/faq`   | Get FAQ data                      |      ❌       |
+| `GET`  | `/api/landing/news`  | Get news & updates                |      ❌       |
+| `POST` | `/api/contact`       | Submit contact/demo inquiry       |      ❌       |
 
 #### `GET /api/landing/stats`
+
 ```json
 {
   "stats": [
-    { "tag": "Time Saving", "percent": "40%", "info": "less manual effort", "note": "..." },
-    { "tag": "Smarter Insights", "percent": "60%", "info": "deeper understanding", "note": "..." },
-    { "tag": "Cost Efficiency", "percent": "35%", "info": "lower research spend", "note": "..." }
+    {
+      "tag": "Time Saving",
+      "percent": "40%",
+      "info": "less manual effort",
+      "note": "..."
+    },
+    {
+      "tag": "Smarter Insights",
+      "percent": "60%",
+      "info": "deeper understanding",
+      "note": "..."
+    },
+    {
+      "tag": "Cost Efficiency",
+      "percent": "35%",
+      "info": "lower research spend",
+      "note": "..."
+    }
   ]
 }
 ```
 
 #### `POST /api/contact`
+
 ```json
 {
   "name": "John Doe",
@@ -637,35 +708,37 @@ Publishes the complete survey structure (sections, questions, and options) in a 
   "message": "I'd like a demo of your survey platform."
 }
 ```
+
 **Response (200):** `{ "message": "Inquiry submitted successfully." }`
 
 ---
 
 ## 4. Question Types Reference
 
-| Type | Enum Value | Input Method | Backend Storage | Validation |
-|------|-----------|--------------|-----------------|------------|
-| Text | `text` | Free text input | `answer_text` (TEXT) | Max length (configurable, default 5000 chars) |
-| Multiple Choice | `multiple_choice` | Checkboxes | `answer_options` (UUID[]) | At least 1 selection, max all |
-| Single Choice | `single_choice` | Radio buttons | `answer_options` (UUID[1]) | Exactly 1 selection |
-| Likert Scale | `likert_scale` | 5 radio buttons | `likert_value` (INT 1-5) | Value 1-5 |
-| Yes/No | `yes_no` | 2 radio buttons | `yes_no_value` (BOOLEAN) | `true` or `false` |
+| Type            | Enum Value        | Input Method    | Backend Storage            | Validation                                    |
+| --------------- | ----------------- | --------------- | -------------------------- | --------------------------------------------- |
+| Text            | `text`            | Free text input | `answer_text` (TEXT)       | Max length (configurable, default 5000 chars) |
+| Multiple Choice | `multiple_choice` | Checkboxes      | `answer_options` (UUID[])  | At least 1 selection, max all                 |
+| Single Choice   | `single_choice`   | Radio buttons   | `answer_options` (UUID[1]) | Exactly 1 selection                           |
+| Likert Scale    | `likert_scale`    | 5 radio buttons | `likert_value` (INT 1-5)   | Value 1-5                                     |
+| Yes/No          | `yes_no`          | 2 radio buttons | `yes_no_value` (BOOLEAN)   | `true` or `false`                             |
 
 ### Validation Rules per Question Type
 
-| Type | Has Options? | Min Options | Max Options |
-|------|:-----------:|:-----------:|:-----------:|
-| `text` | ❌ | — | — |
-| `multiple_choice` | ✅ | 2 | Unlimited |
-| `single_choice` | ✅ | 2 | Unlimited |
-| `likert_scale` | ❌ | — | — |
-| `yes_no` | ❌ | — | — |
+| Type              | Has Options? | Min Options | Max Options |
+| ----------------- | :----------: | :---------: | :---------: |
+| `text`            |      ❌      |      —      |      —      |
+| `multiple_choice` |      ✅      |      2      |  Unlimited  |
+| `single_choice`   |      ✅      |      2      |  Unlimited  |
+| `likert_scale`    |      ❌      |      —      |      —      |
+| `yes_no`          |      ❌      |      —      |      —      |
 
 ---
 
 ## 5. Error Handling
 
 ### Standard Error Response Format
+
 ```json
 {
   "error": {
@@ -682,30 +755,32 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 ```
 
 ### HTTP Status Codes Used
-| Code | Meaning |
-|:----:|---------|
-| 200 | Success |
-| 201 | Created |
-| 400 | Bad Request / Validation Error |
-| 401 | Unauthorized (no/invalid token) |
-| 403 | Forbidden (e.g., response limit reached) |
-| 404 | Resource Not Found |
-| 409 | Conflict (e.g., duplicate email) |
-| 422 | Unprocessable Entity |
-| 429 | Too Many Requests (rate limiting) |
-| 500 | Internal Server Error |
+
+| Code | Meaning                                  |
+| :--: | ---------------------------------------- |
+| 200  | Success                                  |
+| 201  | Created                                  |
+| 400  | Bad Request / Validation Error           |
+| 401  | Unauthorized (no/invalid token)          |
+| 403  | Forbidden (e.g., response limit reached) |
+| 404  | Resource Not Found                       |
+| 409  | Conflict (e.g., duplicate email)         |
+| 422  | Unprocessable Entity                     |
+| 429  | Too Many Requests (rate limiting)        |
+| 500  | Internal Server Error                    |
 
 ### Common Error Codes
-| Code | Description |
-|------|-------------|
-| `VALIDATION_ERROR` | Request body failed validation |
-| `UNAUTHORIZED` | Missing or invalid authentication token |
-| `FORBIDDEN` | User does not have access to this resource |
-| `NOT_FOUND` | Resource does not exist |
+
+| Code                     | Description                                   |
+| ------------------------ | --------------------------------------------- |
+| `VALIDATION_ERROR`       | Request body failed validation                |
+| `UNAUTHORIZED`           | Missing or invalid authentication token       |
+| `FORBIDDEN`              | User does not have access to this resource    |
+| `NOT_FOUND`              | Resource does not exist                       |
 | `RESPONSE_LIMIT_REACHED` | Survey has reached its maximum response limit |
-| `SURVEY_CLOSED` | Survey is no longer accepting responses |
-| `DUPLICATE_EMAIL` | Email already exists (signup) |
-| `RATE_LIMIT_EXCEEDED` | Too many requests |
+| `SURVEY_CLOSED`          | Survey is no longer accepting responses       |
+| `DUPLICATE_EMAIL`        | Email already exists (signup)                 |
+| `RATE_LIMIT_EXCEEDED`    | Too many requests                             |
 
 ---
 
@@ -714,11 +789,13 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 1. **Authentication Flow:** Use JWT tokens with access + refresh token pattern. The current frontend uses Supabase Auth — a custom backend should replicate the same flow.
 
 2. **Public Submission Endpoint:** The `POST /api/surveys/:id/responses` endpoint should NOT require authentication (anyone can submit), but should include:
+
    - Rate limiting per IP
    - CAPTCHA support for spam prevention
    - Response limit validation before accepting
 
 3. **Survey Sharing Endpoints (Future):**
+
    - `GET /api/surveys/:id/share/link` — Generate shareable link
    - `GET /api/surveys/:id/share/qr-code` — Generate QR code image
    - `GET /api/surveys/:id/share/embed` — Get embed code snippet

@@ -9,7 +9,7 @@ import { useSurveyResponses } from '@/hooks/useQuery';
 interface AnswerItem {
     question_id: string;
     question_text: string;
-    required: boolean;
+    question_required: boolean;
     section_title?: string;
     answer_text?: string;
     likert_value?: number;
@@ -33,7 +33,6 @@ interface ResponseDisplay {
     id: string;
     respondent_email: string;
     completed_at: string;
-    time_taken_sec: number;
     answers: AnswerItem[];
 }
 
@@ -51,7 +50,6 @@ const ResponseDetail = () => {
         id: item.id,
         respondent_email: item.respondent_email,
         completed_at: formatDate(item.completed_at),
-        time_taken_sec: item.time_taken_sec,
         answers: item.answers,
     }));
     const pagination = responseData?.pagination;
@@ -59,7 +57,6 @@ const ResponseDetail = () => {
     const columns = [
         { name: "Email", key: "respondent_email" },
         { name: "Date", key: "completed_at" },
-        { name: "Time Taken", key: "time_taken_sec" },
     ];
 
     return (
