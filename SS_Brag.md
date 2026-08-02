@@ -355,3 +355,20 @@ A daily log of things I've learned while building **Survey System**.
 - Added option IDs to the survey normalization so `answer_option_ids` sends the option's UUID.
 - Added a **submit confirmation modal** — validation runs first, then the user confirms before the request is sent.
 - Fixed the submit endpoint path to **`POST /api/v1/surveys/{surveyId}/responses`** (it was hitting a non-existent `POST /api/v1/responses` → 404).
+
+---
+
+## 2026-08-01
+
+### Responses Table — Action Menu Popup Fix
+
+- Diagnosed why the three-dot row action menu was **clipped/hidden inside the table** — the table wrapper and the dashboard `<main>` both have `overflow-hidden`, and the app layout's `transition-all`/transform chain creates a new containing block that traps `position: fixed` elements.
+- Tried and ruled out several approaches:
+  - **Centered overlay modal** (full-screen backdrop) — worked but was the wrong UX for a three-dot menu.
+  - **Portal + `position: fixed` + high `z-index`** — still clipped by the layout's stacking context.
+  - **Sibling-of-wrapper fixed overlay** — reliable but still a modal, not an anchored dropdown.
+- **Final solution — Floating UI (`@floating-ui/react-dom`)**: built a reusable `ActionMenu` component that anchors the dropdown to the trigger button with `useFloating` + `strategy: "fixed"`, `flip` (opens above when no room below), `shift` (stays inside the viewport), and `autoUpdate` (repositions on scroll/resize). Rendered via `createPortal` to `document.body`, so it fully escapes the table's overflow clipping.
+- Learned the hard way about the **two Floating UI packages**: `@floating-ui/react-dom` only exports the positioning engine (`useFloating`, middleware) — the interaction hooks (`useClick`, `useDismiss`, `useRole`, `useInteractions`) and `FloatingPortal`/`FloatingFocusManager` live in `@floating-ui/react`. For a simple menu, manual open/close state + `createPortal` + a `mousedown` outside-click listener and Escape handler is all that's needed.
+- The dropdown now appears **anchored right next to the three-dots button** (exactly like a standard table actions menu), auto-flips above/below to stay visible, and closes on outside click or Escape.
+- **Polish**: thickened the three-dot icon (`strokeWidth` 1.5 → 2.5), gave menu items a visible **accent-colored hover state** (`hover:bg-accent-100` / `dark:hover:bg-accent-900/30` + text/icon shifting to accent), and made the whole menu **theme-aware** — it now follows the user's chosen accent color and light/dark appearance via the `--accent-*` CSS variables from `ThemeContext`.
+
