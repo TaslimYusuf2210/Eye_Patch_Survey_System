@@ -141,7 +141,8 @@ const noSchema = yup.object().shape({});
 
 
 export default function CreateSurvey() {
-  const location = useLocation();
+  const location = useLocation
+  ();
   const [searchParams] = useSearchParams();
   const { textTitle, textSubtitle } = useTheme();
   // const { currentRoute } = useCreateSurveyContext();

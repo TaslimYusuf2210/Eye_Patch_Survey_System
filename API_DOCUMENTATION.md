@@ -1,7 +1,7 @@
 # Survey System — Backend API Documentation
 
 > **Project:** Eye_Patch Survey System  
-> **Tech Stack (Frontend):** React 19, TypeScript, Vite, Tailwind CSS v4, Supabase (current auth/db), React Router v7  
+> **Tech Stack (Frontend):** React 19, TypeScript, Vite, Tailwind CSS v4, React Router v7  
 > **Proposed Backend:** RESTful API (Node.js/Express, Python/FastAPI, or any preferred stack)
 
 ---
@@ -786,7 +786,7 @@ Publishes the complete survey structure (sections, questions, and options) in a 
 
 ## Notes for Implementation
 
-1. **Authentication Flow:** Use JWT tokens with access + refresh token pattern. The current frontend uses Supabase Auth — a custom backend should replicate the same flow.
+1. **Authentication Flow:** Use JWT tokens with access + refresh token pattern. The frontend uses a custom backend (JWT bearer tokens stored in `sessionStorage`).
 
 2. **Public Submission Endpoint:** The `POST /api/surveys/:id/responses` endpoint should NOT require authentication (anyone can submit), but should include:
 

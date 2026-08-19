@@ -44,7 +44,6 @@ function SignUp() {
     register,
     handleSubmit,
     watch,
-    reset,
     formState: { errors },
   } = useForm<SignUpFormData>({
     resolver: yupResolver(signUpSchema),
@@ -406,11 +405,6 @@ function SignUp() {
           >
             {loading ? "Signing up..." : "Sign up"}
           </button>
-          {error && (
-            <p className="text-red-500 text-xs mt-1">
-                {error}
-              </p>
-          )}
         </form>
 
         <div className="relative my-6">

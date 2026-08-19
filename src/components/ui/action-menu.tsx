@@ -25,7 +25,6 @@ export default function ActionMenu({ items, className }: ActionMenuProps) {
 
   const { refs, floatingStyles } = useFloating({
     open,
-    onOpenChange: setOpen,
     placement: "bottom-end",
     middleware: [
       offset(4),
@@ -41,9 +40,11 @@ export default function ActionMenu({ items, className }: ActionMenuProps) {
     if (!open) return;
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
+      const referenceEl = refs.reference.current;
+      const floatingEl = refs.floating.current;
       if (
-        refs.reference.current?.contains(target) ||
-        refs.floating.current?.contains(target)
+        (referenceEl instanceof Node && referenceEl.contains(target)) ||
+        (floatingEl instanceof Node && floatingEl.contains(target))
       ) {
         return;
       }

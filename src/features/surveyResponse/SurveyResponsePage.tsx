@@ -99,8 +99,12 @@ const SurveyResponsePage = () => {
         const base = { question_id: q.id || String(idx) };
         switch (q.type) {
           case 'text':
-          case 'single_choice':
             return { ...base, answer_text: ans };
+          case 'single_choice':
+            return {
+              ...base,
+              answer_option_ids: [q.options.find((o) => o.value === ans)?.id || ans],
+            };
           case 'multiple_choice':
             return {
               ...base,

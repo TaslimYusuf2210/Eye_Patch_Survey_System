@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useTheme, type Appearance } from '../../../contexts/ThemeContext';
-import { type AccentColor } from '../../../types';
-import { Sun, Moon, Palette } from 'lucide-react';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { useProfile } from '@/hooks/useQuery/useProfile';
 import avatar1 from '@/assets/avatars/avatar1.svg';
 import avatar2 from '@/assets/avatars/avatar2.svg';
@@ -19,19 +17,6 @@ import ProfileTab from '../components/settings/ProfileTab';
 import AppearanceTab from '../components/settings/AppearanceTab';
 import ThemeTab from '../components/settings/ThemeTab';
 
-const baseModes = [
-    { id: 'default' as Appearance, name: 'Default', icon: Palette, description: 'Neutral gray — balanced, easy on the eyes' },
-    { id: 'light' as Appearance, name: 'Light Mode', icon: Sun, description: 'Crisp and easy on the eyes' },
-    { id: 'dark' as Appearance, name: 'Dark Mode', icon: Moon, description: 'Easy for low-light environments' }
-];
-
-const colorAccents = [
-    { id: 'blue' as AccentColor, name: 'Ocean Blue', colorClass: 'bg-blue-600', activeClass: 'text-blue-600' },
-    { id: 'green' as AccentColor, name: 'Forest Green', colorClass: 'bg-emerald-600', activeClass: 'text-emerald-600' },
-    { id: 'red' as AccentColor, name: 'Crimson Red', colorClass: 'bg-rose-600', activeClass: 'text-rose-600' },
-    { id: 'purple' as AccentColor, name: 'Royal Purple', colorClass: 'bg-purple-600', activeClass: 'text-purple-600' }
-];
-
 const avatarOptions = [
     avatar1, avatar2, avatar3, avatar4, avatar5,
     avatar6, avatar7, avatar8, avatar9, avatar10, avatar11,
@@ -42,7 +27,7 @@ const SettingsView = () => {
     const tabFromUrl = searchParams.get('tab');
     const [activeTab, setActiveTab] = useState(tabFromUrl && ['profile', 'appearance', 'theme'].includes(tabFromUrl) ? tabFromUrl : 'profile');
     const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
-    const { appearance, accent, setAppearance, setAccent, picture, setPicture, textTitle, textSubtitle } = useTheme();
+    const { accent, textTitle, textSubtitle } = useTheme();
     const { data: profileData } = useProfile();
 
     const isDefaultTheme = accent === 'default';
@@ -52,30 +37,6 @@ const SettingsView = () => {
         { id: 'appearance', label: 'Global Appearance' },
         { id: 'theme', label: 'Theme Picture' },
     ];
-
-    const getAccentBgClass = (color: AccentColor) => {
-        switch (color) {
-            case 'green': return 'bg-emerald-600';
-            case 'red': return 'bg-rose-600';
-            case 'purple': return 'bg-purple-600';
-            case 'blue': return 'bg-blue-600';
-            default: return 'bg-gray-600';
-        }
-    };
-
-    const getPreviewAccentTextClass = () => {
-        if (isDefaultTheme) return 'text-gray-600';
-        const found = colorAccents.find(a => a.id === accent);
-        return found?.activeClass ?? 'text-gray-600';
-    };
-
-    const handleSelectDefault = () => {
-        setAccent('default');
-    };
-
-    const handleSetAppearance = (mode: Appearance) => {
-        setAppearance(mode);
-    };
 
     useEffect(() => {
         if (profileData) {
@@ -134,7 +95,7 @@ const SettingsView = () => {
                         selectedAvatar={selectedAvatar}
                         setSelectedAvatar={setSelectedAvatar}
                         avatarOptions={avatarOptions}
-                        user={profileData}
+                        user={profileData ?? null}
                         isDefaultTheme={isDefaultTheme}
                         textTitle={textTitle}
                         textSubtitle={textSubtitle}
