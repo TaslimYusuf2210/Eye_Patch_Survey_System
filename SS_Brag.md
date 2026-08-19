@@ -371,3 +371,26 @@ A daily log of things I've learned while building **Survey System**.
 - Learned the hard way about the **two Floating UI packages**: `@floating-ui/react-dom` only exports the positioning engine (`useFloating`, middleware) — the interaction hooks (`useClick`, `useDismiss`, `useRole`, `useInteractions`) and `FloatingPortal`/`FloatingFocusManager` live in `@floating-ui/react`. For a simple menu, manual open/close state + `createPortal` + a `mousedown` outside-click listener and Escape handler is all that's needed.
 - The dropdown now appears **anchored right next to the three-dots button** (exactly like a standard table actions menu), auto-flips above/below to stay visible, and closes on outside click or Escape.
 - **Polish**: thickened the three-dot icon (`strokeWidth` 1.5 → 2.5), gave menu items a visible **accent-colored hover state** (`hover:bg-accent-100` / `dark:hover:bg-accent-900/30` + text/icon shifting to accent), and made the whole menu **theme-aware** — it now follows the user's chosen accent color and light/dark appearance via the `--accent-*` CSS variables from `ThemeContext`.
+
+---
+
+## 2026-08-19
+
+### Theme Bug — Dark Mode on New Account Login (Investigation & Fix)
+
+- **Reported bug**: creating a brand-new account and logging in immediately showed **dark mode** instead of the default theme.
+- **Investigation — ruled out the backend**:
+  - The DB default for `appearance` in `user_settings` is `'light'` (see `API_DOCUMENTATION.md`) — the backend does **not** default to dark.
+  - The frontend never even applies the backend's theme on login: `getUserSettings()` (`GET /api/settings`) is defined in `src/services/dashboard/settings.ts` but **never called**, and `useProfile().settings` is never read into the theme.
+  - `'default'` appearance (neutral gray) is a **frontend-only** concept — the backend only supports `'light' | 'dark'`, so it literally can't return "default mode".
+- **Root cause — browser-wide `localStorage` leaking across accounts**:
+  - The theme lives in `localStorage` keys `survey-theme-appearance` / `survey-theme-accent` / `survey-theme-picture`, written only in `src/contexts/ThemeContext.tsx`.
+  - `localStorage` is **per-browser, not per-account** — it survives logout/login, and the public survey page's `AppearanceToggle` writes to the same shared keys.
+  - A stale `'dark'` value from a previous session/account was still in the browser, so the new account's `ThemeProvider` read it on mount and applied the `dark` class → dark UI on a brand-new account.
+- **Fix — per-account theme scoping**:
+  - `ThemeProvider` now accepts an optional `userId` prop; when present it scopes storage keys to `survey-theme-<userId>-<name>` so each account keeps its own theme.
+  - Added a `DashboardRoute` wrapper in `App.tsx` that waits for `useProfile` (`isLoading`) before mounting `ThemeProvider` with `userId={profile?.id}` — the correct scoped theme applies from first paint (no flash of the wrong mode).
+  - A brand-new account has no scoped entry → falls back to `'default'`, so **default mode now takes priority** for new accounts.
+  - The public survey response page keeps the shared browser-level keys (no `userId`) so the visitor light/dark toggle still works.
+  - Verified with `tsc --noEmit` — no type errors.
+- **Lesson**: `localStorage` is a browser-level store, not a per-user one. When a preference like a theme must follow the account, scope the storage key by the user id (or treat the backend as the source of truth) — otherwise one account's settings silently leak into another account's login.
