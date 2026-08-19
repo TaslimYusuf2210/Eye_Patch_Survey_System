@@ -153,7 +153,7 @@ const SurveyList = () => {
                 </div>
             ) : (
                 <div className="text-center py-20">
-                    <p className="text-gray-500 dark:text-slate-400 text-sm">No surveys found. Try adjusting your filters.</p>
+                    <p className="text-gray-500 dark:text-slate-400 text-sm">No surveys found. Try adjusting your filters or create a new survey</p>
                 </div>
             )}
 

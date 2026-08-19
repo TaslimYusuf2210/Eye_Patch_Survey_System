@@ -18,32 +18,40 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+interface ThemeProviderProps {
+  children: ReactNode;
+  /** When provided, theme prefs are scoped per account so they don't leak across accounts on the same browser. */
+  userId?: string;
+}
+
+export const ThemeProvider = ({ children, userId }: ThemeProviderProps) => {
+  // Theme preference is stored per user account. Browser-wide keys caused one
+  // account's saved theme (e.g. dark mode) to leak into another account's login.
+  // Without a userId (e.g. the public survey response page) we fall back to the
+  // shared browser-level keys.
+  const storageKey = (name: string) =>
+    userId ? `survey-theme-${userId}-${name}` : `survey-theme-${name}`;
+
+  const readStored = (name: string, isValid: (v: string) => boolean): string | null => {
+    if (typeof window === 'undefined') return null;
+    const stored = localStorage.getItem(storageKey(name));
+    return stored !== null && isValid(stored) ? stored : null;
+  };
+
   const [appearance, setAppearance] = useState<Appearance>(() => {
-    // Read initial appearance from localStorage or use default theme
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('survey-theme-appearance');
-      if (stored === 'default' || stored === 'light' || stored === 'dark') return stored;
-    }
-    return 'default'; // First-time users get the neutral default theme
+    // Read initial appearance from per-account storage or use the default theme
+    const stored = readStored('appearance', (v) => v === 'default' || v === 'light' || v === 'dark');
+    return (stored as Appearance) ?? 'default'; // First-time users get the neutral default theme
   });
 
   const [accent, setAccent] = useState<AccentColor>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('survey-theme-accent');
-      if (stored === 'default' || stored === 'blue' || stored === 'green' || stored === 'red' || stored === 'purple') {
-        return stored as AccentColor;
-      }
-    }
-    return 'default';
+    const stored = readStored('accent', (v) => v === 'default' || v === 'blue' || v === 'green' || v === 'red' || v === 'purple');
+    return (stored as AccentColor) ?? 'default';
   });
 
   const [picture, setPicture] = useState<ThemePicture>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('survey-theme-picture');
-      if (stored === 'city' || stored === 'nature' || stored === 'marble' || stored === 'none') return stored as ThemePicture;
-    }
-    return 'none';
+    const stored = readStored('picture', (v) => v === 'city' || v === 'nature' || v === 'marble' || v === 'none');
+    return (stored as ThemePicture) ?? 'none';
   });
 
   // Track active resolved palette
@@ -61,8 +69,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
     // 'light' → no extra class, uses :root variables
 
-    localStorage.setItem('survey-theme-appearance', appearance);
-  }, [appearance]);
+    localStorage.setItem(storageKey('appearance'), appearance);
+  }, [appearance, userId]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -92,38 +100,32 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       });
     }
 
-    localStorage.setItem('survey-theme-accent', accent);
-  }, [accent, appearance]);
+    localStorage.setItem(storageKey('accent'), accent);
+  }, [accent, appearance, userId]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    localStorage.setItem('survey-theme-picture', picture);
-  }, [picture]);
+    localStorage.setItem(storageKey('picture'), picture);
+  }, [picture, userId]);
 
-  // Re-sync theme from localStorage on mount and when theme-synced event fires
+  // Re-sync theme from storage on mount / account switch and when theme-synced event fires
   useEffect(() => {
     const syncFromStorage = () => {
-      const storedAppearance = localStorage.getItem('survey-theme-appearance') as Appearance | null;
-      if (storedAppearance === 'default' || storedAppearance === 'light' || storedAppearance === 'dark') {
-        setAppearance(storedAppearance);
-      }
-      const storedAccent = localStorage.getItem('survey-theme-accent') as AccentColor | null;
-      if (storedAccent === 'default' || storedAccent === 'blue' || storedAccent === 'green' || storedAccent === 'red' || storedAccent === 'purple') {
-        setAccent(storedAccent);
-      }
-      const storedPicture = localStorage.getItem('survey-theme-picture') as ThemePicture | null;
-      if (storedPicture === 'city' || storedPicture === 'nature' || storedPicture === 'marble' || storedPicture === 'none') {
-        setPicture(storedPicture);
-      }
+      const storedAppearance = readStored('appearance', (v) => v === 'default' || v === 'light' || v === 'dark');
+      if (storedAppearance) setAppearance(storedAppearance as Appearance);
+      const storedAccent = readStored('accent', (v) => v === 'default' || v === 'blue' || v === 'green' || v === 'red' || v === 'purple');
+      if (storedAccent) setAccent(storedAccent as AccentColor);
+      const storedPicture = readStored('picture', (v) => v === 'city' || v === 'nature' || v === 'marble' || v === 'none');
+      if (storedPicture) setPicture(storedPicture as ThemePicture);
     };
 
-    // Re-sync on mount (catches values already in localStorage)
+    // Re-sync on mount (catches values already in storage / account switch)
     syncFromStorage();
 
     // Re-sync whenever mutation hooks save new theme settings
     window.addEventListener('theme-synced', syncFromStorage);
     return () => window.removeEventListener('theme-synced', syncFromStorage);
-  }, []);
+  }, [userId]);
 
   const hasPicture = picture !== 'none';
   const textTitle = hasPicture

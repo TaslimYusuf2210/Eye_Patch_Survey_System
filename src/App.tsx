@@ -17,6 +17,7 @@ import { SettingsStep } from './features/dashboard/components/CreateSurvey/Setti
 import { ReviewSummaryStep } from './features/dashboard/components/CreateSurvey/ReviewSummaryStep';
 import { CreateSurveyProvider } from './contexts/CreateSurveyContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { useProfile } from '@/hooks/useQuery/useProfile';
 import { Toaster } from './components/ui/sonner';
 import GlobalResponses from './features/dashboard/pages/GlobalResponses';
 import Responses from './features/dashboard/pages/Responses';
@@ -24,6 +25,30 @@ import ResponseDetail from './features/dashboard/pages/ResponseDetail';
 import ResponseAnswers from './features/dashboard/pages/ResponseAnswers';
 import SurveyResponsePage from './features/surveyResponse/SurveyResponsePage';
 
+
+function DashboardRoute() {
+  // Wait for the current user before mounting the theme so the theme is scoped
+  // to the account — a brand-new account starts on the default theme instead of
+  // inheriting another account's saved mode from browser-wide localStorage.
+  const { data: profile, isLoading } = useProfile();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full animate-spin" />
+          <p className="text-sm text-gray-500">Loading dashboard…</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ThemeProvider userId={profile?.id}>
+      <DashboardLayout />
+    </ThemeProvider>
+  );
+}
 
 function App() {
 
@@ -42,11 +67,7 @@ function App() {
             <SurveyResponsePage />
           </ThemeProvider>
         } />
-        <Route path="/dashboard/" element={
-          <ThemeProvider>
-            <DashboardLayout />
-          </ThemeProvider>
-        } >
+        <Route path="/dashboard/" element={<DashboardRoute />} >
           <Route index element={<Dashboard />} />
           <Route path="/dashboard/create-survey" element={
           <CreateSurveyProvider>
