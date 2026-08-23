@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-// The backend is hosted on Heroku at https://survey-system-backend.herokuapp.com
+// The backend is hosted on Heroku at
+// https://survey-system-backend-ec56827922fa.herokuapp.com
 // (API mounted under /api/v1 — all service endpoints already include that prefix).
 // Defaults to the deployed backend; set VITE_BASE_URL in .env to override.
-const backendBaseURL = import.meta.env.VITE_BASE_URL || 'https://survey-system-backend.herokuapp.com';
+const backendBaseURL = import.meta.env.VITE_BASE_URL || 'https://survey-system-backend-ec56827922fa.herokuapp.com';
 
 const api = axios.create({
   baseURL: backendBaseURL,
