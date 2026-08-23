@@ -15,6 +15,9 @@ export default defineConfig({
     },
   },
   server: {
+    // Expose the dev server on the local network (0.0.0.0) so other devices
+    // can access it — Vite will print the Network URL on startup.
+    host: true,
     allowedHosts: ['.trycloudflare.com'],
   },
 })

@@ -84,7 +84,7 @@ const Header = ({ onOpenMobile }: HeaderProps) => {
         matchedSettings.length;
 
     return (
-        <header className="flex justify-between items-center w-full mb-8 gap-4">
+        <header className="flex justify-between items-center w-full mb-4 sm:mb-6 lg:mb-8 gap-4">
             <button
                 onClick={onOpenMobile}
                 className="md:hidden p-2 rounded-lg bg-white dark:bg-slate-950 dark:border-slate-800 text-gray-500 hover:text-black dark:hover:text-white border border-gray-200 transition-colors cursor-pointer"
@@ -194,7 +194,7 @@ const Header = ({ onOpenMobile }: HeaderProps) => {
                 )}
                     </div>
 
-                    <button className="bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-900 p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-black hover:bg-gray-50 dark:hover:bg-slate-900 transition-colors cursor-pointer">
+                    <button className="bg-white dark:bg-slate-950 dark:border-slate-800 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-900 p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-black hover:bg-gray-50 transition-colors cursor-pointer">
                         <Bell size={20} />
                     </button>
                 </div>

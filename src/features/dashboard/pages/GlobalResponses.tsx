@@ -118,7 +118,7 @@ const GlobalResponses = () => {
                 value={filterSurveyId}
                 onChange={(e) => handleFilterChange(e.target.value)}
                 aria-label="Filter by survey"
-                className="appearance-none pl-9 pr-8 py-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer max-w-[220px] truncate"
+                className="appearance-none pl-9 pr-8 py-2 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer max-w-55 truncate"
             >
                 <option value="">All Surveys</option>
                 {surveys.map((s) => (
@@ -142,6 +142,7 @@ const GlobalResponses = () => {
                 onView={onView}
                 searchable
                 sortable
+                responsive
                 loading={isLoading}
                 emptyMessage={emptyMessage}
                 totalItems={pagination?.total}

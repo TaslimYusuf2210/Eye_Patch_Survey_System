@@ -1,5 +1,7 @@
 
 
+import { useState } from 'react';
+
 const faqData = [
   {
     "question": "How quickly can I start using your solutions?",
@@ -36,6 +38,12 @@ const faqData = [
 ]
 
 function FrequentlyAskedQuestion() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const toggle = (index: number) => {
+    setOpenIndex((current) => (current === index ? null : index));
+  };
+
   return (
     <div id="faq" className="flex flex-col lg:flex-row gap-10 px-4 md:px-10 lg:px-20 py-20 container mx-auto">
       <div className="space-y-6 w-full lg:w-1/2">
@@ -45,23 +53,42 @@ function FrequentlyAskedQuestion() {
         <p className="font-poppins text-gray-600 mt-4">Didn't find an answer to your question? <br /> Contact us at <a href="mailto:taslimyusuf777@gmail.com" className="font-medium text-black underline">taslimyusuf777@gmail.com</a>, <br /> and we'll be happy to help!</p>
       </div>
       <div className="font-poppins w-full lg:w-1/2">
-        {faqData.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-start group gap-5 mt-6 border-b border-gray-200 pb-6 last:border-0"
-          >
-            <span className="shrink-0 font-medium text-xl group-hover:text-black transition-colors ">
-              +
-            </span>
-            <div className="w-full">
-              <h3
-                className="text-lg font-medium cursor-pointer group-hover:text-gray-900 transition-colors">{item.question}</h3>
-              <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-out">
-                <p className="text-sm text-gray-600 overflow-hidden leading-relaxed mt-0 group-hover:mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">{item.answer}</p>
+        {faqData.map((item, index) => {
+          const isOpen = openIndex === index;
+          return (
+            <div
+              key={index}
+              className="flex items-start group gap-5 mt-6 border-b border-gray-200 pb-6 last:border-0"
+            >
+              <button
+                type="button"
+                onClick={() => toggle(index)}
+                aria-expanded={isOpen}
+                aria-controls={`faq-answer-${index}`}
+                className={`shrink-0 font-medium text-xl transition-colors cursor-pointer ${isOpen ? 'text-black' : 'group-hover:text-black'}`}
+              >
+                <span className={`inline-block transition-transform duration-300 ${isOpen ? 'rotate-45' : ''}`}>+</span>
+              </button>
+              <div className="w-full">
+                <button
+                  type="button"
+                  onClick={() => toggle(index)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
+                  className="w-full text-left cursor-pointer"
+                >
+                  <h3 className={`text-lg font-medium transition-colors ${isOpen ? 'text-gray-900' : 'group-hover:text-gray-900'}`}>{item.question}</h3>
+                </button>
+                <div
+                  id={`faq-answer-${index}`}
+                  className={`grid ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr] group-hover:grid-rows-[1fr]'}`}
+                >
+                  <p className={`text-sm text-gray-600 overflow-hidden min-h-0 leading-relaxed transition-all duration-300 ease-out ${isOpen ? 'mt-3 opacity-100' : 'mt-0 opacity-0 group-hover:mt-3 group-hover:opacity-100'}`}>{item.answer}</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

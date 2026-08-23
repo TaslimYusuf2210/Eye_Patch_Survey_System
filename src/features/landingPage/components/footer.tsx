@@ -1,7 +1,7 @@
 function Footer() {
     return (
         <footer className="bg-white pt-16 pb-8 border-t border-gray-100">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-start gap-10">
 
                 {/* Logo Section */}
                 <div className="flex flex-col gap-4">
@@ -14,7 +14,7 @@ function Footer() {
                 </div>
 
                 {/* Links Section */}
-                <div className="flex flex-wrap gap-10 md:gap-20 font-poppins">
+                <div className="grid grid-cols-2 gap-x-8 gap-y-10 w-full font-poppins lg:grid-cols-4 lg:w-auto lg:gap-x-20">
 
                     {/* Column 1 */}
                     <div className="flex flex-col gap-3">

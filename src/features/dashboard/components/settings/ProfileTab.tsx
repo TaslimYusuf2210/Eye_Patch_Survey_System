@@ -142,7 +142,7 @@ const ProfileTab = ({
                 </div>
 
                 {/* Preview */}
-                <div className="flex items-center gap-5 mb-6 p-4 rounded-xl bg-gray-50 dark:bg-slate-900/50 border border-gray-100 dark:border-slate-800">
+                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 mb-6 p-4 rounded-xl bg-gray-50 dark:bg-slate-900/50 border border-gray-100 dark:border-slate-800">
                     <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-gray-200 dark:border-slate-700 shrink-0 flex items-center justify-center bg-gray-100 dark:bg-slate-800">
                         {selectedAvatar ? (
                             <img src={selectedAvatar} alt="Selected avatar" className="w-full h-full object-cover" />

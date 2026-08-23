@@ -83,6 +83,7 @@ const ResponseDetail = () => {
                 })}
                 searchable
                 sortable
+                responsive
                 loading={isLoading}
                 emptyMessage="No responses for this survey yet"
                 totalItems={pagination?.total}

@@ -64,8 +64,8 @@ const DashboardLayout = () => {
                 </div>
 
                 {/* Main area skeleton */}
-                <div className="ml-0 md:ml-16 lg:ml-64 min-h-screen p-8">
-                    <div className="flex items-center justify-between mb-8">
+                <div className="ml-0 md:ml-16 lg:ml-64 min-h-screen p-3 sm:p-6 lg:p-8">
+                    <div className="flex items-center justify-between mb-4 sm:mb-6 lg:mb-8">
                         {/* Header skeleton */}
                         <div className="flex items-center gap-4">
                             <div className="h-8 w-8 bg-gray-200 dark:bg-slate-800 rounded-full" />
@@ -108,7 +108,7 @@ const DashboardLayout = () => {
                 setIsTabletHovered={setIsTabletHovered}
             />
             
-            <main className="ml-0 md:ml-16 lg:ml-64 min-h-screen p-8 relative overflow-hidden flex flex-col transition-all duration-300 ease-in-out">
+            <main className="ml-0 md:ml-16 lg:ml-64 min-h-screen p-3 sm:p-6 lg:p-8 relative overflow-hidden flex flex-col transition-all duration-300 ease-in-out">
                 {picture && picture !== 'none' && selected.url && (
                     <div
                         aria-hidden
