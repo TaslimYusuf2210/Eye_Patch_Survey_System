@@ -1,10 +1,9 @@
 import axios from 'axios';
 
-// Resolve the backend host from the page URL so the API works from any device on
-// the network — `localhost` on the dev machine, or the machine's LAN IP when the
-// app is opened from a phone/tablet (e.g. http://192.168.0.113:5173).
-// Set VITE_BASE_URL in .env to override this (e.g. for production deployments).
-const backendBaseURL = import.meta.env.VITE_BASE_URL || `http://${window.location.hostname}:3000`;
+// The backend is hosted on Heroku at https://survey-system-backend.herokuapp.com
+// (API mounted under /api/v1 — all service endpoints already include that prefix).
+// Defaults to the deployed backend; set VITE_BASE_URL in .env to override.
+const backendBaseURL = import.meta.env.VITE_BASE_URL || 'https://survey-system-backend.herokuapp.com';
 
 const api = axios.create({
   baseURL: backendBaseURL,
